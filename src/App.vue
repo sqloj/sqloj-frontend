@@ -1,10 +1,24 @@
 <template>
+  <h1>{{msg}}</h1>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/about">About</router-link> |
+    <router-link to="/Login">Login</router-link> |
+    <router-link to="/Main">Main</router-link>
   </nav>
   <router-view/>
 </template>
+
+<script lang="ts">
+
+export default {
+
+  setup(){
+    const msg = "Hello Vue !"
+    return {msg}
+  }
+}
+</script>
 
 <style lang="less">
 #app {
