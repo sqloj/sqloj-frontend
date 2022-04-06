@@ -1,6 +1,6 @@
 <template>
   <div class="view-account">
-    <div class="view-account-header"> Login </div>
+    <h2> 欢迎使用 DML语句在线评判系统 </h2>
     <div class="view-account-container">
       <div class="view-account-top">
                 <!-- 图片标签 -->
@@ -17,7 +17,7 @@
                 :model="formInline"
                 :rules="rules"
             >
-           <n-form-item path="username">
+           <n-form-item class = "inputtext" path="username">
              <n-input v-model:value="formInline.username" placeholder="请输入用户名">
                <template #prefix>
                  <n-icon size="18" color="#808695">
@@ -26,7 +26,7 @@
                </template>
              </n-input>
             </n-form-item>
-          <n-form-item path="password">
+          <n-form-item class = "inputtext" path="password">
             <n-input
               v-model:value="formInline.password"
               type="password"
@@ -53,18 +53,20 @@
             </n-button>
           </n-form-item>
           <div class="flex-initial" style="margin-left: auto">
-            <a href="javascript:">注册账号</a>
+            <a href="javascript:" style="float: right;">注册账号</a>
           </div>
           </n-form>
         </div>
       </div>
   </div>
-
+<router-view/>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
+import {useRouter} from 'vue-router'
 import { PersonOutline, LockClosedOutline} from '@vicons/ionicons5';
+import axios from 'axios'
 
 interface FormState {
   username: string;
@@ -74,6 +76,7 @@ interface FormState {
 const formRef = ref();
 const loading = ref(false);
 const autoLogin = ref(true);
+const router = useRouter();
 
 const formInline = reactive({
   username: 'admin',
@@ -87,12 +90,42 @@ const rules = {
 };
 
 const handleSubmit = () => {
-    alert("登录成功！")
+  // alert("登入成功！")
+  // router.replace('/Main')
+
+
+    axios.post(`/api/login`,
+    {
+        formInline
+    }
+    ).then(res => {
+      // console.log(res)
+      console.log(res.data)
+      console.log(res.data.data)
+        if (res.data.data.success) {
+            var ret = res.data.data.message;
+            alert(ret)
+            localStorage["account"] = JSON.stringify(res.data.data);
+            router.replace('/Main')
+            // if (ret.teacher) {
+            //     window.location.href = "html/TeacherMain.html";
+            // } else {
+            //     window.location.href = "html/StudentMain.html";
+            // }
+        } else {
+            alert("ERROR");
+        }
+    }).catch(res => {
+        console.log("error");
+    })
     };
 </script>
 
 
 <style lang="less" scoped>
+  .inputtext {
+    text-align:left;
+  }
   .view-account {
     display: flex;
     flex-direction: column;
