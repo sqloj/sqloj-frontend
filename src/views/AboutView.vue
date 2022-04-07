@@ -2,23 +2,17 @@
   <div class="about">
     <h1>{{msg}}</h1>
   </div>
-  <h2 @click="l1">点此进入登录界面</h2>
+  <n-button type="info" @click="goHome">回到首页</n-button>
 </template>
 
-<script lang = "ts">
+<script lang = "ts" setup>
 import { useRouter } from "vue-router"
-export default {
-  el: '#app',
-  setup(){
-      let msg = "ABOUT PAGE"
-      return {msg}
-  },
-  methods: {
-    l1(){
-      alert("YES")
-      const router = useRouter();
-      router.replace('/');
-    }
-  },
+
+
+let msg = "ABOUT PAGE"
+const router = useRouter();
+function goHome() {
+  alert("OK!");
+  router.push('/');
 }
 </script>

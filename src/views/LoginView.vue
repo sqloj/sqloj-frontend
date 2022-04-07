@@ -3,10 +3,6 @@
     <h2> 欢迎使用 DML语句在线评判系统 </h2>
     <div class="view-account-container">
       <div class="view-account-top">
-                <!-- 图片标签 -->
-<!--                <div class="view-account-top-logo">-->
-<!--                  <img src="~@/assets/images/account-logo.png" alt="" />-->
-<!--                </div>-->
       </div>
         <!-- FORM 表单-->
         <div class="view-account-form">
@@ -53,7 +49,7 @@
             </n-button>
           </n-form-item>
           <div class="flex-initial" style="margin-left: auto">
-            <a href="javascript:" style="float: right;">注册账号</a>
+            <a href="javascript:" @click="logon" style="float: right;">注册账号</a>
           </div>
           </n-form>
         </div>
@@ -78,7 +74,7 @@ const loading = ref(false);
 const autoLogin = ref(true);
 const router = useRouter();
 
-const formInline = reactive({
+const formInline:FormState = reactive({
   username: 'admin',
   password: '123456',
   isCaptcha: true,
@@ -89,36 +85,38 @@ const rules = {
   password: { required: true, message: '请输入密码', trigger: 'blur' },
 };
 
+function logon(){
+  router.push('/Register');
+}
+
 const handleSubmit = () => {
   // alert("登入成功！")
   // router.replace('/Main')
 
 
-    axios.post(`/api/login`,
+    axios.post('/api/logon',
     {
-        formInline
-    }
-    ).then(res => {
-      // console.log(res)
-      console.log(res.data)
-      console.log(res.data.data)
-        if (res.data.data.success) {
-            var ret = res.data.data.message;
-            alert(ret)
-            localStorage["account"] = JSON.stringify(res.data.data);
-            router.replace('/Main')
-            // if (ret.teacher) {
-            //     window.location.href = "html/TeacherMain.html";
-            // } else {
-            //     window.location.href = "html/StudentMain.html";
-            // }
-        } else {
-            alert("ERROR");
-        }
-    }).catch(res => {
-        console.log("error");
+        ...formInline
     })
-    };
+    .then(
+      res => res.data
+    )
+    .then(data => {
+        let msg = data.message;
+        alert(msg);
+        if(data.success) {
+          localStorage["account"] = JSON.stringify(
+          {
+              username: formInline.username,
+              password: formInline.password,
+          });
+          router.replace('/Main')
+        }
+    }).catch(function(error){
+        console.log(error);
+        alert('ERROR!');
+    });
+}
 </script>
 
 
