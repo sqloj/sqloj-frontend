@@ -1,6 +1,6 @@
 <template>
   <div class="view-account">
-    <h2> 注册账号 </h2>
+    <h1> 注册账号 </h1>
     <div class="view-account-container">
       <div class="view-account-top">
       </div>
@@ -22,7 +22,7 @@
                </template>
              </n-input>
             </n-form-item>
-            <br>
+
             <!-- input password-->
           <n-form-item label="密码" class = "inputtext" path="password1">
             <n-input
@@ -182,10 +182,11 @@ const handleSubmit = () => {
     flex-direction: column;
     height: 100vh;
     overflow: auto;
+    margin: 20px;
 
     &-container {
       flex: 1;
-      padding: 32px 0;
+      // padding: 32px 0;
       width: 384px;
       margin: 0 auto;
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="view-account">
-    <h2> 欢迎使用 DML语句在线评判系统 </h2>
+    <h1> DML 语句评判系统 </h1>
     <div class="view-account-container">
       <div class="view-account-top">
       </div>
@@ -22,6 +22,8 @@
                </template>
              </n-input>
             </n-form-item>
+
+
           <n-form-item class = "inputtext" path="password">
             <n-input
               v-model:value="formInline.password"
@@ -129,10 +131,11 @@ const handleSubmit = () => {
     flex-direction: column;
     height: 100vh;
     overflow: auto;
+    margin: 20px;
 
     &-container {
       flex: 1;
-      padding: 32px 0;
+      // padding: 32px 0;
       width: 384px;
       margin: 0 auto;
     }
