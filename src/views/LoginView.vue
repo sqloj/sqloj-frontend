@@ -1,40 +1,100 @@
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useMessage } from "naive-ui";
+import axios from "axios";
+import { PersonOutline, LockClosedOutline } from "@vicons/ionicons5";
+
+interface FormState {
+  username: string;
+  password: string;
+}
+
+const formRef = ref();
+const loadingRef = ref(false);
+const autoLogin = ref(true);
+const router = useRouter();
+const message = useMessage();
+
+const formInline: FormState = reactive({
+  username: "admin",
+  password: "123456",
+  isCaptcha: true,
+});
+
+const rules = {
+  username: { required: true, message: "请输入用户名", trigger: "blur" },
+  password: { required: true, message: "请输入密码", trigger: "blur" },
+};
+
+function logon() {
+  router.push("/Register");
+}
+
+const handleSubmit = () => {
+  // alert("登入成功！")
+  // router.replace('/Main')
+  loadingRef.value = true;
+  axios
+    .post("/api/login", {
+      ...formInline,
+    })
+    .then(res => {
+      loadingRef.value = false;
+      return res.data;
+    })
+    .then(data => {
+      // let msg = data.message;
+      if (data.success) {
+        localStorage["account"] = JSON.stringify({
+          username: formInline.username,
+          password: formInline.password,
+        });
+        message.success("欢迎回来！" + formInline.username);
+        router.replace("/Main");
+      } else {
+        message.error("用户名或密码错误！");
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+      message.error("ERROR!");
+    });
+};
+</script>
+
+
 <template>
   <div class="view-account">
-    <h1> DML 语句评判系统 </h1>
-    <div class="view-account-container">
-      <div class="view-account-top">
-      </div>
-        <!-- FORM 表单-->
-        <div class="view-account-form">
-          <n-form
-                ref="formRef"
-                label-placement="left"
-                size="large"
-                :model="formInline"
-                :rules="rules"
-            >
-           <n-form-item class = "inputtext" path="username">
-             <n-input v-model:value="formInline.username" placeholder="请输入用户名">
-               <template #prefix>
-                 <n-icon size="18" color="#808695">
-                   <PersonOutline />
-                  </n-icon>
-               </template>
-             </n-input>
-            </n-form-item>
+    <div class="view-account-container" style="text-align: center">
+      <n-h1>DML 语句评判系统</n-h1>
+      <!-- FORM 表单-->
+      <div class="view-account-form">
+        <n-form
+          ref="formRef"
+          label-placement="left"
+          size="large"
+          :model="formInline"
+          :rules="rules"
+        >
+          <n-form-item class="inputtext" path="username">
+            <n-input v-model:value="formInline.username" placeholder="用户名">
+              <template #prefix>
+                <n-icon :component="PersonOutline" />
+              </template>
+            </n-input>
+          </n-form-item>
 
-
-          <n-form-item class = "inputtext" path="password">
+          <n-form-item class="inputtext" path="password">
             <n-input
+              class="input-text"
               v-model:value="formInline.password"
               type="password"
-              showPasswordOn="click"
-              placeholder="请输入密码"
+              show-password-on="mousedown"
+              placeholder="密码"
             >
               <template #prefix>
-                <n-icon size="18" color="#808695">
-                  <LockClosedOutline />
-                </n-icon>
+                <n-icon :component="LockClosedOutline" />
               </template>
             </n-input>
           </n-form-item>
@@ -46,133 +106,84 @@
             </div>
           </n-form-item>
           <n-form-item>
-            <n-button type="primary" @click="handleSubmit" size="large" :loading="loading" block>
+            <n-button
+              type="primary"
+              @click="handleSubmit"
+              size="large"
+              :loading="loadingRef"
+              block
+            >
               登录
             </n-button>
           </n-form-item>
-          <div class="flex-initial" style="margin-left: auto">
-            <a href="javascript:" @click="logon" style="float: right;">注册账号</a>
+          <div class="flex-initial">
+            新用户？
+            <n-a href="javascript:" @click="logon" style="text-decoration: none"
+              >注册！</n-a
+            >
           </div>
-          </n-form>
-        </div>
+        </n-form>
       </div>
+    </div>
   </div>
-<router-view/>
+  <router-view />
 </template>
-
-<script lang="ts" setup>
-import { reactive, ref } from 'vue';
-import {useRouter} from 'vue-router'
-import { PersonOutline, LockClosedOutline} from '@vicons/ionicons5';
-import axios from 'axios'
-
-interface FormState {
-  username: string;
-  password: string;
-}
-
-const formRef = ref();
-const loading = ref(false);
-const autoLogin = ref(true);
-const router = useRouter();
-
-const formInline:FormState = reactive({
-  username: 'admin',
-  password: '123456',
-  isCaptcha: true,
-});
-
-const rules = {
-  username: { required: true, message: '请输入用户名', trigger: 'blur' },
-  password: { required: true, message: '请输入密码', trigger: 'blur' },
-};
-
-function logon(){
-  router.push('/Register');
-}
-
-const handleSubmit = () => {
-  // alert("登入成功！")
-  // router.replace('/Main')
-
-
-    axios.post('/api/logon',
-    {
-        ...formInline
-    })
-    .then(
-      res => res.data
-    )
-    .then(data => {
-        let msg = data.message;
-        alert(msg);
-        if(data.success) {
-          localStorage["account"] = JSON.stringify(
-          {
-              username: formInline.username,
-              password: formInline.password,
-          });
-          router.replace('/Main')
-        }
-    }).catch(function(error){
-        console.log(error);
-        alert('ERROR!');
-    });
-}
-</script>
 
 
 <style lang="less" scoped>
-  .inputtext {
-    text-align:left;
+.inputtext {
+  text-align: left;
+  input {
+    padding-left: 2em;
   }
-  .view-account {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: auto;
-    margin: 20px;
+}
 
-    &-container {
-      flex: 1;
-      // padding: 32px 0;
-      width: 384px;
-      margin: 0 auto;
+.view-account {
+  height: 100vh;
+  overflow: auto;
+  padding: 20px;
+  padding-top: 80px;
+
+  &-container {
+    flex: 1;
+    // padding: 32px 0;
+    margin: 0 auto;
+    max-width: 400px;
+  }
+
+  &-top {
+    padding: 1em 0;
+    text-align: center;
+
+    &-desc {
+      font-size: 14px;
+      color: #808695;
     }
+  }
 
-    &-top {
-      padding: 32px 0;
-      text-align: center;
+  &-other {
+    width: 100%;
+  }
 
-      &-desc {
-        font-size: 14px;
-        color: #808695;
-      }
-    }
+  .default-color {
+    color: #515a6e;
 
-    &-other {
-      width: 100%;
-    }
-
-    .default-color {
+    .ant-checkbox-wrapper {
       color: #515a6e;
-
-      .ant-checkbox-wrapper {
-        color: #515a6e;
-      }
     }
   }
+}
 
-  @media (min-width: 768px) {
-    .view-account {
-      background-image: url('../assets/images/login.svg');
-      background-repeat: no-repeat;
-      background-position: 50%;
-      background-size: 100%;
-    }
-
-    .page-account-container {
-      padding: 32px 0 24px 0;
-    }
+@media (min-width: 768px) {
+  .view-account {
+    background-image: url("../assets/images/login.svg");
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100%;
   }
+
+  .page-account-container {
+    padding: 32px 0 24px 0;
+  }
+}
 </style>
