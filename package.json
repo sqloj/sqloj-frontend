@@ -4,15 +4,17 @@
   "private": true,
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
-    "lint": "vue-cli-service lint",
+    "lint": "eslint --ext .ts,.js,.vue --fix ./src",
+    "fmt": "prettier --write ./src",
     "dev": "vite",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rushstack/eslint-patch": "^1.1.2",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@vicons/ionicons5": "^0.12.0",
+    "@vue/eslint-config-prettier": "^7.0.0",
     "axios": "^0.26.1",
-    "eslint-config-airbnb-base": "^15.0.0",
     "less": "^4.1.2",
     "mockjs": "^1.1.0",
     "naive-ui": "^2.27.0",
@@ -21,20 +23,22 @@
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
+    "@babel/types": "^7.17.0",
     "@types/mockjs": "^1.0.6",
     "@typescript-eslint/parser": "^5.18.0",
     "@vitejs/plugin-vue": "^2.3.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/eslint-config-airbnb": "^6.0.0",
-    "@vue/eslint-config-standard": "^6.1.0",
+    "@vue/cli-plugin-eslint": "^5.0.4",
+    "@vue/cli-service": "^5.0.4",
+    "esbuild": "^0.14.34",
     "eslint": "^8.13.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.6.0",
-    "eslint-plugin-vuejs-accessibility": "^1.1.0",
-    "typescript": "^4.5.4",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3",
     "vite": "^2.9.0",
-    "vue-tsc": "^0.29.8"
+    "vscode-languageserver-protocol": "^3.16.0",
+    "vue-tsc": "^0.34.1"
   }
 }

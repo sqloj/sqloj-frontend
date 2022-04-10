@@ -1,37 +1,24 @@
+require('@rushstack/eslint-patch/modern-module-resolution');
+
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es2021: true
   },
   extends: [
     'plugin:vue/vue3-recommended',
     'plugin:import/typescript',
-    'airbnb-base',
+    '@vue/eslint-config-prettier',
+    'plugin:prettier/recommended'
   ],
   parserOptions: {
     ecmaVersion: 'latest',
     parser: '@typescript-eslint/parser',
-    sourceType: 'module',
+    sourceType: 'module'
   },
-  plugins: [
-    'vue',
-    '@typescript-eslint',
-  ],
+  plugins: ['vue', '@typescript-eslint'],
   rules: {
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {
-        js: 'never',
-        jsx: 'never',
-        ts: 'never',
-        tsx: 'never',
-      },
-    ],
-  },
-  settings: {
-    'import/resolver': {
-      node: { extensions: ['.js', '.jsx', '.ts', '.tsx'] },
-    },
-  },
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+  }
 };
