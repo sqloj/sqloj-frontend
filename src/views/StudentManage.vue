@@ -4,24 +4,24 @@ import axios from 'axios';
 
 const columns = [
   {
-    type: 'selection',
+    type: 'selection'
   },
   {
     title: '学号',
-    key: 'id',
+    key: 'id'
   },
   {
     title: '姓名',
-    key: 'name',
+    key: 'name'
   },
   {
     title: '班级',
-    key: 'classes',
+    key: 'classes'
   },
   {
     title: '过题数',
-    key: 'acnum',
-  },
+    key: 'acnum'
+  }
 ];
 
 const dataRef = ref([]);
@@ -31,8 +31,8 @@ onMounted(() => {
   console.log(dataRef.value);
   axios
     .post('/api/studentlist')
-    .then((res) => res.data)
-    .then((data) => {
+    .then(res => res.data)
+    .then(data => {
       console.log(data);
       dataRef.value = data.user;
       loadingRef.value = false;
@@ -40,17 +40,14 @@ onMounted(() => {
 });
 
 const pagination = {
-  pageSize: 10,
+  pageSize: 10
 };
 </script>
 
 <template>
   <n-layout id="manage-container">
     <n-h1>学生管理</n-h1>
-    <n-space
-      vertical
-      :size="12"
-    >
+    <n-space vertical :size="12">
       <n-data-table
         :bordered="false"
         :columns="columns"

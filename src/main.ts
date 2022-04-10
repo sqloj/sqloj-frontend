@@ -8,7 +8,4 @@ import router from './router';
 
 import './mock';
 
-createApp(App)
-  .use(router)
-  .use(naive)
-  .mount('#app');
+createApp(App).use(router).use(naive).mount('#app');

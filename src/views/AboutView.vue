@@ -16,10 +16,5 @@ const goHome = () => {
   <div class="about">
     <h1>{{ msg }}</h1>
   </div>
-  <n-button
-    type="info"
-    @click="goHome"
-  >
-    回到首页
-  </n-button>
+  <n-button type="info" @click="goHome"> 回到首页 </n-button>
 </template>

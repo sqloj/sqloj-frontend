@@ -7,7 +7,7 @@ import {
   AddCircleOutline as AddIcon,
   CallOutline as CallIcon,
   InformationCircleOutline as InfoIcon,
-  BugOutline as BugIcon,
+  BugOutline as BugIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -25,9 +25,9 @@ const menuOptions: MenuOption[] = [
       {
         label: () => accout.username,
         key: 'username',
-        icon: renderIcon(InfoIcon),
-      },
-    ],
+        icon: renderIcon(InfoIcon)
+      }
+    ]
   },
   {
     type: 'group',
@@ -37,25 +37,25 @@ const menuOptions: MenuOption[] = [
       {
         label: '学生管理',
         key: 'student-manage',
-        icon: renderIcon(PersonIcon),
+        icon: renderIcon(PersonIcon)
       },
       {
         label: '题目管理',
         key: 'add-question',
-        icon: renderIcon(AddIcon),
+        icon: renderIcon(AddIcon)
       },
       {
         label: '权限管理',
         key: 'authority-manage',
-        icon: renderIcon(BugIcon),
+        icon: renderIcon(BugIcon)
       },
       {
         label: '联系我们',
         key: 'call-us',
-        icon: renderIcon(CallIcon),
-      },
-    ],
-  },
+        icon: renderIcon(CallIcon)
+      }
+    ]
+  }
 ];
 
 const message = useMessage();
@@ -67,8 +67,5 @@ const handleUpdateValue = (key: string, item: MenuOption) => {
 </script>
 
 <template>
-  <n-menu
-    :options="menuOptions"
-    @update:value="handleUpdateValue"
-  />
+  <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
 </template>

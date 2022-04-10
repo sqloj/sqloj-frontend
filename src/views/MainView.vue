@@ -4,13 +4,8 @@ import StudentManage from './StudentManage.vue';
 </script>
 
 <template>
-  <n-layout
-    has-sider
-  >
-    <n-layout-sider
-      id="side-bar"
-      bordered
-    >
+  <n-layout has-sider>
+    <n-layout-sider id="side-bar" bordered>
       <nav>
         <side-menu />
       </nav>

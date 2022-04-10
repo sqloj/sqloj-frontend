@@ -1,10 +1,12 @@
 import Mock from 'mockjs';
 
 const user = Mock.mock({
-  account: [{
-    username: 'admin',
-    passward: '123456',
-  }],
+  account: [
+    {
+      username: 'admin',
+      passward: '123456'
+    }
+  ]
 });
 
 const data = (option: any) => {
@@ -17,13 +19,13 @@ const data = (option: any) => {
     return {
       data: user.account,
       message: '请求成功',
-      success: true,
+      success: true
     };
   }
   return {
     data: user.account,
     message: '用户名或密码错误',
-    success: false,
+    success: false
   };
 };
 

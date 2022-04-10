@@ -19,12 +19,12 @@ const message = useMessage();
 const formInline: FormState = reactive({
   username: 'admin',
   password: '123456',
-  isCaptcha: true,
+  isCaptcha: true
 });
 
 const rules = {
   username: { required: true, message: '请输入用户名', trigger: 'blur' },
-  password: { required: true, message: '请输入密码', trigger: 'blur' },
+  password: { required: true, message: '请输入密码', trigger: 'blur' }
 };
 
 const logon = () => {
@@ -37,18 +37,18 @@ const handleSubmit = () => {
   loadingRef.value = true;
   axios
     .post('/api/login', {
-      ...formInline,
+      ...formInline
     })
-    .then((res) => {
+    .then(res => {
       loadingRef.value = false;
       return res.data;
     })
-    .then((data) => {
+    .then(data => {
       // let msg = data.message;
       if (data.success) {
         localStorage.account = JSON.stringify({
           username: formInline.username,
-          password: formInline.password,
+          password: formInline.password
         });
         message.success(`欢迎回来！${formInline.username}`);
         router.replace('/Main');
@@ -56,7 +56,7 @@ const handleSubmit = () => {
         message.error('用户名或密码错误！');
       }
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
       message.error('ERROR!');
     });
@@ -65,10 +65,7 @@ const handleSubmit = () => {
 
 <template>
   <div class="view-account">
-    <div
-      class="view-account-container"
-      style="text-align: center"
-    >
+    <div class="view-account-container" style="text-align: center">
       <n-h1>DML 语句评判系统</n-h1>
       <!-- FORM 表单-->
       <div class="view-account-form">
@@ -79,24 +76,15 @@ const handleSubmit = () => {
           :model="formInline"
           :rules="rules"
         >
-          <n-form-item
-            class="inputtext"
-            path="username"
-          >
-            <n-input
-              v-model:value="formInline.username"
-              placeholder="用户名"
-            >
+          <n-form-item class="inputtext" path="username">
+            <n-input v-model:value="formInline.username" placeholder="用户名">
               <template #prefix>
                 <n-icon :component="PersonOutline" />
               </template>
             </n-input>
           </n-form-item>
 
-          <n-form-item
-            class="inputtext"
-            path="password"
-          >
+          <n-form-item class="inputtext" path="password">
             <n-input
               v-model:value="formInline.password"
               class="input-text"
@@ -112,9 +100,7 @@ const handleSubmit = () => {
           <n-form-item class="default-color">
             <div class="flex justify-between">
               <div class="flex-initial">
-                <n-checkbox v-model:checked="autoLogin">
-                  自动登录
-                </n-checkbox>
+                <n-checkbox v-model:checked="autoLogin"> 自动登录 </n-checkbox>
               </div>
             </div>
           </n-form-item>
@@ -192,7 +178,7 @@ const handleSubmit = () => {
 
 @media (min-width: 768px) {
   .view-account {
-    background-image: url("../assets/images/login.svg");
+    background-image: url('../assets/images/login.svg');
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: 100%;

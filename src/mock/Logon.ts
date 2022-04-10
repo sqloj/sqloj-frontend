@@ -1,10 +1,12 @@
 import Mock from 'mockjs';
 
 const user = Mock.mock({
-  account: [{
-    username: 'admin',
-    passward: '123456',
-  }],
+  account: [
+    {
+      username: 'admin',
+      passward: '123456'
+    }
+  ]
 });
 
 function data() {
@@ -13,7 +15,7 @@ function data() {
     code: 200,
     data: user.account,
     message: '请求成功',
-    success: true,
+    success: true
   };
 }
 

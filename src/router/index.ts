@@ -5,7 +5,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
+    component: HomeView
   },
   {
     path: '/About',
@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import('../views/AboutView.vue'),
+    component: () => import('../views/AboutView.vue')
   },
   {
     path: '/Login',
@@ -21,30 +21,33 @@ const routes: Array<RouteRecordRaw> = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import('../views/LoginView.vue'),
+    component: () => import('../views/LoginView.vue')
   },
   {
     path: '/Main',
     name: 'Main',
-    component: () => import('../views/MainView.vue'),
-  }, {
+    component: () => import('../views/MainView.vue')
+  },
+  {
     path: '/Student',
     name: 'Student',
-    component: () => import('../views/StudentMain.vue'),
-  }, {
+    component: () => import('../views/StudentMain.vue')
+  },
+  {
     path: '/Teacher',
     name: 'Teacher',
-    component: () => import('../views/TeacherMain.vue'),
-  }, {
+    component: () => import('../views/TeacherMain.vue')
+  },
+  {
     path: '/Register',
     name: 'Register',
-    component: () => import('../views/RegisterView.vue'),
-  },
+    component: () => import('../views/RegisterView.vue')
+  }
 ];
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes,
+  routes
 });
 
 export default router;
