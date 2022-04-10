@@ -1,11 +1,16 @@
 <script lang="ts" setup>
-import SideMenu from "./SideMenu.vue";
-import StudentManage from "./StudentManage.vue";
+import SideMenu from './SideMenu.vue';
+import StudentManage from './StudentManage.vue';
 </script>
 
 <template>
-  <n-layout has-sider id="container">
-    <n-layout-sider bordered :show-collapsed-content="false">
+  <n-layout
+    has-sider
+  >
+    <n-layout-sider
+      id="side-bar"
+      bordered
+    >
       <nav>
         <side-menu />
       </nav>
@@ -17,7 +22,7 @@ import StudentManage from "./StudentManage.vue";
 </template>
 
 <style>
-#container {
-  height: 100%;
+#side-bar {
+  height: 100vh;
 }
 </style>

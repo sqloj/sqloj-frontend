@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useMessage } from "naive-ui";
-import axios from "axios";
-import { PersonOutline, LockClosedOutline } from "@vicons/ionicons5";
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useMessage } from 'naive-ui';
+import axios from 'axios';
+import { PersonOutline, LockClosedOutline } from '@vicons/ionicons5';
 
 interface FormState {
   username: string;
@@ -17,56 +17,58 @@ const router = useRouter();
 const message = useMessage();
 
 const formInline: FormState = reactive({
-  username: "admin",
-  password: "123456",
+  username: 'admin',
+  password: '123456',
   isCaptcha: true,
 });
 
 const rules = {
-  username: { required: true, message: "请输入用户名", trigger: "blur" },
-  password: { required: true, message: "请输入密码", trigger: "blur" },
+  username: { required: true, message: '请输入用户名', trigger: 'blur' },
+  password: { required: true, message: '请输入密码', trigger: 'blur' },
 };
 
-function logon() {
-  router.push("/Register");
-}
+const logon = () => {
+  router.push('/Register');
+};
 
 const handleSubmit = () => {
   // alert("登入成功！")
   // router.replace('/Main')
   loadingRef.value = true;
   axios
-    .post("/api/login", {
+    .post('/api/login', {
       ...formInline,
     })
-    .then(res => {
+    .then((res) => {
       loadingRef.value = false;
       return res.data;
     })
-    .then(data => {
+    .then((data) => {
       // let msg = data.message;
       if (data.success) {
-        localStorage["account"] = JSON.stringify({
+        localStorage.account = JSON.stringify({
           username: formInline.username,
           password: formInline.password,
         });
-        message.success("欢迎回来！" + formInline.username);
-        router.replace("/Main");
+        message.success(`欢迎回来！${formInline.username}`);
+        router.replace('/Main');
       } else {
-        message.error("用户名或密码错误！");
+        message.error('用户名或密码错误！');
       }
     })
-    .catch(function (error) {
-      console.log(error);
-      message.error("ERROR!");
+    .catch((error) => {
+      console.error(error);
+      message.error('ERROR!');
     });
 };
 </script>
 
-
 <template>
   <div class="view-account">
-    <div class="view-account-container" style="text-align: center">
+    <div
+      class="view-account-container"
+      style="text-align: center"
+    >
       <n-h1>DML 语句评判系统</n-h1>
       <!-- FORM 表单-->
       <div class="view-account-form">
@@ -77,18 +79,27 @@ const handleSubmit = () => {
           :model="formInline"
           :rules="rules"
         >
-          <n-form-item class="inputtext" path="username">
-            <n-input v-model:value="formInline.username" placeholder="用户名">
+          <n-form-item
+            class="inputtext"
+            path="username"
+          >
+            <n-input
+              v-model:value="formInline.username"
+              placeholder="用户名"
+            >
               <template #prefix>
                 <n-icon :component="PersonOutline" />
               </template>
             </n-input>
           </n-form-item>
 
-          <n-form-item class="inputtext" path="password">
+          <n-form-item
+            class="inputtext"
+            path="password"
+          >
             <n-input
-              class="input-text"
               v-model:value="formInline.password"
+              class="input-text"
               type="password"
               show-password-on="mousedown"
               placeholder="密码"
@@ -101,26 +112,32 @@ const handleSubmit = () => {
           <n-form-item class="default-color">
             <div class="flex justify-between">
               <div class="flex-initial">
-                <n-checkbox v-model:checked="autoLogin">自动登录</n-checkbox>
+                <n-checkbox v-model:checked="autoLogin">
+                  自动登录
+                </n-checkbox>
               </div>
             </div>
           </n-form-item>
           <n-form-item>
             <n-button
               type="primary"
-              @click="handleSubmit"
               size="large"
               :loading="loadingRef"
               block
+              @click="handleSubmit"
             >
               登录
             </n-button>
           </n-form-item>
           <div class="flex-initial">
             新用户？
-            <n-a href="javascript:" @click="logon" style="text-decoration: none"
-              >注册！</n-a
+            <n-a
+              href="javascript:"
+              style="text-decoration: none"
+              @click="logon"
             >
+              注册！
+            </n-a>
           </div>
         </n-form>
       </div>
@@ -128,7 +145,6 @@ const handleSubmit = () => {
   </div>
   <router-view />
 </template>
-
 
 <style lang="less" scoped>
 .inputtext {
@@ -139,14 +155,14 @@ const handleSubmit = () => {
 }
 
 .view-account {
-  height: 100vh;
-  overflow: auto;
-  padding: 20px;
-  padding-top: 80px;
+  // height: 100vh;
+  height: 100%;
 
   &-container {
     flex: 1;
-    // padding: 32px 0;
+    overflow: auto;
+    padding: 20px;
+    padding-top: 80px;
     margin: 0 auto;
     max-width: 400px;
   }
