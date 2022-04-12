@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
+import List from '../components/List.vue'
 
 const columns = [
-  {
-    type: 'selection'
-  },
+  // {
+  //   type: 'selection'
+  // },
   {
     title: '学号',
     key: 'id'
@@ -24,6 +25,7 @@ const columns = [
   }
 ];
 
+
 const dataRef = ref([]);
 const loadingRef = ref(true);
 
@@ -33,7 +35,6 @@ onMounted(() => {
     .post('/api/studentlist')
     .then(res => res.data)
     .then(data => {
-      console.log(data);
       dataRef.value = data.user;
       loadingRef.value = false;
     });
@@ -42,6 +43,8 @@ onMounted(() => {
 const pagination = {
   pageSize: 10
 };
+
+const api:string = "'/api/studentlist'"
 </script>
 
 <template>
@@ -58,6 +61,10 @@ const pagination = {
       />
     </n-space>
   </n-layout>
+
+
+  <br>
+  <List :api="api"/>
 </template>
 
 <style scoped>
