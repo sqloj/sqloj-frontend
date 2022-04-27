@@ -14,7 +14,7 @@ function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-const accout = JSON.parse(localStorage.account);
+const accout = JSON.parse(sessionStorage.account);
 
 const menuOptions: MenuOption[] = [
   {

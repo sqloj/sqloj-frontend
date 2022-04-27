@@ -26,38 +26,13 @@ const rules = {
   password: { required: true, message: '请输入密码' }
 };
 
-const setCookie = (userid: string, password: string, exday: number) => {
-  var exdate = new Date(); //获取时间
-  exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exday); //保存的天数
-  //字符串拼接cookie
-  window.document.cookie =
-    'userID' + '=' + userid + ';path=/;expires=' + exdate.toUTCString();
-  window.document.cookie =
-    'userPwd' + '=' + password + ';path=/;expires=' + exdate.toUTCString();
-};
-//读取cookie
-const getCookie = () => {
-  if (document.cookie.length > 0) {
-    // console.log("获取cookie document.cookie", document.cookie);
-    var arr = document.cookie.split('; ');
-    for (var i = 0; i < arr.length; i++) {
-      var arr2 = arr[i].split('='); //再次切割
-      // console.log("arr2", arr2);
-      //判断查找相对应的值
-      if (arr2[0] === 'userID') {
-        formInline.userid = arr2[1];
-      } else if (arr2[0] === 'userPwd') {
-        formInline.password = arr2[1];
-      }
-    }
-  }
-};
-const clearCookie = () => {
-  setCookie('', '', 7);
-};
-
 onMounted(() => {
-  getCookie();
+  if (localStorage.hasOwnProperty('user')) {
+    formInline.userid = JSON.parse(localStorage.getItem('user') || '').userid;
+    formInline.password = JSON.parse(
+      localStorage.getItem('user') || ''
+    ).password;
+  }
 });
 
 const logon = () => {
@@ -66,12 +41,15 @@ const logon = () => {
 
 const handleSubmit = () => {
   if (autoLogin.value) {
-    setCookie(formInline.userid, formInline.password, 7);
+    localStorage.user = JSON.stringify({
+      userid: formInline.userid,
+      password: formInline.password
+    });
   } else {
-    clearCookie();
+    localStorage.removeItem('user');
   }
 
-  if (formInline.userid == '') {
+  if (formInline.userid === '') {
     return message.error('请填写您的 ID');
   }
 
@@ -90,11 +68,13 @@ const handleSubmit = () => {
     })
     .then(data => {
       if (data.success) {
-        localStorage.account = JSON.stringify({
+        sessionStorage.account = JSON.stringify({
           userid: formInline.userid,
-          password: formInline.password
+          password: formInline.password,
+          username: data.username,
+          admin: data.admin
         });
-        message.success(`欢迎回来！${formInline.userid}`);
+        message.success(`欢迎回来！${data.username}`);
         router.replace('/Main');
       } else {
         message.error('用户名或密码错误！');

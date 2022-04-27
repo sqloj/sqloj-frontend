@@ -17,12 +17,16 @@ mock(/\/api\/user\/login/, 'post', (option: any) => {
   if (userid === 'admin' && password === '123456') {
     return {
       message: '请求成功',
-      success: true
+      success: true,
+      username: '老师',
+      admin: 1
     };
   } else if (userid === 'stu' && password === '123456') {
     return {
       message: '请求成功',
-      success: true
+      success: true,
+      username: '学生',
+      admin: 0
     };
   }
   return {
