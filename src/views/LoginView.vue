@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import axios from 'axios';
 import { PersonOutline, LockClosedOutline } from '@vicons/ionicons5';
 
 interface FormState {
-  username: string;
+  userid: string;
   password: string;
 }
 
@@ -17,26 +17,71 @@ const router = useRouter();
 const message = useMessage();
 
 const formInline: FormState = reactive({
-  username: 'admin',
-  password: '123456',
-  isCaptcha: true
+  userid: '',
+  password: ''
 });
 
 const rules = {
-  username: { required: true, message: '请输入用户名', trigger: 'blur' },
-  password: { required: true, message: '请输入密码', trigger: 'blur' }
+  userid: { required: true, message: '请输入学工号' },
+  password: { required: true, message: '请输入密码' }
 };
+
+const setCookie = (userid: string, password: string, exday: number) => {
+  var exdate = new Date(); //获取时间
+  exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exday); //保存的天数
+  //字符串拼接cookie
+  window.document.cookie =
+    'userID' + '=' + userid + ';path=/;expires=' + exdate.toUTCString();
+  window.document.cookie =
+    'userPwd' + '=' + password + ';path=/;expires=' + exdate.toUTCString();
+};
+//读取cookie
+const getCookie = () => {
+  if (document.cookie.length > 0) {
+    // console.log("获取cookie document.cookie", document.cookie);
+    var arr = document.cookie.split('; ');
+    for (var i = 0; i < arr.length; i++) {
+      var arr2 = arr[i].split('='); //再次切割
+      // console.log("arr2", arr2);
+      //判断查找相对应的值
+      if (arr2[0] === 'userID') {
+        formInline.userid = arr2[1];
+      } else if (arr2[0] === 'userPwd') {
+        formInline.password = arr2[1];
+      }
+    }
+  }
+};
+const clearCookie = () => {
+  setCookie('', '', 7);
+};
+
+onMounted(() => {
+  getCookie();
+});
 
 const logon = () => {
   router.push('/Register');
 };
 
 const handleSubmit = () => {
-  // alert("登入成功！")
-  // router.replace('/Main')
+  if (autoLogin.value) {
+    setCookie(formInline.userid, formInline.password, 7);
+  } else {
+    clearCookie();
+  }
+
+  if (formInline.userid == '') {
+    return message.error('请填写您的 ID');
+  }
+
+  if (formInline.password === '') {
+    return message.error('请填写密码！');
+  }
+
   loadingRef.value = true;
   axios
-    .post('/api/login', {
+    .post('/api/user/login', {
       ...formInline
     })
     .then(res => {
@@ -44,13 +89,12 @@ const handleSubmit = () => {
       return res.data;
     })
     .then(data => {
-      // let msg = data.message;
       if (data.success) {
         localStorage.account = JSON.stringify({
-          username: formInline.username,
+          userid: formInline.userid,
           password: formInline.password
         });
-        message.success(`欢迎回来！${formInline.username}`);
+        message.success(`欢迎回来！${formInline.userid}`);
         router.replace('/Main');
       } else {
         message.error('用户名或密码错误！');
@@ -76,8 +120,8 @@ const handleSubmit = () => {
           :model="formInline"
           :rules="rules"
         >
-          <n-form-item class="inputtext" path="username">
-            <n-input v-model:value="formInline.username" placeholder="用户名">
+          <n-form-item class="inputtext" path="userid">
+            <n-input v-model:value="formInline.userid" placeholder="ID">
               <template #prefix>
                 <n-icon :component="PersonOutline" />
               </template>
@@ -91,6 +135,7 @@ const handleSubmit = () => {
               type="password"
               show-password-on="mousedown"
               placeholder="密码"
+              @keyup.enter="handleSubmit"
             >
               <template #prefix>
                 <n-icon :component="LockClosedOutline" />
