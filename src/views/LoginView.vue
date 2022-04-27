@@ -1,14 +1,9 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import axios from 'axios';
 import { PersonOutline, LockClosedOutline } from '@vicons/ionicons5';
-
-interface FormState {
-  userid: string;
-  password: string;
-}
 
 const formRef = ref();
 const loadingRef = ref(false);
@@ -16,7 +11,7 @@ const autoLogin = ref(true);
 const router = useRouter();
 const message = useMessage();
 
-const formInline: FormState = reactive({
+const formInline = ref({
   userid: '',
   password: ''
 });
@@ -28,9 +23,8 @@ const rules = {
 
 onMounted(() => {
   if (localStorage.hasOwnProperty('user')) {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    formInline.userid = user.userid;
-    formInline.password = user.password;
+    const userJson = localStorage.getItem('user') || '{}';
+    formInline.value = JSON.parse(userJson);
   }
 });
 
@@ -40,27 +34,22 @@ const logon = () => {
 
 const handleSubmit = () => {
   if (autoLogin.value) {
-    localStorage.user = JSON.stringify({
-      userid: formInline.userid,
-      password: formInline.password
-    });
+    localStorage.user = JSON.stringify(formInline.value);
   } else {
     localStorage.removeItem('user');
   }
 
-  if (formInline.userid === '') {
+  if (formInline.value.userid === '') {
     return message.error('请填写您的 ID!');
   }
 
-  if (formInline.password === '') {
+  if (formInline.value.password === '') {
     return message.error('请填写密码！');
   }
 
   loadingRef.value = true;
   axios
-    .post('/api/user/login', {
-      ...formInline
-    })
+    .post('/api/user/login', formInline.value)
     .then(res => {
       loadingRef.value = false;
       return res.data;
@@ -68,8 +57,7 @@ const handleSubmit = () => {
     .then(data => {
       if (data.success) {
         sessionStorage.account = JSON.stringify({
-          userid: formInline.userid,
-          password: formInline.password,
+          user: formInline.value,
           username: data.username,
           admin: data.admin
         });
