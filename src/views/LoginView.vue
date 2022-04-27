@@ -28,10 +28,9 @@ const rules = {
 
 onMounted(() => {
   if (localStorage.hasOwnProperty('user')) {
-    formInline.userid = JSON.parse(localStorage.getItem('user') || '').userid;
-    formInline.password = JSON.parse(
-      localStorage.getItem('user') || ''
-    ).password;
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    formInline.userid = user.userid;
+    formInline.password = user.password;
   }
 });
 
@@ -50,7 +49,7 @@ const handleSubmit = () => {
   }
 
   if (formInline.userid === '') {
-    return message.error('请填写您的 ID');
+    return message.error('请填写您的 ID!');
   }
 
   if (formInline.password === '') {
