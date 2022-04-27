@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
-import List from '../components/List.vue'
+import List from '../components/List.vue';
 
 const columns = [
   // {
@@ -25,7 +25,6 @@ const columns = [
   }
 ];
 
-
 const dataRef = ref([]);
 const loadingRef = ref(true);
 
@@ -44,7 +43,7 @@ const pagination = {
   pageSize: 10
 };
 
-const api:string = "'/api/studentlist'"
+const api: string = "'/api/studentlist'";
 </script>
 
 <template>
@@ -62,9 +61,8 @@ const api:string = "'/api/studentlist'"
     </n-space>
   </n-layout>
 
-
-  <br>
-  <List :api="api"/>
+  <br />
+  <List :api="api" />
 </template>
 
 <style scoped>

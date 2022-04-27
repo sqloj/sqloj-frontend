@@ -3,21 +3,21 @@ import { ref, onBeforeMount } from 'vue';
 import axios from 'axios';
 
 const props = defineProps<{
-  api:string,
-  pagination?:number;
-}>()
+  api: string;
+  pagination?: number;
+}>();
 
-class Listform{
+class Listform {
   title: string;
-    key: string;
-    constructor(t:string, k:string) {
-      this.title = t;
-      this.key =k;
-    }
+  key: string;
+  constructor(t: string, k: string) {
+    this.title = t;
+    this.key = k;
+  }
 }
 
 const dataRef = ref([]);
-let dataArr:Array<Listform> = [];
+let dataArr: Array<Listform> = [];
 const isready = ref(false);
 
 onBeforeMount(() => {
@@ -32,10 +32,10 @@ onBeforeMount(() => {
       console.log(...data.user);
       var usermsg = data.user;
       dataRef.value = data.user;
-      for(var i = 0; i < usermsg.length && i < 1; i ++) {
-        for(let j in usermsg[i]) {
+      for (var i = 0; i < usermsg.length && i < 1; i++) {
+        for (let j in usermsg[i]) {
           let value = new Listform(j, j);
-          console.log (value);
+          console.log(value);
           dataArr.push(value);
         }
       }
@@ -43,14 +43,15 @@ onBeforeMount(() => {
       isready.value = true;
     });
 });
-
 </script>
 
 <template>
-  <div v-if="isready" style="text-align: center; padding-left: 5%; padding-right: 5%;">
-  <n-h1>Child Page</n-h1>
+  <div
+    v-if="isready"
+    style="text-align: center; padding-left: 5%; padding-right: 5%"
+  >
+    <n-h1>Child Page</n-h1>
     <n-layout id="manage-container">
-        
       <n-space vertical :size="12">
         <n-data-table
           :bordered="false"
