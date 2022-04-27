@@ -24,23 +24,17 @@ onBeforeMount(() => {
   console.log(dataArr);
   axios
     .post(props.api)
-    .then(res => {
-      console.log(res.data.user);
-      return res.data;
-    })
+    .then(res => res.data)
     .then(data => {
-      console.log(...data.user);
       var usermsg = data.user;
       dataRef.value = data.user;
-      for (var i = 0; i < usermsg.length && i < 1; i++) {
-        for (let j in usermsg[i]) {
-          let value = new Listform(j, j);
-          console.log(value);
+      if (usermsg.length > 0) {
+        for (let i in usermsg[0]) {
+          let value = new Listform(i, i);
           dataArr.push(value);
         }
+        isready.value = true;
       }
-      console.log(dataArr);
-      isready.value = true;
     });
 });
 </script>
