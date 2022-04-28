@@ -1,78 +1,94 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { PersonOutline, LockClosedOutline } from '@vicons/ionicons5';
+import {
+  PersonOutline,
+  LockClosedOutline,
+  AccessibilityOutline,
+  PeopleOutline
+} from '@vicons/ionicons5';
 import axios from 'axios';
 import { useMessage } from 'naive-ui';
-
-const chooses = [
-  {
-    key: '学生',
-    value: 'student'
-  },
-  {
-    key: '老师',
-    value: 'teacher'
-  }
-];
-
-interface FormState {
-  username: string;
-  password1: string;
-  password2: string;
-  ID: string;
-}
 
 const formRef = ref();
 const loading = ref(false);
 const router = useRouter();
-const isStudent = reactive({
-  value: ''
-});
+const message = useMessage();
 
-const formInline: FormState = reactive({
+const formInline = ref({
+  userid: '',
   username: '',
+  class: '',
   password1: '',
   password2: '',
-  ID: ''
+  password: ''
 });
 
 const rules = {
+  userid: { required: true, message: '请输入学号' },
   username: { required: true, message: '请输入用户名' },
+  class: { required: true, message: '请输入班级' },
   password1: { required: true, message: '请输入密码' },
-  password2: { required: true, message: '请再次输入密码' },
-  ID: { required: true, message: '请输入ID' }
+  password2: { required: true, message: '请再次输入密码' }
 };
 
-const message = useMessage();
-
 const handleSubmit = () => {
-  console.error(isStudent);
-  if (formInline.password1 !== formInline.password2) {
-    message.error('两次密码不一致，请重新输入！');
-    formInline.password1 = '';
-    formInline.password2 = '';
-  } else {
-    axios
-      .post('/api/logon', {
-        ...formInline
-      })
-      .then(res => res.data)
-      .then(data => {
-        if (data.success) {
-          localStorage.account = JSON.stringify({
-            username: formInline.username,
-            password: formInline.password1
-          });
-          message.success('注册成功！');
-          router.replace('/Main');
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        message.error('错误！');
-      });
+  if (formInline.value.userid === '') {
+    return message.error('请填写您的学号!');
+  } else if (formInline.value.userid.length > 20) {
+    return message.error('学号过长，请重新输入！');
   }
+
+  if (formInline.value.username === '') {
+    return message.error('请填写您的姓名!');
+  } else if (formInline.value.username.length > 30) {
+    return message.error('姓名过长，请重新输入！');
+  }
+
+  if (formInline.value.class === '') {
+    return message.error('请填写您的班级!');
+  } else if (formInline.value.class.length > 30) {
+    return message.error('班级名过长，请重新输入！');
+  }
+
+  if (formInline.value.password1 === '') {
+    return message.error('密码不能为空!');
+  } else if (formInline.value.password1.length < 6) {
+    return message.error('密码过短，长度小于 6 字符！');
+  } else if (formInline.value.password1.length > 50) {
+    return message.error('密码过长！');
+  }
+
+  if (formInline.value.password1 !== formInline.value.password2) {
+    message.error('两次密码不一致，请重新输入！');
+    formInline.value.password1 = '';
+    formInline.value.password2 = '';
+    return;
+  } else {
+    formInline.value.password = formInline.value.password1;
+  }
+
+  axios
+    .post('/api/student/insert', formInline.value)
+    .then(res => res.data)
+    .then(data => {
+      console.log(data);
+      if (data.success) {
+        const userJson = {
+          userid: formInline.value.userid,
+          password: formInline.value.password
+        };
+        localStorage.user = JSON.stringify(userJson);
+        message.success('注册成功！');
+        router.replace('/Login');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('错误！');
+    });
 };
 </script>
 
@@ -88,6 +104,17 @@ const handleSubmit = () => {
           :model="formInline"
           :rules="rules"
         >
+          <!-- input ID -->
+          <n-form-item label="学号" class="inputtext" path="userid">
+            <n-input v-model:value="formInline.userid" placeholder="请输入学号">
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <AccessibilityOutline />
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
+
           <!-- input name -->
           <n-form-item label="姓名" class="inputtext" path="username">
             <n-input
@@ -102,13 +129,25 @@ const handleSubmit = () => {
             </n-input>
           </n-form-item>
 
+          <!-- input class -->
+          <n-form-item label="班级" class="inputtext" path="class">
+            <n-input v-model:value="formInline.class" placeholder="请输入班级">
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <PeopleOutline />
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
+
           <!-- input password-->
           <n-form-item label="密码" class="inputtext" path="password1">
             <n-input
               v-model:value="formInline.password1"
               type="password"
-              show-password-on="click"
+              show-password-on="mousedown"
               placeholder="请输入密码"
+              @keyup.enter="handleSubmit"
             >
               <template #prefix>
                 <n-icon size="18" color="#808695">
@@ -122,8 +161,9 @@ const handleSubmit = () => {
             <n-input
               v-model:value="formInline.password2"
               type="password"
-              show-password-on="click"
+              show-password-on="mousedown"
               placeholder="请再次输入密码"
+              @keyup.enter="handleSubmit"
             >
               <template #prefix>
                 <n-icon size="18" color="#808695">
@@ -132,32 +172,7 @@ const handleSubmit = () => {
               </template>
             </n-input>
           </n-form-item>
-          <!--ID-->
-          <div v-if="isStudent.value === 'student'">
-            <n-form-item label="学号" class="inputtext" path="ID">
-              <n-input v-model:value="formInline.ID" placeholder="请输入ID" />
-            </n-form-item>
-          </div>
-          <div v-if="isStudent.value === 'teacher'">
-            <n-form-item label="工号" class="inputtext" path="ID">
-              <n-input v-model:value="formInline.ID" placeholder="请输入ID" />
-            </n-form-item>
-          </div>
 
-          <!-- choose student or teacher -->
-          <n-radio-group v-model:value="isStudent.value" name="radiogroup">
-            <n-space>
-              <n-radio
-                v-for="choose in chooses"
-                :key="choose.key"
-                :value="choose.value"
-              >
-                {{ choose.key }}
-              </n-radio>
-            </n-space>
-          </n-radio-group>
-          <br />
-          <br />
           <!--button-->
           <n-form-item>
             <n-button
@@ -181,6 +196,7 @@ const handleSubmit = () => {
 .inputtext {
   text-align: left;
 }
+
 .view-account {
   height: 100%;
 

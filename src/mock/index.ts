@@ -35,18 +35,22 @@ mock(/\/api\/user\/login/, 'post', (option: any) => {
   };
 });
 
-mock(/\/api\/logon/, 'post', () => ({
-  success: true,
-  message: '注册成功！'
-}));
-
-mock(/\/api\/studentlist/, 'post', {
-  'user|5-20': [
-    {
-      'id|201800000000-202000000000': 100,
-      name: '@cname',
-      classes: '寄科221',
-      'acnum|1-10': 10
-    }
-  ]
+mock(/\/api\/student\/insert/, 'post', (option: any) => {
+  const { userid, password } = JSON.parse(option.body);
+  console.log(userid, password);
+  if (userid === 'admin' && password === '123456') {
+    return {
+      message: '请求成功',
+      success: true
+    };
+  } else if (userid === 'stu' && password === '123456') {
+    return {
+      message: '请求成功',
+      success: true
+    };
+  }
+  return {
+    message: '请求失败',
+    success: false
+  };
 });
