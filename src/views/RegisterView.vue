@@ -36,18 +36,21 @@ const handleSubmit = () => {
   if (formInline.value.userid === '') {
     return message.error('请填写您的学号!');
   } else if (formInline.value.userid.length > 20) {
+    formInline.value.userid = '';
     return message.error('学号过长，请重新输入！');
   }
 
   if (formInline.value.username === '') {
     return message.error('请填写您的姓名!');
   } else if (formInline.value.username.length > 30) {
+    formInline.value.username = '';
     return message.error('姓名过长，请重新输入！');
   }
 
   if (formInline.value.class === '') {
     return message.error('请填写您的班级!');
   } else if (formInline.value.class.length > 30) {
+    formInline.value.class = '';
     return message.error('班级名过长，请重新输入！');
   }
 
@@ -56,6 +59,8 @@ const handleSubmit = () => {
   } else if (formInline.value.password1.length < 6) {
     return message.error('密码过短，长度小于 6 字符！');
   } else if (formInline.value.password1.length > 50) {
+    formInline.value.password1 = '';
+    formInline.value.password2 = '';
     return message.error('密码过长！');
   }
 
@@ -72,7 +77,6 @@ const handleSubmit = () => {
     .post('/api/student/insert', formInline.value)
     .then(res => res.data)
     .then(data => {
-      console.log(data);
       if (data.success) {
         const userJson = {
           userid: formInline.value.userid,
