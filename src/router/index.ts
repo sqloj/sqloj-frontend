@@ -31,8 +31,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/QuestionManage.vue')
       },
       {
-        path: 'Student',
-        name: 'Student',
+        path: 'StudentManage',
+        name: 'StudentManage',
         component: () => import('../views/StudentManage.vue')
       }
     ]
@@ -53,10 +53,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/404.vue')
   },
   {
-    path: '/:pathMatch(.*)*', 
+    path: '/:pathMatch(.*)*',
     redirect: '/404'
   }
-  
 ];
 
 const router = createRouter({

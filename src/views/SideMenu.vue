@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, Component} from 'vue';
+import { h, Component } from 'vue';
 import { NIcon, useMessage } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
@@ -64,7 +64,7 @@ const message = useMessage();
 
 const handleUpdateValue = (key: string, item: MenuOption) => {
   message.info(`${item.label}`);
-  emit("getRounte", key);
+  emit('getRounte', key);
 };
 </script>
 

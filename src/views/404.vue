@@ -15,7 +15,9 @@ const goHome = () => {
     </div>
     <div class="text-center">
       <h1 class="text-base text-gray-500">抱歉，你访问的页面不存在</h1>
-      <n-button type="info" @click="goHome" style="background-color: #18a058"> 回到首页 </n-button>
+      <n-button type="info" style="background-color: #18a058" @click="goHome">
+        回到首页
+      </n-button>
     </div>
   </div>
 </template>
