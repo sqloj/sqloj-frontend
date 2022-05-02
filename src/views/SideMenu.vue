@@ -16,7 +16,7 @@ function renderIcon(icon: Component) {
 
 const accout = JSON.parse(sessionStorage.account);
 
-const emit = defineEmits(['getRounte']);
+const emit = defineEmits(['getRoute']);
 
 const menuOptions: MenuOption[] = [
   {
@@ -64,7 +64,7 @@ const message = useMessage();
 
 const handleUpdateValue = (key: string, item: MenuOption) => {
   message.info(`${item.label}`);
-  emit('getRounte', key);
+  emit('getRoute', key);
 };
 </script>
 

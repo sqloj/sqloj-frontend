@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const getRounte = (e: string) => {
+const getRoute = (e: string) => {
   const subRounte = '/Main/' + e;
   router.push(subRounte);
 };
@@ -14,7 +14,7 @@ const getRounte = (e: string) => {
   <n-layout has-sider>
     <n-layout-sider id="side-bar" bordered>
       <nav>
-        <side-menu @getRounte="getRounte" />
+        <side-menu @get-route="getRoute" />
       </nav>
     </n-layout-sider>
     <n-layout>
