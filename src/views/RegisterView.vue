@@ -18,7 +18,7 @@ const message = useMessage();
 const formInline = ref({
   userid: '',
   username: '',
-  class: '',
+  classes: '',
   password1: '',
   password2: '',
   password: ''
@@ -27,7 +27,7 @@ const formInline = ref({
 const rules = {
   userid: { required: true, message: '请输入学号' },
   username: { required: true, message: '请输入用户名' },
-  class: { required: true, message: '请输入班级' },
+  classes: { required: true, message: '请输入班级' },
   password1: { required: true, message: '请输入密码' },
   password2: { required: true, message: '请再次输入密码' }
 };
@@ -47,10 +47,10 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if (formInline.value.class === '') {
+  if (formInline.value.classes === '') {
     return message.error('请填写您的班级!');
-  } else if (formInline.value.class.length > 30) {
-    formInline.value.class = '';
+  } else if (formInline.value.classes.length > 30) {
+    formInline.value.classes = '';
     return message.error('班级名过长，请重新输入！');
   }
 
@@ -135,7 +135,10 @@ const handleSubmit = () => {
 
           <!-- input class -->
           <n-form-item label="班级" class="inputtext" path="class">
-            <n-input v-model:value="formInline.class" placeholder="请输入班级">
+            <n-input
+              v-model:value="formInline.classes"
+              placeholder="请输入班级"
+            >
               <template #prefix>
                 <n-icon size="18" color="#808695">
                   <PeopleOutline />

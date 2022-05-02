@@ -7,28 +7,27 @@ const { mock } = Mock;
 
 const user = [
   {
-    userid : 'admin',
-    username : '老师',
-    password : '123456',
-    calss : '',
-    admin : 1
+    userid: 'admin',
+    username: '老师',
+    password: '123456',
+    classes: '',
+    admin: 1
   },
   {
-    userid : 'stu',
-    username : '学生',
-    password : '123456',
-    class : '',
-    admin : 0
-  }, 
+    userid: 'stu',
+    username: '学生',
+    password: '123456',
+    classes: '',
+    admin: 0
+  },
   {
-    userid : 'tec',
-    username : 't老师',
-    password : '123456',
-    calss : '',
-    admin : 1
+    userid: 'tourist',
+    username: 't老师',
+    password: '123456',
+    classes: 'codeforce',
+    admin: 1
   }
-]
-
+];
 
 // 设置延时
 Mock.setup({
@@ -39,13 +38,13 @@ Mock.setup({
 
 mock(/\/api\/user\/login/, 'post', (option: any) => {
   const { userid, password } = JSON.parse(option.body);
-  for(let i = 0; i < user.length; i ++) {
-    if(user[i].userid === userid && user[i].password === password) {
+  for (let i = 0; i < user.length; i++) {
+    if (user[i].userid === userid && user[i].password === password) {
       return {
         ...user[i],
         message: '请求成功',
         success: true
-      }
+      };
     }
   }
   return {
@@ -56,13 +55,12 @@ mock(/\/api\/user\/login/, 'post', (option: any) => {
 
 mock(/\/api\/student\/insert/, 'post', (option: any) => {
   const { userid, password } = JSON.parse(option.body);
-  for(let i = 0; i < user.length; i ++) {
-    if(user[i].userid === userid) {
+  for (let i = 0; i < user.length; i++) {
+    if (user[i].userid === userid) {
       return {
-        ...user[i],
         message: '用户ID已存在',
         success: false
-      }
+      };
     }
   }
   return {
@@ -72,7 +70,7 @@ mock(/\/api\/student\/insert/, 'post', (option: any) => {
 });
 
 mock(/\api\/studentlist/, 'post', {
-  'user|5-20': [ 
+  'user|5-20': [
     {
       'id|201800000000-202000000000': 100,
       name: '@cname',
@@ -80,4 +78,4 @@ mock(/\api\/studentlist/, 'post', {
       'acnum|1-10': 10
     }
   ]
-})
+});
