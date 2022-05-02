@@ -51,7 +51,7 @@ onBeforeMount(() => {
           :bordered="false"
           :columns="dataArr"
           :data="dataRef"
-          :pagination="10"
+          :pagination="{ pagesize: 10 }"
           :row-key="(row: any) => row.id"
           :loading="false"
         />

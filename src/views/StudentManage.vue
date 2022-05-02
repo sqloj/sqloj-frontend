@@ -43,7 +43,7 @@ const pagination = {
   pageSize: 10
 };
 
-const api: string = "'/api/studentlist'";
+const api: string = '/api/studentlist';
 </script>
 
 <template>

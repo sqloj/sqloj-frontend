@@ -5,7 +5,7 @@ import Mock from 'mockjs';
 // Mock函数
 const { mock } = Mock;
 
-const user = [
+let user = [
   {
     userid: 'admin',
     username: '老师',
@@ -36,12 +36,12 @@ Mock.setup({
 
 // 使用拦截规则拦截命中的请求，mock(url, post/get, 返回的数据);
 
-mock(/\/api\/user\/login/, 'post', (option: any) => {
+mock(`/api/user/login`, 'post', (option: any) => {
   const { userid, password } = JSON.parse(option.body);
-  for (let i = 0; i < user.length; i++) {
-    if (user[i].userid === userid && user[i].password === password) {
+  for (let u of user) {
+    if (u.userid === userid && u.password === password) {
       return {
-        ...user[i],
+        ...u,
         message: '请求成功',
         success: true
       };
@@ -53,23 +53,24 @@ mock(/\/api\/user\/login/, 'post', (option: any) => {
   };
 });
 
-mock(/\/api\/student\/insert/, 'post', (option: any) => {
-  const { userid, password } = JSON.parse(option.body);
-  for (let i = 0; i < user.length; i++) {
-    if (user[i].userid === userid) {
+mock(`/api/student/insert`, 'post', (option: any) => {
+  const userInfo = JSON.parse(option.body);
+  for (let u of user) {
+    if (u.userid === userInfo.userid) {
       return {
         message: '用户ID已存在',
         success: false
       };
     }
   }
+  user.push(userInfo);
   return {
     message: '注册成功',
     success: true
   };
 });
 
-mock(/\api\/studentlist/, 'post', {
+mock(`/api/studentlist`, 'post', {
   'user|5-20': [
     {
       'id|201800000000-202000000000': 100,
