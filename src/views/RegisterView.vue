@@ -134,7 +134,7 @@ const handleSubmit = () => {
           </n-form-item>
 
           <!-- input class -->
-          <n-form-item label="班级" class="inputtext" path="class">
+          <n-form-item label="班级" class="inputtext" path="classes">
             <n-input
               v-model:value="formInline.classes"
               placeholder="请输入班级"
