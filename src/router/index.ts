@@ -1,32 +1,41 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/About',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/AboutView.vue')
+    redirect: '/Login'
   },
   {
     path: '/Login',
     name: 'Login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import('../views/LoginView.vue')
+  },
+  {
+    path: '/Register',
+    name: 'Register',
+    component: () => import('../views/RegisterView.vue')
   },
   {
     path: '/Main',
     name: 'Main',
-    component: () => import('../views/MainView.vue')
+    component: () => import('../views/MainView.vue'),
+    children: [
+      {
+        path: '',
+        name: 'StudentManage',
+        component: () => import('../views/StudentManage.vue')
+      },
+      {
+        path: 'QuestionManage',
+        name: 'QuestionManage',
+        component: () => import('../views/QuestionManage.vue')
+      },
+      {
+        path: 'StudentManage',
+        name: 'StudentManage',
+        component: () => import('../views/StudentManage.vue')
+      }
+    ]
   },
   {
     path: '/Student',
@@ -39,9 +48,13 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/TeacherMain.vue')
   },
   {
-    path: '/Register',
-    name: 'Register',
-    component: () => import('../views/RegisterView.vue')
+    path: '/404',
+    name: 'NotFound',
+    component: () => import('../views/404.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404'
   }
 ];
 

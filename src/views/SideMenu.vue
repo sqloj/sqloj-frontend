@@ -16,6 +16,8 @@ function renderIcon(icon: Component) {
 
 const accout = JSON.parse(sessionStorage.account);
 
+const emit = defineEmits(['getRoute']);
+
 const menuOptions: MenuOption[] = [
   {
     type: 'group',
@@ -36,12 +38,12 @@ const menuOptions: MenuOption[] = [
     children: [
       {
         label: '学生管理',
-        key: 'student-manage',
+        key: 'StudentManage',
         icon: renderIcon(PersonIcon)
       },
       {
         label: '题目管理',
-        key: 'add-question',
+        key: 'QuestionManage',
         icon: renderIcon(AddIcon)
       },
       {
@@ -61,8 +63,8 @@ const menuOptions: MenuOption[] = [
 const message = useMessage();
 
 const handleUpdateValue = (key: string, item: MenuOption) => {
-  message.info(`[onUpdate:value]: ${JSON.stringify(key)}`);
-  message.info(`[onUpdate:value]: ${JSON.stringify(item)}`);
+  message.info(`${item.label}`);
+  emit('getRoute', key);
 };
 </script>
 
