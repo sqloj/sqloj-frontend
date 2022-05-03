@@ -68,5 +68,6 @@ const api: string = '/api/studentlist';
 <style scoped>
 #manage-container {
   padding: 20px;
+  text-align: center;
 }
 </style>

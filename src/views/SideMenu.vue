@@ -25,8 +25,8 @@ const menuOptions: MenuOption[] = [
     key: 'info',
     children: [
       {
-        label: () => accout.username,
-        key: 'username',
+        label: accout.username,
+        key: 'SelfInfo',
         icon: renderIcon(InfoIcon)
       }
     ]

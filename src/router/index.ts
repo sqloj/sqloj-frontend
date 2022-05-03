@@ -34,6 +34,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'StudentManage',
         name: 'StudentManage',
         component: () => import('../views/StudentManage.vue')
+      },
+      {
+        path: 'SelfInfo',
+        name: 'SelfInfo',
+        component: () => import('../views/SelfInfo.vue')
       }
     ]
   },
