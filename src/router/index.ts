@@ -39,6 +39,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'SelfInfo',
         name: 'SelfInfo',
         component: () => import('../views/SelfInfo.vue')
+      },
+      {
+        path: 'AdminAccountManage',
+        name: 'AdminAccountManage',
+        component: () => import('../views/AdminAccountManage.vue')
       }
     ]
   },

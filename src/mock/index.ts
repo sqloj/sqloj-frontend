@@ -86,7 +86,7 @@ mock(`/api/user/update/info`, 'post', (option: any) => {
   }
 });
 
-mock(`/api/studentlist`, 'post', {
+mock(`/api/student/manage/list`, 'post', {
   'user|5-20': [
     {
       'id|201800000000-202000000000': 100,

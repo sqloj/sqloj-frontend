@@ -48,7 +48,7 @@ const menuOptions: MenuOption[] = [
       },
       {
         label: '权限管理',
-        key: 'authority-manage',
+        key: 'AdminAccountManage',
         icon: renderIcon(BugIcon)
       },
       {

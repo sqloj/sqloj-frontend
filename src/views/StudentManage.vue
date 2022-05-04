@@ -31,7 +31,7 @@ const loadingRef = ref(true);
 onMounted(() => {
   console.log(dataRef.value);
   axios
-    .post('/api/studentlist')
+    .post('/api/student/manage/list')
     .then(res => res.data)
     .then(data => {
       dataRef.value = data.user;
@@ -43,7 +43,6 @@ const pagination = {
   pageSize: 10
 };
 
-const api: string = '/api/studentlist';
 </script>
 
 <template>
@@ -60,9 +59,6 @@ const api: string = '/api/studentlist';
       />
     </n-space>
   </n-layout>
-
-  <br />
-  <List :api="api" />
 </template>
 
 <style scoped>
