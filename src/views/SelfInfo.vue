@@ -39,27 +39,29 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if(formInline.value.password !== '') {
-    if(formInline.value.password !== oldpassword) {
+  if (formInline.value.password !== '') {
+    if (formInline.value.password !== oldpassword) {
       return message.error('密码错误!');
-    }else {
-      if(formInline.value.newpassword.length < 6) {
+    } else {
+      if (formInline.value.newpassword.length < 6) {
         return message.error('密码过短，长度小于 6 字符！');
-      } else if(formInline.value.newpassword.length > 50){
+      } else if (formInline.value.newpassword.length > 50) {
         formInline.value.newpassword = '';
         formInline.value.newpassword_again = '';
         return message.error('密码过长！');
-      } else if(formInline.value.newpassword !== formInline.value.newpassword_again) {
+      } else if (
+        formInline.value.newpassword !== formInline.value.newpassword_again
+      ) {
         return message.error('两次密码不一致！');
       }
-    }  
+    }
   }
 
   axios
     .post(`/api/user/update/info`, {
       userid: formInline.value.userid,
       username: formInline.value.username,
-      password: formInline.value.newpassword,
+      password: formInline.value.newpassword
     })
     .then(res => res.data)
     .then(data => {
@@ -86,7 +88,6 @@ const handleSubmit = () => {
 const goback = () => {
   router.back();
 };
-
 </script>
 
 <template>
@@ -94,37 +95,66 @@ const goback = () => {
     <div class="view-info">
       <div class="view-info-container">
         <n-h1> 个人信息 </n-h1>
-          <n-form ref="formRef" 
-            label-placement="left" 
-            size="large" 
-            :model="formInline" 
+        <n-form
+          ref="formRef"
+          label-placement="left"
+          size="large"
+          :model="formInline"
+        >
+          <!-- input ID -->
+          <n-form-item label="工号" class="inputtext" path="userid">
+            <n-input v-model:value="formInline.userid" readonly="true">
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <AccessibilityOutline />
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
+
+          <!-- input name -->
+          <n-form-item label="姓名" class="inputtext" path="username">
+            <n-input v-model:value="formInline.username">
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <PersonOutline />
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
+
+          <!-- input password-->
+          <n-form-item label="密码" class="inputtext" path="password">
+            <n-input
+              v-model:value="formInline.password"
+              type="password"
+              show-password-on="mousedown"
+              placeholder="请输入原密码（留空则不修改）"
+            >
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <LockClosedOutline />
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
+
+          <n-form
+            ref="formRef"
+            label-placement="left"
+            size="large"
+            :model="formInline"
+            inline
           >
-            <!-- input ID -->
-            <n-form-item label="工号" class="inputtext" path="userid" >
-              <n-input v-model:value="formInline.userid" readonly="true">
-                <template #prefix>
-                  <n-icon size="18" color="#808695">
-                    <AccessibilityOutline />
-                  </n-icon>
-                </template>
-              </n-input>
-            </n-form-item>
-
-            <!-- input name -->
-            <n-form-item label="姓名" class="inputtext" path="username">
-              <n-input v-model:value="formInline.username">
-                <template #prefix>
-                  <n-icon size="18" color="#808695">
-                    <PersonOutline />
-                  </n-icon>
-                </template>
-              </n-input>
-            </n-form-item>
-
-            <!-- input password-->
-            <n-form-item label="密码" class="inputtext" path="password">
-              <n-input v-model:value="formInline.password" type="password" show-password-on="mousedown"
-                placeholder="请输入原密码（留空则不修改）">
+            <n-form-item class="inputtext" path="newpassword">
+              <n-input
+                v-model:value="formInline.newpassword"
+                type="password"
+                show-password-on="mousedown"
+                placeholder="新密码"
+                size="large"
+                style="width: 400px"
+              >
                 <template #prefix>
                   <n-icon size="18" color="#808695">
                     <LockClosedOutline />
@@ -132,38 +162,32 @@ const goback = () => {
                 </template>
               </n-input>
             </n-form-item>
-
-              <n-form ref="formRef" 
-                label-placement="left" 
-                size="large" :model="formInline"
-                inline  
-                
+            <n-form-item class="inputtext" path="newpassword_again">
+              <n-input
+                v-model:value="formInline.newpassword_again"
+                type="password"
+                show-password-on="mousedown"
+                placeholder="确认密码"
+                size="large"
+                style="width: 400px"
               >
-                <n-form-item class="inputtext" path="newpassword">
-                  <n-input v-model:value="formInline.newpassword" type="password" show-password-on="mousedown"
-                    placeholder="新密码" size="large" style="width:400px">
-                    <template #prefix>
-                      <n-icon size="18" color="#808695">
-                        <LockClosedOutline />
-                      </n-icon>
-                    </template>
-                  </n-input>
-                </n-form-item>
-                <n-form-item class="inputtext" path="newpassword_again">
-                  <n-input v-model:value="formInline.newpassword_again" type="password" show-password-on="mousedown"
-                    placeholder="确认密码" size="large" style="width:400px">
-                    <template #prefix>
-                      <n-icon size="18" color="#808695">
-                        <LockClosedOutline />
-                      </n-icon>
-                    </template>
-                  </n-input>
-                </n-form-item>
-              </n-form>
-
+                <template #prefix>
+                  <n-icon size="18" color="#808695">
+                    <LockClosedOutline />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
           </n-form>
+        </n-form>
         <n-space justify="center">
-          <n-button secondary strong type="primary" size="large" @click="handleSubmit">
+          <n-button
+            secondary
+            strong
+            type="primary"
+            size="large"
+            @click="handleSubmit"
+          >
             <template #icon>
               <n-icon size="18">
                 <Pencil />
@@ -171,7 +195,13 @@ const goback = () => {
             </template>
             修改
           </n-button>
-          <n-button secondary strong type="primary" size="large" @click="goback">
+          <n-button
+            secondary
+            strong
+            type="primary"
+            size="large"
+            @click="goback"
+          >
             <template #icon>
               <n-icon size="18">
                 <ArrowBack />
@@ -181,7 +211,6 @@ const goback = () => {
           </n-button>
         </n-space>
       </div>
-
     </div>
   </n-layout>
 </template>
@@ -201,8 +230,6 @@ const goback = () => {
     padding-top: 80px;
     margin: 0 auto;
     max-width: 800px;
-
   }
-
 }
 </style>

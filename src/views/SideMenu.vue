@@ -14,7 +14,7 @@ function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-let accout = JSON.parse(sessionStorage.account);
+const accout = JSON.parse(sessionStorage.account);
 
 const emit = defineEmits(['getRoute']);
 
