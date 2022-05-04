@@ -70,6 +70,22 @@ mock(`/api/student/insert`, 'post', (option: any) => {
   };
 });
 
+mock(`/api/user/update/info`, 'post', (option: any) => {
+  const userInfo = JSON.parse(option.body);
+  for (let u of user) {
+    if (u.userid === userInfo.userid) {
+      u.username = userInfo.username;
+      u.password = userInfo.password;
+      console.log(u);
+      return {
+        ...u,
+        message: '信息更新成功',
+        success: true
+      };
+    }
+  }
+});
+
 mock(`/api/studentlist`, 'post', {
   'user|5-20': [
     {

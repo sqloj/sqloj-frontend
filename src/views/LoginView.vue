@@ -58,7 +58,7 @@ const handleSubmit = () => {
     .then(data => {
       if (data.success) {
         sessionStorage.account = JSON.stringify({
-          user: formInline.value,
+          ...formInline.value,
           username: data.username,
           admin: data.admin
         });

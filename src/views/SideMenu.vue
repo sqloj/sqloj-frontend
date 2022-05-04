@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, Component } from 'vue';
+import { ref, h, Component } from 'vue';
 import { NIcon, useMessage } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
@@ -14,7 +14,7 @@ function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-const accout = JSON.parse(sessionStorage.account);
+let accout = JSON.parse(sessionStorage.account);
 
 const emit = defineEmits(['getRoute']);
 
