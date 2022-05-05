@@ -41,7 +41,6 @@ onMounted(() => {
 const pagination = {
   pageSize: 10
 };
-
 </script>
 
 <template>
@@ -64,8 +63,8 @@ const pagination = {
 #manage-container {
   padding: 20px;
   text-align: center;
-  text-align: center; 
-  padding-left: 5%; 
+  text-align: center;
+  padding-left: 5%;
   padding-right: 5%;
 }
 </style>

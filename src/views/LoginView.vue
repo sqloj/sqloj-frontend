@@ -60,7 +60,8 @@ const handleSubmit = () => {
         sessionStorage.account = JSON.stringify({
           ...formInline.value,
           username: data.username,
-          admin: data.admin
+          admin: data.admin,
+          classes: data.classes
         });
         message.success(`欢迎回来！${data.username}`);
         router.replace('/Main');

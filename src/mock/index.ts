@@ -11,21 +11,21 @@ let user = [
     username: '老师',
     password: '123456',
     classes: '',
-    admin: 1
+    admin: true
   },
   {
     userid: 'stu',
     username: '学生',
     password: '123456',
-    classes: '',
-    admin: 0
+    classes: '101',
+    admin: false
   },
   {
     userid: 'tourist',
     username: 't老师',
     password: '123456',
     classes: 'codeforce',
-    admin: 1
+    admin: true
   }
 ];
 

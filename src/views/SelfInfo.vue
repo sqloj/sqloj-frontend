@@ -6,6 +6,7 @@ import {
   LockClosedOutline,
   AccessibilityOutline,
   Pencil,
+  PeopleOutline,
   ArrowBack
 } from '@vicons/ionicons5';
 import axios from 'axios';
@@ -19,24 +20,38 @@ let oldpassword = '';
 const formInline = ref({
   userid: '',
   username: '',
+  classes: '',
   password: '',
   newpassword: '',
-  newpassword_again: ''
+  newpassword_again: '',
+  admin: false
 });
 
 onMounted(() => {
   let account = JSON.parse(sessionStorage.account);
+  console.log(account);
+  formInline.value.admin = account.admin;
+  console.log(formInline.value.admin);
   formInline.value.username = account.username;
   formInline.value.userid = account.userid;
+  formInline.value.classes = account.classes;
   oldpassword = account.password;
 });
 
 const handleSubmit = () => {
+  console.log(formInline.value.admin);
   if (formInline.value.username === '') {
     return message.error('姓名不能为空!');
   } else if (formInline.value.username.length > 30) {
     formInline.value.username = '';
     return message.error('姓名过长，请重新输入！');
+  }
+
+  if (formInline.value.classes === '') {
+    return message.error('请填写您的班级!');
+  } else if (formInline.value.classes.length > 30) {
+    formInline.value.classes = '';
+    return message.error('班级名过长，请重新输入！');
   }
 
   if (formInline.value.password !== '') {
@@ -61,7 +76,8 @@ const handleSubmit = () => {
     .post(`/api/user/update/info`, {
       userid: formInline.value.userid,
       username: formInline.value.username,
-      password: formInline.value.newpassword
+      password: formInline.value.newpassword,
+      classes: formInline.value.classes
     })
     .then(res => res.data)
     .then(data => {
@@ -70,6 +86,7 @@ const handleSubmit = () => {
           userid: data.userid,
           password: data.password,
           username: data.username,
+          classes: data.classes,
           admin: data.admin
         };
         sessionStorage.account = JSON.stringify(userJson);
@@ -94,27 +111,54 @@ const goback = () => {
   <n-layout>
     <div class="view-info">
       <div class="view-info-container">
-        <n-h1 style="margin-bottom:3rem"> 个人信息 </n-h1>
+        <n-h1 style="margin-bottom: 3rem"> 个人信息 </n-h1>
         <n-form
           ref="formRef"
           label-placement="left"
           size="large"
           :model="formInline"
-          
         >
           <!-- input ID -->
-          <n-form-item label="工号" class="inputtext" path="userid" style="margin-bottom:1rem">
-            <n-input v-model:value="formInline.userid" readonly="true">
-              <template #prefix>
-                <n-icon size="18" color="#808695">
-                  <AccessibilityOutline />
-                </n-icon>
-              </template>
-            </n-input>
-          </n-form-item>
-
+          <div v-if="formInline.admin">
+            <n-form-item
+              v-if="formInline.admin"
+              label="工号"
+              class="inputtext"
+              path="userid"
+              style="margin-bottom: 1rem"
+            >
+              <n-input v-model:value="formInline.userid" readonly="true">
+                <template #prefix>
+                  <n-icon size="18" color="#808695">
+                    <AccessibilityOutline />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
+          </div>
+          <div v-else>
+            <n-form-item
+              label="学号"
+              class="inputtext"
+              path="userid"
+              style="margin-bottom: 1rem"
+            >
+              <n-input v-model:value="formInline.userid" readonly="true">
+                <template #prefix>
+                  <n-icon size="18" color="#808695">
+                    <AccessibilityOutline />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
+          </div>
           <!-- input name -->
-          <n-form-item label="姓名" class="inputtext" path="username" style="margin-bottom:1rem">
+          <n-form-item
+            label="姓名"
+            class="inputtext"
+            path="username"
+            style="margin-bottom: 1rem"
+          >
             <n-input v-model:value="formInline.username">
               <template #prefix>
                 <n-icon size="18" color="#808695">
@@ -124,8 +168,30 @@ const goback = () => {
             </n-input>
           </n-form-item>
 
+          <!-- input class -->
+          <div v-if="!formInline.admin">
+            <n-form-item
+              label="班级"
+              class="inputtext"
+              path="classes"
+              style="margin-bottom: 1rem"
+            >
+              <n-input v-model:value="formInline.classes">
+                <template #prefix>
+                  <n-icon size="18" color="#808695">
+                    <PeopleOutline />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
+          </div>
           <!-- input password-->
-          <n-form-item label="密码" class="inputtext" path="password" style="margin-bottom:1rem">
+          <n-form-item
+            label="密码"
+            class="inputtext"
+            path="password"
+            style="margin-bottom: 1rem"
+          >
             <n-input
               v-model:value="formInline.password"
               type="password"
@@ -146,7 +212,7 @@ const goback = () => {
             size="large"
             :model="formInline"
             inline
-            style="margin-bottom:1rem"
+            style="margin-bottom: 1rem"
           >
             <n-form-item class="inputtext" path="newpassword">
               <n-input
