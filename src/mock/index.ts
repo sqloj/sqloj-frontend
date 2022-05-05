@@ -98,7 +98,7 @@ mock(`/api/student/manage/list`, 'post', {
 });
 
 mock(`/api/student/delete`, 'post', {
-  return : {
+  return: {
     success: true,
     message: '删除成功'
   }
