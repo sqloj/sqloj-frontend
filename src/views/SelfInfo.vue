@@ -94,15 +94,16 @@ const goback = () => {
   <n-layout>
     <div class="view-info">
       <div class="view-info-container">
-        <n-h1> 个人信息 </n-h1>
+        <n-h1 style="margin-bottom:3rem"> 个人信息 </n-h1>
         <n-form
           ref="formRef"
           label-placement="left"
           size="large"
           :model="formInline"
+          
         >
           <!-- input ID -->
-          <n-form-item label="工号" class="inputtext" path="userid">
+          <n-form-item label="工号" class="inputtext" path="userid" style="margin-bottom:1rem">
             <n-input v-model:value="formInline.userid" readonly="true">
               <template #prefix>
                 <n-icon size="18" color="#808695">
@@ -113,7 +114,7 @@ const goback = () => {
           </n-form-item>
 
           <!-- input name -->
-          <n-form-item label="姓名" class="inputtext" path="username">
+          <n-form-item label="姓名" class="inputtext" path="username" style="margin-bottom:1rem">
             <n-input v-model:value="formInline.username">
               <template #prefix>
                 <n-icon size="18" color="#808695">
@@ -124,7 +125,7 @@ const goback = () => {
           </n-form-item>
 
           <!-- input password-->
-          <n-form-item label="密码" class="inputtext" path="password">
+          <n-form-item label="密码" class="inputtext" path="password" style="margin-bottom:1rem">
             <n-input
               v-model:value="formInline.password"
               type="password"
@@ -145,6 +146,7 @@ const goback = () => {
             size="large"
             :model="formInline"
             inline
+            style="margin-bottom:1rem"
           >
             <n-form-item class="inputtext" path="newpassword">
               <n-input
@@ -180,21 +182,7 @@ const goback = () => {
             </n-form-item>
           </n-form>
         </n-form>
-        <n-space justify="center">
-          <n-button
-            secondary
-            strong
-            type="primary"
-            size="large"
-            @click="handleSubmit"
-          >
-            <template #icon>
-              <n-icon size="18">
-                <Pencil />
-              </n-icon>
-            </template>
-            修改
-          </n-button>
+        <n-space justify="space-between">
           <n-button
             secondary
             strong
@@ -208,6 +196,20 @@ const goback = () => {
               </n-icon>
             </template>
             返回
+          </n-button>
+          <n-button
+            secondary
+            strong
+            type="primary"
+            size="large"
+            @click="handleSubmit"
+          >
+            <template #icon>
+              <n-icon size="18">
+                <Pencil />
+              </n-icon>
+            </template>
+            修改
           </n-button>
         </n-space>
       </div>

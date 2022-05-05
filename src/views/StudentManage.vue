@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
-import List from '../components/List.vue';
 
 const columns = [
-  // {
-  //   type: 'selection'
-  // },
+  {
+    type: 'selection'
+  },
   {
     title: '学号',
     key: 'id'
@@ -65,5 +64,8 @@ const pagination = {
 #manage-container {
   padding: 20px;
   text-align: center;
+  text-align: center; 
+  padding-left: 5%; 
+  padding-right: 5%;
 }
 </style>
