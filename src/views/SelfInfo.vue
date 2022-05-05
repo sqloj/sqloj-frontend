@@ -248,6 +248,8 @@ const goback = () => {
             </n-form-item>
           </n-form>
         </n-form>
+
+        <!--button goback and update-->
         <n-space justify="space-between">
           <n-button
             secondary
