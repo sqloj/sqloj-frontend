@@ -44,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'AdminAccountManage',
         name: 'AdminAccountManage',
         component: () => import('../views/AdminAccountManage.vue')
+      },
+      {
+        path: 'SubmitRecord',
+        name: 'SubmitRecord',
+        component: () => import('../views/SubmitRecord.vue')
       }
     ]
   },

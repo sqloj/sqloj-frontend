@@ -7,7 +7,8 @@ import {
   AddCircleOutline as AddIcon,
   CallOutline as CallIcon,
   InformationCircleOutline as InfoIcon,
-  BugOutline as BugIcon
+  BugOutline as BugIcon,
+  GitCommitOutline as CommitIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -45,6 +46,11 @@ const menuOptions: MenuOption[] = [
         label: '题目管理',
         key: 'QuestionManage',
         icon: renderIcon(AddIcon)
+      },
+      {
+        label: '提交记录',
+        key: 'SubmitRecord',
+        icon: renderIcon(CommitIcon)
       },
       {
         label: '权限管理',
