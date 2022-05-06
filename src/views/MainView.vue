@@ -18,7 +18,9 @@ const getRoute = (e: string) => {
       </nav>
     </n-layout-sider>
     <n-layout>
-      <router-view />
+      <el-main style="overflow: hidden">
+        <router-view />
+      </el-main>
     </n-layout>
   </n-layout>
 </template>

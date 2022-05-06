@@ -1,5 +1,5 @@
 // 引入mockjs
-import Mock from 'mockjs';
+import Mock, { Random } from 'mockjs';
 // 引入模板函数类
 
 // Mock函数
@@ -26,6 +26,21 @@ let user = [
     password: '123456',
     classes: 'codeforce',
     admin: true
+  }
+];
+
+let question = [
+  {
+    id: 1,
+    content: '查询系编号为‘0501’学生的基本信息（学号、姓名、性别、出生日期）。',
+    answer: "SELECT snum, sname, ssex, sbirth FROM s WHERE dnum = '0501'",
+    testcase_id: 1
+  },
+  {
+    id: 2,
+    content: "查询学号为'201305010101'的学生的姓名。",
+    answer: "SELECT sname FROM s WHERE snum = '201305010101'",
+    testcase_id: 1
   }
 ];
 
@@ -93,6 +108,18 @@ mock(`/api/student/manage/list`, 'post', {
       name: '@cname',
       classes: '寄科221',
       'acnum|1-10': 10
+    }
+  ]
+});
+
+mock(`/api/question/manage/list`, 'post', {
+  'question|30-50': [
+    {
+      'id|3-100': 1,
+      content: '@csentence(5, 30)',
+      answer: '@sentence(5, 30)',
+      'passnum|1-20': 1,
+      'testcase_id|1-10': 1
     }
   ]
 });
