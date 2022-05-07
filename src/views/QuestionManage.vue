@@ -55,10 +55,6 @@ onMounted(() => {
   console.log(dataRef.value);
 });
 
-const pagination = {
-  pageSize: 15
-};
-
 const handleOnClick = (row: any) => {
   console.log(dataRef.value[row]);
 };
@@ -72,7 +68,7 @@ const handleOnClick = (row: any) => {
         :bordered="false"
         :columns="columns"
         :data="dataRef"
-        :pagination="pagination"
+        :pagination="{ pageSize: 15 }"
         :row-key="(row: any) => row.id"
         :loading="loadingRef"
         @update:checked-row-keys="handleOnClick"

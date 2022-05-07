@@ -1,33 +1,47 @@
 // 引入mockjs
-import Mock, { Random } from 'mockjs';
+import Mock from 'mockjs';
 // 引入模板函数类
 
 // Mock函数
 const { mock } = Mock;
 
-let user = [
-  {
+let userGen = () => {
+  let ret = mock({
+    'user|5-20': [
+      {
+        'userid|201800000000-202000000000': 100,
+        username: '@cname',
+        classes: '寄科221',
+        'acnum|1-10': 10
+      }
+    ]
+  }).user;
+
+  ret.push({
     userid: 'admin',
     username: '老师',
     password: '123456',
     classes: '',
     admin: true
-  },
-  {
+  });
+  ret.push({
     userid: 'stu',
     username: '学生',
     password: '123456',
     classes: '101',
     admin: false
-  },
-  {
+  });
+  ret.push({
     userid: 'tourist',
     username: 't老师',
     password: '123456',
     classes: 'codeforce',
     admin: true
-  }
-];
+  });
+  return ret;
+};
+
+let user = userGen();
 
 let question = [
   {
@@ -79,6 +93,8 @@ mock(`/api/student/insert`, 'post', (option: any) => {
     }
   }
   user.push(userInfo);
+  console.log(user);
+
   return {
     message: '注册成功',
     success: true
@@ -101,15 +117,10 @@ mock(`/api/user/update/info`, 'post', (option: any) => {
   }
 });
 
-mock(`/api/student/manage/list`, 'post', {
-  'user|5-20': [
-    {
-      'id|201800000000-202000000000': 100,
-      name: '@cname',
-      classes: '寄科221',
-      'acnum|1-10': 10
-    }
-  ]
+mock(`/api/student/manage/list`, 'post', () => {
+  return {
+    user: user
+  };
 });
 
 mock(`/api/question/manage/list`, 'post', {
@@ -124,9 +135,31 @@ mock(`/api/question/manage/list`, 'post', {
   ]
 });
 
-mock(`/api/student/delete`, 'post', {
-  return: {
-    success: true,
-    message: '删除成功'
+mock(`/api/student/delete`, 'post', (option: any) => {
+  const { userid } = JSON.parse(option.body);
+  let newUser = [];
+  let flag = false;
+  console.log(userid);
+
+  for (let u of user) {
+    if (u.userid !== userid) {
+      newUser.push(u);
+    } else {
+      flag = true;
+    }
+  }
+  console.log(newUser);
+
+  user = newUser;
+  if (flag) {
+    return {
+      success: true,
+      message: '删除成功'
+    };
+  } else {
+    return {
+      success: false,
+      message: '删除失败'
+    };
   }
 });

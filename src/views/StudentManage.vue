@@ -10,11 +10,11 @@ const columns = [
   },
   {
     title: '学号',
-    key: 'id'
+    key: 'userid'
   },
   {
     title: '姓名',
-    key: 'name'
+    key: 'username'
   },
   {
     title: '班级',
@@ -30,59 +30,54 @@ const dataRef = ref([]);
 const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
-const showModal = ref();
+const showModal = ref(false);
 const handleCheck = (rowKeys: any) => {
   checkedRowKeysRef.value = rowKeys;
 };
 
-onMounted(() => {
+const query = () => {
   axios
     .post('/api/student/manage/list')
     .then(res => res.data)
     .then(data => {
       dataRef.value = data.user;
       loadingRef.value = false;
+      console.log(data.user);
     });
-});
+};
+
+onMounted(query);
 
 const handleDelete = () => {
   console.log(checkedRowKeysRef.value);
-  for (let id in checkedRowKeysRef.value) {
-    console.log(checkedRowKeysRef.value[id]);
+  let promises = [];
+  for (let id of checkedRowKeysRef.value) {
+    console.log(id);
     // 依据 id 一个个发起删除请求
-    axios
-      .post('/api/student/delete', { id })
-      .then(res => {
-        loadingRef.value = false;
-        return res.data;
-      })
-      .then(data => {
-        console.log(data);
-        if (data.success === false) {
-          message.error(data.message);
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        message.error('ERROR!');
-      });
+    promises.push(
+      axios
+        .post('/api/student/delete', { userid: id })
+        .then(res => {
+          loadingRef.value = false;
+          return res.data;
+        })
+        .then(data => {
+          console.log(data);
+          if (data.success) {
+            message.success('删除成功');
+          } else {
+            message.error(data.message);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          message.error('ERROR!');
+        })
+    );
   }
-
-  message.success('删除成功');
-  // 更新学生列表
-  axios
-    .post('/api/student/manage/list')
-    .then(res => res.data)
-    .then(data => {
-      dataRef.value = data.user;
-      loadingRef.value = false;
-    });
-  // 选中数组清空
-  checkedRowKeysRef.value.splice(0, checkedRowKeysRef.value.length);
-};
-
-const pagination = {
-  pageSize: 10
+  Promise.all(promises).finally(() => {
+    query();
+  });
 };
 
 // 添加学生
@@ -131,6 +126,7 @@ const handleSubmit = () => {
     .then(data => {
       if (data.success) {
         message.success('添加成功！');
+        showModal.value = false;
       } else {
         message.error(data.message);
       }
@@ -138,6 +134,9 @@ const handleSubmit = () => {
     .catch(error => {
       console.error(error);
       message.error('错误！');
+    })
+    .finally(() => {
+      query();
     });
 };
 </script>
@@ -150,8 +149,8 @@ const handleSubmit = () => {
         :bordered="false"
         :columns="columns"
         :data="dataRef"
-        :pagination="pagination"
-        :row-key="(row: any) => row.id"
+        :pagination="{ pageSize: 10 }"
+        :row-key="(row: any) => row.userid"
         :loading="loadingRef"
         @update:checked-row-keys="handleCheck"
       />
