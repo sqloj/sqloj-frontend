@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { h, onMounted, ref } from 'vue';
-import { NA, NButton, NInput, useMessage } from 'naive-ui';
+import { NA, useMessage } from 'naive-ui';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 
 const columns = [
@@ -20,7 +21,15 @@ const columns = [
         NA,
         {
           onClick() {
-            console.log(index);
+            const question = dataRef.value[index];
+            sessionStorage.question = JSON.stringify(question);
+            console.log(question);
+            router.push({
+              name: 'Question',
+              params: {
+                QuestionId: question.id
+              }
+            });
           }
         },
         {
@@ -44,6 +53,8 @@ const columns = [
 const dataRef = ref([]);
 const loadingRef = ref(true);
 const message = useMessage();
+const router = useRouter();
+
 onMounted(() => {
   axios
     .post(`/api/question/manage/list`)
