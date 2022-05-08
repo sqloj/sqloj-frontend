@@ -107,6 +107,7 @@ mock(`/api/user/update/info`, 'post', (option: any) => {
     if (u.userid === userInfo.userid) {
       u.username = userInfo.username;
       u.password = userInfo.password;
+      u.classes = userInfo.classes;
       console.log(u);
       return {
         ...u,

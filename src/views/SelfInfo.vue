@@ -47,7 +47,7 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if (formInline.value.classes === '') {
+  if (formInline.value.admin === false && formInline.value.classes === '') {
     return message.error('请填写您的班级!');
   } else if (formInline.value.classes.length > 30) {
     formInline.value.classes = '';
