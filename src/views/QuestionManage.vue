@@ -66,8 +66,8 @@ onMounted(() => {
   console.log(dataRef.value);
 });
 
-const handleOnClick = (row: any) => {
-  console.log(dataRef.value[row]);
+const handleOnClick = (index: any) => {
+  console.log(dataRef.value[index]);
 };
 </script>
 

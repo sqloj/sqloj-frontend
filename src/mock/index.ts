@@ -43,20 +43,48 @@ let userGen = () => {
 
 let user = userGen();
 
-let question = [
-  {
-    id: 1,
+let questionGen = () => {
+  let ret = mock({
+    'question|5-20': [
+      {
+        'id|3-100': 1,
+        content: '@csentence(5, 30)',
+        answer: '@sentence(5, 30)',
+        'passnum|1-20': 1,
+        'testcase_id|1-10': 1
+      }
+    ]
+  }).question;
+  ret.push(  {
+    id: '1',
     content: '查询系编号为‘0501’学生的基本信息（学号、姓名、性别、出生日期）。',
     answer: "SELECT snum, sname, ssex, sbirth FROM s WHERE dnum = '0501'",
-    testcase_id: 1
+    testcase_id: '1'
   },
   {
-    id: 2,
+    id: '2',
     content: "查询学号为'201305010101'的学生的姓名。",
     answer: "SELECT sname FROM s WHERE snum = '201305010101'",
-    testcase_id: 1
+    testcase_id: '2'
   }
-];
+  )
+  return ret;
+}
+
+let question = questionGen();
+
+let TestCase = [
+  {
+    id: '1',
+    describe: '全校学生表',
+    sql: 'Mysql'
+  },
+  {
+    id: '2',
+    describe: '计算机专业表',
+    sql: 'sqlServer'
+  }
+]
 
 // 设置延时
 Mock.setup({
@@ -124,24 +152,19 @@ mock(`/api/student/manage/list`, 'post', () => {
   };
 });
 
-mock(`/api/question/manage/list`, 'post', {
-  'question|30-50': [
-    {
-      'id|3-100': 1,
-      content: '@csentence(5, 30)',
-      answer: '@sentence(5, 30)',
-      'passnum|1-20': 1,
-      'testcase_id|1-10': 1
-    }
-  ]
+mock(`/api/question/manage/list`, 'post', () => {
+  return {
+    question: question
+  }
 });
+
 
 mock(`/api/student/delete`, 'post', (option: any) => {
   const { userid } = JSON.parse(option.body);
   let newUser = [];
   let flag = false;
   console.log(userid);
-
+  
   for (let u of user) {
     if (u.userid !== userid) {
       newUser.push(u);
@@ -150,7 +173,7 @@ mock(`/api/student/delete`, 'post', (option: any) => {
     }
   }
   console.log(newUser);
-
+  
   user = newUser;
   if (flag) {
     return {
@@ -164,3 +187,28 @@ mock(`/api/student/delete`, 'post', (option: any) => {
     };
   }
 });
+
+mock(`/api/question/update`, 'post', (option: any) => {
+  const que = JSON.parse(option.body);
+  for (let t of question) {
+    if (t.id === que.id) {
+      t.content = que.content;
+      t.answer = que.answer;
+      t.testcase_id = que.testcase_id;
+      return {
+        ...t,
+        message: '信息更新成功',
+        success: true
+      };
+    }
+  }
+  return {
+      message: '出错！',
+      success: false
+  }
+});
+mock(`/api/testcase/list`, 'post', () => {
+  return {
+    testcase : TestCase
+  }
+})

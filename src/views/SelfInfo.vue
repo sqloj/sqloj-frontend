@@ -29,9 +29,7 @@ const formInline = ref({
 
 onMounted(() => {
   let account = JSON.parse(sessionStorage.account);
-  console.log(account);
   formInline.value.admin = account.admin;
-  console.log(formInline.value.admin);
   formInline.value.username = account.username;
   formInline.value.userid = account.userid;
   formInline.value.classes = account.classes;
