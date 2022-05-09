@@ -9,7 +9,7 @@ let userGen = () => {
   let ret = mock({
     'user|5-20': [
       {
-        'userid|201800000000-202000000000': 100,
+        'userid|+10000': 201800000101,
         username: '@cname',
         classes: '寄科221',
         'acnum|1-10': 10
@@ -47,44 +47,48 @@ let questionGen = () => {
   let ret = mock({
     'question|5-20': [
       {
-        'id|3-100': 1,
+        'id|+1': 3,
         content: '@csentence(5, 30)',
         answer: '@sentence(5, 30)',
         'passnum|1-20': 1,
-        'testcase_id|1-10': 1
+        'testcase_id|1-2': 1
       }
     ]
   }).question;
-  ret.push(  {
-    id: '1',
-    content: '查询系编号为‘0501’学生的基本信息（学号、姓名、性别、出生日期）。',
-    answer: "SELECT snum, sname, ssex, sbirth FROM s WHERE dnum = '0501'",
-    testcase_id: '1'
-  },
-  {
-    id: '2',
-    content: "查询学号为'201305010101'的学生的姓名。",
-    answer: "SELECT sname FROM s WHERE snum = '201305010101'",
-    testcase_id: '2'
-  }
-  )
+  ret.push(
+    {
+      id: '1',
+      content:
+        '查询系编号为‘0501’学生的基本信息（学号、姓名、性别、出生日期）。',
+      answer: "SELECT snum, sname, ssex, sbirth FROM s WHERE dnum = '0501'",
+      passnum: 100,
+      testcase_id: 1
+    },
+    {
+      id: '2',
+      content: "查询学号为'201305010101'的学生的姓名。",
+      answer: "SELECT sname FROM s WHERE snum = '201305010101'",
+      passnum: 100,
+      testcase_id: 2
+    }
+  );
   return ret;
-}
+};
 
 let question = questionGen();
 
 let TestCase = [
   {
-    id: '1',
+    id: 1,
     describe: '全校学生表',
     sql: 'Mysql'
   },
   {
-    id: '2',
+    id: 2,
     describe: '计算机专业表',
     sql: 'sqlServer'
   }
-]
+];
 
 // 设置延时
 Mock.setup({
@@ -155,16 +159,15 @@ mock(`/api/student/manage/list`, 'post', () => {
 mock(`/api/question/manage/list`, 'post', () => {
   return {
     question: question
-  }
+  };
 });
-
 
 mock(`/api/student/delete`, 'post', (option: any) => {
   const { userid } = JSON.parse(option.body);
   let newUser = [];
   let flag = false;
   console.log(userid);
-  
+
   for (let u of user) {
     if (u.userid !== userid) {
       newUser.push(u);
@@ -173,7 +176,7 @@ mock(`/api/student/delete`, 'post', (option: any) => {
     }
   }
   console.log(newUser);
-  
+
   user = newUser;
   if (flag) {
     return {
@@ -203,12 +206,12 @@ mock(`/api/question/update`, 'post', (option: any) => {
     }
   }
   return {
-      message: '出错！',
-      success: false
-  }
+    message: '出错！',
+    success: false
+  };
 });
 mock(`/api/testcase/list`, 'post', () => {
   return {
-    testcase : TestCase
-  }
-})
+    testcase: TestCase
+  };
+});

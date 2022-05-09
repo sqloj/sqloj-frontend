@@ -12,11 +12,13 @@ const getRoute = (e: string) => {
 
 <template>
   <n-layout has-sider>
+    <!-- 左边栏 -->
     <n-layout-sider id="side-bar" bordered>
       <nav>
         <side-menu @get-route="getRoute" />
       </nav>
     </n-layout-sider>
+    <!-- 主显示 -->
     <n-layout>
       <router-view />
     </n-layout>

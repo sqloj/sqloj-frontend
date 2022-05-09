@@ -4,6 +4,9 @@ import { useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 
+/*
+  展示学生管理信息 {userid, username, classes, acnum}
+*/
 const columns = [
   {
     type: 'selection'
@@ -32,9 +35,13 @@ const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
 const handleCheck = (rowKeys: any) => {
+  console.log(rowKeys);
   checkedRowKeysRef.value = rowKeys;
 };
 
+/*
+  查询学生列表的api （应当只有学生）
+*/
 const query = () => {
   axios
     .post('/api/student/manage/list')
@@ -42,14 +49,15 @@ const query = () => {
     .then(data => {
       dataRef.value = data.user;
       loadingRef.value = false;
-      console.log(data.user);
     });
 };
 
 onMounted(query);
 
+/*
+  批量删除学生
+*/
 const handleDelete = () => {
-  console.log(checkedRowKeysRef.value);
   let promises = [];
   for (let id of checkedRowKeysRef.value) {
     console.log(id);
@@ -62,7 +70,6 @@ const handleDelete = () => {
           return res.data;
         })
         .then(data => {
-          console.log(data);
           if (data.success) {
             message.success('删除成功');
           } else {
@@ -75,6 +82,7 @@ const handleDelete = () => {
         })
     );
   }
+  // 重新加载列表
   Promise.all(promises).finally(() => {
     query();
   });
@@ -155,7 +163,7 @@ const handleSubmit = () => {
         @update:checked-row-keys="handleCheck"
       />
 
-      <!--button -->
+      <!--delete and addStudents button -->
       <div>
         <n-button
           secondary
@@ -188,6 +196,7 @@ const handleSubmit = () => {
           </template>
           添加学生
         </n-button>
+
         <!--弹出的卡片-->
         <n-modal v-model:show="showModal">
           <n-card
@@ -201,26 +210,22 @@ const handleSubmit = () => {
             footer-style="text-align: center"
           >
             <!-- 内容 -->
-
             <n-form label-placement="left" size="medium" :model="formInline">
               <!-- input ID -->
               <n-form-item label="学号" class="inputtext" path="userid">
                 <n-input v-model:value="formInline.userid" placeholder="学号">
                 </n-input>
               </n-form-item>
-
               <!-- input name -->
               <n-form-item label="姓名" class="inputtext" path="username">
                 <n-input v-model:value="formInline.username" placeholder="姓名">
                 </n-input>
               </n-form-item>
-
               <!-- input class -->
               <n-form-item label="班级" class="inputtext" path="classes">
                 <n-input v-model:value="formInline.classes" placeholder="班级">
                 </n-input>
               </n-form-item>
-
               <!-- input password-->
               <n-form-item label="密码" class="inputtext" path="password">
                 <n-input

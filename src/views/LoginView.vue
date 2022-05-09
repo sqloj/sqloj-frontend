@@ -11,6 +11,9 @@ const autoLogin = ref(true);
 const router = useRouter();
 const message = useMessage();
 
+/*    
+  输入框内容 {userid, password}
+*/
 const formInline = ref({
   userid: '',
   password: ''
@@ -21,6 +24,9 @@ const rules = {
   password: { required: true, message: '请输入密码' }
 };
 
+/*
+  加载前，读取上次保存的密码
+*/
 onMounted(() => {
   if (localStorage.hasOwnProperty('user')) {
     const userJson = localStorage.getItem('user') || '{}';
@@ -28,11 +34,19 @@ onMounted(() => {
   }
 });
 
+/*
+  跳转注册界面
+*/
 const logon = () => {
   router.push('/Register');
 };
 
+/*
+  发生登录请求， account{userid, password, username, classes, admin}
+  localStorage.user{userid, password}
+*/
 const handleSubmit = () => {
+  // 是否保存账号密码
   if (autoLogin.value) {
     localStorage.user = JSON.stringify(formInline.value);
   } else {
@@ -80,8 +94,8 @@ const handleSubmit = () => {
   <div class="view-account">
     <div class="view-account-container" style="text-align: center">
       <n-h1>DML 语句评判系统</n-h1>
-      <!-- FORM 表单-->
       <div class="view-account-form">
+        <!-- FORM 表单-->
         <n-form
           ref="formRef"
           label-placement="left"
@@ -89,6 +103,7 @@ const handleSubmit = () => {
           :model="formInline"
           :rules="rules"
         >
+          <!-- userid input -->
           <n-form-item class="inputtext" path="userid">
             <n-input v-model:value="formInline.userid" placeholder="ID">
               <template #prefix>
@@ -96,7 +111,7 @@ const handleSubmit = () => {
               </template>
             </n-input>
           </n-form-item>
-
+          <!-- password input -->
           <n-form-item class="inputtext" path="password">
             <n-input
               v-model:value="formInline.password"
@@ -111,6 +126,7 @@ const handleSubmit = () => {
               </template>
             </n-input>
           </n-form-item>
+          <!-- autoLogin chooses -->
           <n-form-item class="default-color">
             <div class="flex justify-between">
               <div class="flex-initial">
@@ -118,6 +134,7 @@ const handleSubmit = () => {
               </div>
             </div>
           </n-form-item>
+          <!-- login button -->
           <n-form-item>
             <n-button
               type="primary"
@@ -149,13 +166,13 @@ const handleSubmit = () => {
 <style lang="less" scoped>
 .inputtext {
   text-align: left;
+
   input {
     padding-left: 2em;
   }
 }
 
 .view-account {
-  // height: 100vh;
   height: 100%;
 
   &-container {

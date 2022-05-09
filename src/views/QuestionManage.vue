@@ -4,6 +4,9 @@ import { NA, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
+/*
+  展示题目信息 {id, content<a>, passnum, testcase_id}
+*/
 const columns = [
   {
     title: '编号',
@@ -16,14 +19,14 @@ const columns = [
     width: 400,
     ellipsis: true,
 
-    render(row: any, index: any) {
+    render(row: any) {
       return h(
         NA,
         {
           onClick() {
-            const question = dataRef.value[index];
+            const question = row;
             sessionStorage.question = JSON.stringify(question);
-            console.log(question);
+            // 页面跳转
             router.push({
               name: 'Question',
               params: {
@@ -55,7 +58,10 @@ const loadingRef = ref(true);
 const message = useMessage();
 const router = useRouter();
 
-onMounted(() => {
+/*
+  查询题目列表
+*/
+const query = () => {
   axios
     .post(`/api/question/manage/list`)
     .then(res => res.data)
@@ -63,12 +69,8 @@ onMounted(() => {
       dataRef.value = data.question;
       loadingRef.value = false;
     });
-  console.log(dataRef.value);
-});
-
-const handleOnClick = (index: any) => {
-  console.log(dataRef.value[index]);
 };
+onMounted(query);
 </script>
 
 <template>
@@ -82,7 +84,6 @@ const handleOnClick = (index: any) => {
         :pagination="{ pageSize: 15 }"
         :row-key="(row: any) => row.id"
         :loading="loadingRef"
-        @update:checked-row-keys="handleOnClick"
       />
     </n-space>
   </n-layout>

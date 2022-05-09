@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, h, Component } from 'vue';
+import { h, Component } from 'vue';
 import { NIcon, useMessage } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {

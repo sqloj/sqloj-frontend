@@ -27,6 +27,9 @@ const formInline = ref({
   admin: false
 });
 
+/*
+  加载区分老师和学生，{admin, username, userid, classes, passwoed}
+*/
 onMounted(() => {
   let account = JSON.parse(sessionStorage.account);
   formInline.value.admin = account.admin;
@@ -35,6 +38,10 @@ onMounted(() => {
   formInline.value.classes = account.classes;
   oldpassword = account.password;
 });
+
+/*
+  修改个人信息
+*/
 
 const handleSubmit = () => {
   console.log(formInline.value.admin);
@@ -116,7 +123,7 @@ const goback = () => {
           size="large"
           :model="formInline"
         >
-          <!-- input ID -->
+          <!-- input ID 老师和学生分开显示-->
           <div v-if="formInline.admin">
             <n-form-item
               v-if="formInline.admin"
@@ -166,7 +173,7 @@ const goback = () => {
             </n-input>
           </n-form-item>
 
-          <!-- input class -->
+          <!-- input class 只有学生显示-->
           <div v-if="!formInline.admin">
             <n-form-item
               label="班级"
@@ -183,7 +190,7 @@ const goback = () => {
               </n-input>
             </n-form-item>
           </div>
-          <!-- input password-->
+          <!-- input password 旧密码正确后才生效-->
           <n-form-item
             label="密码"
             class="inputtext"
