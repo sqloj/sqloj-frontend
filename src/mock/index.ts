@@ -213,15 +213,14 @@ mock(`/api/testcase/list`, 'post', () => {
 // 管理员表
 mock(`/api/admin/manage/list`, 'post', () => {
   let ret = [];
-  for(let i of user){
-    if(i.admin)ret.push(i);
+  for (let i of user) {
+    if (i.admin) ret.push(i);
   }
   console.log(ret);
   return {
     admin: ret
-  }
+  };
 });
-
 
 // 删除学生
 mock(`/api/student/delete`, 'post', (option: any) => {
@@ -274,3 +273,51 @@ mock(`/api/question/update`, 'post', (option: any) => {
   };
 });
 
+mock(`/api/question/find/{id}`, 'post', (option: any) => {
+  const { id } = JSON.parse(option.body);
+  for (let t of question) {
+    if (t.id === id) {
+      return {
+        question: t,
+        success: true,
+        messags: ''
+      };
+    }
+  }
+  return {
+    success: false,
+    message: '未找到题目'
+  };
+});
+
+mock(`/api/submit`, 'post', (option: any) => {
+  const { questionid, userid } = JSON.parse(option.body);
+  let ret = [];
+  if (questionid !== '') {
+    let queid = Number(questionid);
+    for (let t of submits) {
+      if (t.questionId == queid) {
+        if (userid !== '') {
+          if (t.userid == userid) ret.push(t);
+        } else {
+          ret.push(t);
+        }
+      }
+    }
+    return {
+      submits: ret
+    };
+  } else if (userid !== '') {
+    for (let t of submits) {
+      console.log(t.userid, userid);
+      if (t.userid == userid) ret.push(t);
+    }
+    return {
+      submits: ret
+    };
+  } else {
+    return {
+      submits: submits
+    };
+  }
+});

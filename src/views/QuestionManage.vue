@@ -57,6 +57,9 @@ const dataRef = ref([]);
 const loadingRef = ref(true);
 const message = useMessage();
 const router = useRouter();
+const formValue = ref({
+  queid: ''
+});
 
 /*
   查询题目列表
@@ -71,12 +74,54 @@ const query = () => {
     });
 };
 onMounted(query);
+
+const findQuestionById = () => {
+  const id = Number(formValue.value.queid);
+  axios
+    .post(`/api/question/find/{id}`, { id })
+    .then(res => res.data)
+    .then(data => {
+      if (data.success) {
+        const question = data.question;
+        sessionStorage.question = JSON.stringify(question);
+        // 页面跳转
+        router.push({
+          name: 'Question',
+          params: {
+            QuestionId: question.id
+          }
+        });
+      } else {
+        message.error(data.message);
+      }
+    });
+};
 </script>
 
 <template>
   <n-layout id="manage-container">
     <n-space vertical>
       <n-h1>题目列表</n-h1>
+      <!-- form -->
+      <n-space>
+        <n-form
+          ref="formRef"
+          label-placement="left"
+          inline
+          :label-width="80"
+          :model="formValue"
+        >
+          <n-form-item label="题目ID" path="queid">
+            <n-input v-model:value="formValue.queid" placeholder="输入题目ID" />
+          </n-form-item>
+
+          <n-form-item>
+            <n-button type="primary" size="medium" @click="findQuestionById">
+              跳转
+            </n-button>
+          </n-form-item>
+        </n-form>
+      </n-space>
       <n-data-table
         :bordered="false"
         :columns="columns"
