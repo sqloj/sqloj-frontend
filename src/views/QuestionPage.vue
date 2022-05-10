@@ -140,6 +140,16 @@ const handleSubmit = () => {
         placeholder="在此处填写答案"
         :autofocus="true"
       />
+      <n-space>
+      <n-button secondary strong type="primary" size="large" @click="run" style="margin-top: 1.6rem;">
+          <template #icon>
+            <n-icon size="18">
+              <BugOutline />
+            </n-icon>
+          </template>
+          提交
+        </n-button>
+      </n-space>
       <!-- </n-space> -->
     </div>
     <div v-else>
