@@ -1,33 +1,46 @@
 <script lang="ts" setup>
+import axios from 'axios';
 import { useMessage } from 'naive-ui';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const columns = [
   {
-    type: 'selection'
-  },
-  {
-    title: '学号',
+    title: '编号',
     key: 'id'
   },
   {
-    title: '姓名',
-    key: 'name'
+    title: '题目编号',
+    key: 'questionId'
   },
   {
-    title: '班级',
-    key: 'classes'
+    title: '提交者',
+    key: 'userid'
   },
   {
-    title: '过题数',
-    key: 'acnum'
+    title: '结果',
+    key: 'result'
+  },
+  {
+    title: '提交时间',
+    key: 'time'
   }
 ];
 
 const dataRef = ref([]);
 const loadingRef = ref(true);
 const message = useMessage();
-const checkedRowKeysRef = ref([]);
+
+const query = () => {
+  axios
+    .post(`/api/submission/list`)
+    .then(res => res.data)
+    .then(data => {
+      dataRef.value = data.submits;
+      loadingRef.value = false;
+    });
+};
+
+onMounted(query);
 </script>
 
 <template>
@@ -37,7 +50,7 @@ const checkedRowKeysRef = ref([]);
       :bordered="false"
       :columns="columns"
       :data="dataRef"
-      :pagination="{ pagesize: 10 }"
+      :pagination="{ pagesize: 15 }"
       :row-key="(row: any) => row.id"
       :loading="loadingRef"
     />

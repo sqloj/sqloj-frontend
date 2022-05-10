@@ -90,13 +90,50 @@ let TestCase = [
   }
 ];
 
+let submitsGen = () => {
+  let ret = mock({
+    'submits|5-20': [
+      {
+        'id|+1': 3,
+        userid: '@cname',
+        'questionId|1-20': 1,
+        content: '@sentence(5, 30)',
+        result:
+          '@pick(["accept", "wrong answer", "TLE", "MLE", "complete wrong"])',
+        time: '@datetime'
+      }
+    ]
+  }).submits;
+  ret.push(
+    {
+      id: 1,
+      userid: 'admin',
+      questionId: 1,
+      content: 'answer',
+      result: 'accept',
+      time: '2021-9-10'
+    },
+    {
+      id: 2,
+      userid: 'stu',
+      questionId: 1,
+      content: 'answer',
+      result: 'wrong answer',
+      time: '2022-1-1'
+    }
+  );
+  return ret;
+};
+
+let submits = submitsGen();
+
 // 设置延时
 Mock.setup({
   timeout: 200
 });
 
 // 使用拦截规则拦截命中的请求，mock(url, post/get, 返回的数据);
-
+// 登录
 mock(`/api/user/login`, 'post', (option: any) => {
   const { userid, password } = JSON.parse(option.body);
   for (let u of user) {
@@ -113,7 +150,7 @@ mock(`/api/user/login`, 'post', (option: any) => {
     success: false
   };
 });
-
+// 学生注册
 mock(`/api/student/insert`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
@@ -132,7 +169,7 @@ mock(`/api/student/insert`, 'post', (option: any) => {
     success: true
   };
 });
-
+// 用户信息更新
 mock(`/api/user/update/info`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
@@ -149,19 +186,44 @@ mock(`/api/user/update/info`, 'post', (option: any) => {
     }
   }
 });
-
+// 学生列表
 mock(`/api/student/manage/list`, 'post', () => {
   return {
     user: user
   };
 });
-
+// 题目列表
 mock(`/api/question/manage/list`, 'post', () => {
   return {
     question: question
   };
 });
+// 提交列表
+mock(`/api/submission/list`, 'post', () => {
+  return {
+    submits: submits
+  };
+});
+// 依赖数据库表
+mock(`/api/testcase/list`, 'post', () => {
+  return {
+    testcase: TestCase
+  };
+});
+// 管理员表
+mock(`/api/admin/manage/list`, 'post', () => {
+  let ret = [];
+  for(let i of user){
+    if(i.admin)ret.push(i);
+  }
+  console.log(ret);
+  return {
+    admin: ret
+  }
+});
 
+
+// 删除学生
 mock(`/api/student/delete`, 'post', (option: any) => {
   const { userid } = JSON.parse(option.body);
   let newUser = [];
@@ -191,6 +253,7 @@ mock(`/api/student/delete`, 'post', (option: any) => {
   }
 });
 
+// 更新题目
 mock(`/api/question/update`, 'post', (option: any) => {
   const que = JSON.parse(option.body);
   for (let t of question) {
@@ -210,8 +273,4 @@ mock(`/api/question/update`, 'post', (option: any) => {
     success: false
   };
 });
-mock(`/api/testcase/list`, 'post', () => {
-  return {
-    testcase: TestCase
-  };
-});
+
