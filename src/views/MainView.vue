@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import SideMenu from './SideMenu.vue';
 import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
 
 const router = useRouter();
 
@@ -8,6 +9,12 @@ const getRoute = (e: string) => {
   const subRounte = '/Main/' + e;
   router.push(subRounte);
 };
+
+// 设置初始显示界面
+onMounted(() => {
+  const subRounte = '/Main/' + 'StudentManage';
+  router.push(subRounte);
+});
 </script>
 
 <template>

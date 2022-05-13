@@ -20,8 +20,8 @@ const formInline = ref({
 });
 
 const rules = {
-  userid: { required: true, message: '请输入学工号' },
-  password: { required: true, message: '请输入密码' }
+  userid: { required: true, trigger: ['blur'], message: '请输入 ID' },
+  password: { required: true, trigger: ['blur'], message: '请输入密码' }
 };
 
 /*
@@ -130,7 +130,7 @@ const handleSubmit = () => {
           <n-form-item class="default-color">
             <div class="flex justify-between">
               <div class="flex-initial">
-                <n-checkbox v-model:checked="autoLogin"> 自动登录 </n-checkbox>
+                <n-checkbox v-model:checked="autoLogin"> 记住密码 </n-checkbox>
               </div>
             </div>
           </n-form-item>

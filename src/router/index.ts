@@ -21,11 +21,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/MainView.vue'),
     children: [
       {
-        path: '',
-        name: 'StudentManage',
-        component: () => import('../views/StudentManage.vue')
-      },
-      {
         path: 'QuestionManage',
         name: 'QuestionManage',
         component: () => import('../views/QuestionManage.vue')

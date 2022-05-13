@@ -141,7 +141,14 @@ const handleSubmit = () => {
         :autofocus="true"
       />
       <n-space>
-      <n-button secondary strong type="primary" size="large" @click="run" style="margin-top: 1.6rem;">
+        <n-button
+          secondary
+          strong
+          type="primary"
+          size="large"
+          style="margin-top: 1.6rem"
+          @click="run"
+        >
           <template #icon>
             <n-icon size="18">
               <BugOutline />
