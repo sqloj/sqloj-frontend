@@ -11,7 +11,7 @@ import axios from 'axios';
 
 const router = useRouter();
 const message = useMessage();
-let question = JSON.parse(sessionStorage.question);
+let question = JSON.parse(localStorage.question);
 let useranswer = ref('');
 // 权限管理，是否为编辑页面
 let Control = ref({
@@ -28,7 +28,7 @@ let QueEdit = ref({
 let options: Array<Object> = [];
 
 onMounted(() => {
-  Control.value.admin = JSON.parse(sessionStorage.account).admin;
+  Control.value.admin = JSON.parse(localStorage.account).admin;
   if (question.id != router.currentRoute.value.params.QuestionId) {
     // !== 出问题
     message.error('题目信息错误');
@@ -87,7 +87,7 @@ const handleSubmit = () => {
         ...QueEdit.value
       };
       question = newquestion;
-      sessionStorage.question = JSON.stringify(newquestion);
+      localStorage.question = JSON.stringify(newquestion);
       return res.data;
     })
     .then(data => {
@@ -97,7 +97,7 @@ const handleSubmit = () => {
           id: question.id,
           ...QueEdit.value
         };
-        sessionStorage.question = JSON.stringify(userJson);
+        localStorage.question = JSON.stringify(userJson);
         message.success('信息更新成功！');
       } else {
         message.error(data.message);

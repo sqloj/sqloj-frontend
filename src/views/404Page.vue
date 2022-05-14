@@ -6,6 +6,9 @@ const router = useRouter();
 const goHome = () => {
   router.push('/');
 };
+const goback = () => {
+  router.back();
+};
 </script>
 
 <template>
@@ -15,9 +18,14 @@ const goHome = () => {
     </div>
     <div class="text-center">
       <h1 class="text-base text-gray-500">抱歉，你访问的页面不存在</h1>
-      <n-button type="info" style="background-color: #18a058" @click="goHome">
-        回到首页
-      </n-button>
+      <n-space justify="center">
+        <n-button type="info" style="background-color: #18a058" @click="goHome">
+          首页
+        </n-button>
+        <n-button type="info" style="background-color: #18a058" @click="goback">
+          后退
+        </n-button>
+      </n-space>
     </div>
   </div>
 </template>

@@ -25,7 +25,7 @@ const columns = [
         {
           onClick() {
             const question = row;
-            sessionStorage.question = JSON.stringify(question);
+            localStorage.question = JSON.stringify(question);
             // 页面跳转
             router.push({
               name: 'Question',
@@ -83,7 +83,7 @@ const findQuestionById = () => {
     .then(data => {
       if (data.success) {
         const question = data.question;
-        sessionStorage.question = JSON.stringify(question);
+        localStorage.question = JSON.stringify(question);
         // 页面跳转
         router.push({
           name: 'Question',

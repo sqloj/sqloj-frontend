@@ -31,7 +31,7 @@ const formInline = ref({
   加载区分老师和学生，{admin, username, userid, classes, passwoed}
 */
 onMounted(() => {
-  let account = JSON.parse(sessionStorage.account);
+  let account = JSON.parse(localStorage.account);
   formInline.value.admin = account.admin;
   formInline.value.username = account.username;
   formInline.value.userid = account.userid;
@@ -94,7 +94,7 @@ const handleSubmit = () => {
           classes: data.classes,
           admin: data.admin
         };
-        sessionStorage.account = JSON.stringify(userJson);
+        localStorage.account = JSON.stringify(userJson);
         message.success('信息更新成功！');
         location.reload();
       } else {

@@ -71,7 +71,7 @@ const handleSubmit = () => {
     })
     .then(data => {
       if (data.success) {
-        sessionStorage.account = JSON.stringify({
+        localStorage.account = JSON.stringify({
           ...formInline.value,
           username: data.username,
           admin: data.admin,
