@@ -104,13 +104,7 @@ const findQuestionById = () => {
       <n-h1>题目列表</n-h1>
       <!-- form -->
       <n-space>
-        <n-form
-          ref="formRef"
-          label-placement="left"
-          inline
-          :label-width="80"
-          :model="formValue"
-        >
+        <n-form ref="formRef" label-placement="left" inline :model="formValue">
           <n-form-item label="题目ID" path="queid">
             <n-input v-model:value="formValue.queid" placeholder="输入题目ID" />
           </n-form-item>

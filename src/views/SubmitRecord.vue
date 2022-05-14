@@ -63,13 +63,7 @@ const findSubmit = () => {
   <n-layout id="manage-container">
     <n-h1>提交记录</n-h1>
     <n-space>
-      <n-form
-        ref="formRef"
-        label-placement="left"
-        inline
-        :label-width="80"
-        :model="formValue"
-      >
+      <n-form ref="formRef" label-placement="left" inline :model="formValue">
         <n-form-item label="题目ID" path="queid">
           <n-input
             v-model:value="formValue.questionid"

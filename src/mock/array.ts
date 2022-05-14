@@ -4,7 +4,7 @@ const { mock } = Mock;
 
 let userGen = () => {
   let ret = mock({
-    'user|5-20': [
+    'user|10-20': [
       {
         'userid|+10000': 201800000101,
         username: '@cname',
@@ -14,31 +14,31 @@ let userGen = () => {
     ]
   }).user;
 
-  ret.push({
-    userid: 'admin',
-    username: '老师',
-    password: '123456',
-    classes: '',
-    admin: true
-  });
-  ret.push({
-    userid: 'stu',
-    username: '学生',
-    password: '123456',
-    classes: '101',
-    admin: false
-  });
-  ret.push({
-    userid: 'tourist',
-    username: 't老师',
-    password: '123456',
-    classes: 'codeforce',
-    admin: true
-  });
+  ret.push(
+    {
+      userid: 'admin',
+      username: '老师',
+      password: '123456',
+      classes: '',
+      admin: true
+    },
+    {
+      userid: 'stu',
+      username: '学生',
+      password: '123456',
+      classes: '101',
+      admin: false
+    },
+    {
+      userid: 'tourist',
+      username: 't老师',
+      password: '123456',
+      classes: 'codeforce',
+      admin: true
+    }
+  );
   return ret;
 };
-
-let user = userGen();
 
 let questionGen = () => {
   let ret = mock({
@@ -48,7 +48,7 @@ let questionGen = () => {
         content: '@csentence(5, 30)',
         answer: '@sentence(5, 30)',
         'passnum|1-20': 1,
-        'testcase_id|1-10': 1
+        'testcase_id|1-2': 1
       }
     ]
   }).question;
@@ -72,19 +72,52 @@ let questionGen = () => {
   return ret;
 };
 
-let question = questionGen();
-
-let TestCase = [
+let TestCaseGen = () => [
   {
-    id: '1',
+    id: 1,
     describe: '全校学生表',
     sql: 'Mysql'
   },
   {
-    id: '2',
+    id: 2,
     describe: '计算机专业表',
     sql: 'sqlServer'
   }
 ];
 
-export { user, question, TestCase };
+let submitsGen = () => {
+  let ret = mock({
+    'submits|5-20': [
+      {
+        'id|+1': 3,
+        userid: '@cname',
+        'questionId|1-20': 1,
+        content: '@sentence(5, 30)',
+        result:
+          '@pick(["accept", "wrong answer", "TLE", "MLE", "complete wrong"])',
+        time: '@datetime'
+      }
+    ]
+  }).submits;
+  ret.push(
+    {
+      id: 1,
+      userid: 'admin',
+      questionId: 1,
+      content: 'answer',
+      result: 'accept',
+      time: '2021-9-10'
+    },
+    {
+      id: 2,
+      userid: 'stu',
+      questionId: 1,
+      content: 'answer',
+      result: 'wrong answer',
+      time: '2022-1-1'
+    }
+  );
+  return ret;
+};
+
+export { userGen, questionGen, submitsGen, TestCaseGen };
