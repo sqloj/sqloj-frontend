@@ -117,12 +117,7 @@ const goback = () => {
     <div class="view-info">
       <div class="view-info-container">
         <n-h1 style="margin-bottom: 3rem"> 个人信息 </n-h1>
-        <n-form
-          ref="formRef"
-          label-placement="left"
-          size="large"
-          :model="formInline"
-        >
+        <n-form ref="formRef" size="large" :model="formInline">
           <!-- input ID 老师和学生分开显示-->
           <div v-if="formInline.admin">
             <n-form-item
@@ -130,7 +125,6 @@ const goback = () => {
               label="工号"
               class="inputtext"
               path="userid"
-              style="margin-bottom: 1rem"
             >
               <n-input v-model:value="formInline.userid" readonly="true">
                 <template #prefix>
@@ -142,12 +136,7 @@ const goback = () => {
             </n-form-item>
           </div>
           <div v-else>
-            <n-form-item
-              label="学号"
-              class="inputtext"
-              path="userid"
-              style="margin-bottom: 1rem"
-            >
+            <n-form-item label="学号" class="inputtext" path="userid">
               <n-input v-model:value="formInline.userid" readonly="true">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
@@ -158,12 +147,7 @@ const goback = () => {
             </n-form-item>
           </div>
           <!-- input name -->
-          <n-form-item
-            label="姓名"
-            class="inputtext"
-            path="username"
-            style="margin-bottom: 1rem"
-          >
+          <n-form-item label="姓名" class="inputtext" path="username">
             <n-input v-model:value="formInline.username">
               <template #prefix>
                 <n-icon size="18" color="#808695">
@@ -175,12 +159,7 @@ const goback = () => {
 
           <!-- input class 只有学生显示-->
           <div v-if="!formInline.admin">
-            <n-form-item
-              label="班级"
-              class="inputtext"
-              path="classes"
-              style="margin-bottom: 1rem"
-            >
+            <n-form-item label="班级" class="inputtext" path="classes">
               <n-input v-model:value="formInline.classes">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
@@ -191,12 +170,7 @@ const goback = () => {
             </n-form-item>
           </div>
           <!-- input password 旧密码正确后才生效-->
-          <n-form-item
-            label="密码"
-            class="inputtext"
-            path="password"
-            style="margin-bottom: 1rem"
-          >
+          <n-form-item label="密码" class="inputtext" path="password">
             <n-input
               v-model:value="formInline.password"
               type="password"
@@ -217,7 +191,6 @@ const goback = () => {
             size="large"
             :model="formInline"
             inline
-            style="margin-bottom: 1rem"
           >
             <n-form-item class="inputtext" path="newpassword">
               <n-input
@@ -291,10 +264,6 @@ const goback = () => {
 </template>
 
 <style lang="less" scoped>
-.inputtext {
-  text-align: left;
-}
-
 .view-info {
   height: 100%;
 

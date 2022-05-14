@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { h, Component } from 'vue';
-import { NIcon, useMessage } from 'naive-ui';
+import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
   PersonOutline as PersonIcon,
@@ -66,10 +66,7 @@ const menuOptions: MenuOption[] = [
   }
 ];
 
-const message = useMessage();
-
 const handleUpdateValue = (key: string, item: MenuOption) => {
-  message.info(`${item.label}`);
   emit('getRoute', key);
 };
 </script>

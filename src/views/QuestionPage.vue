@@ -131,7 +131,6 @@ const handleSubmit = () => {
       </n-button>
       <!-- <n-space vertical> -->
       <n-h2>题目描述</n-h2>
-      <n-divider />
       <n-h4>{{ question.content }}</n-h4>
       <n-h2>答题框</n-h2>
       <n-input
@@ -162,7 +161,6 @@ const handleSubmit = () => {
     <div v-else>
       <div>
         <n-h2>题目描述</n-h2>
-        <n-divider />
         <n-input
           v-model:value="QueEdit.content"
           type="textarea"
@@ -170,14 +168,12 @@ const handleSubmit = () => {
           :autofocus="true"
         />
         <n-h2>题目答案</n-h2>
-        <n-divider />
         <n-input
           v-model:value="QueEdit.answer"
           type="textarea"
           placeholder="请填写答案"
         />
         <n-h2>依赖数据库</n-h2>
-        <n-divider />
         <n-select
           v-model:value="QueEdit.testcase_id"
           :options="options"

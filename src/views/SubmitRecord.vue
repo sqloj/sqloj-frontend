@@ -65,16 +65,10 @@ const findSubmit = () => {
     <n-space>
       <n-form ref="formRef" label-placement="left" inline :model="formValue">
         <n-form-item label="题目ID" path="queid">
-          <n-input
-            v-model:value="formValue.questionid"
-            placeholder="输入题目ID"
-          />
+          <n-input v-model:value="formValue.questionid" placeholder="" />
         </n-form-item>
         <n-form-item label="用户ID" path="userid">
-          <n-input
-            v-model:value="formValue.userid"
-            placeholder="输入提交者ID"
-          />
+          <n-input v-model:value="formValue.userid" placeholder="" />
         </n-form-item>
         <n-form-item>
           <n-button type="primary" size="medium" @click="findSubmit">
