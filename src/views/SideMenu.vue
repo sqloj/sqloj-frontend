@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { h, Component } from 'vue';
-import { NIcon, useMessage } from 'naive-ui';
+import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
   PersonOutline as PersonIcon,
   AddCircleOutline as AddIcon,
   CallOutline as CallIcon,
   InformationCircleOutline as InfoIcon,
-  BugOutline as BugIcon
+  BugOutline as BugIcon,
+  GitCommitOutline as CommitIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -25,8 +26,8 @@ const menuOptions: MenuOption[] = [
     key: 'info',
     children: [
       {
-        label: () => accout.username,
-        key: 'username',
+        label: accout.username,
+        key: 'SelfInfo',
         icon: renderIcon(InfoIcon)
       }
     ]
@@ -47,8 +48,13 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(AddIcon)
       },
       {
+        label: '提交记录',
+        key: 'SubmitRecord',
+        icon: renderIcon(CommitIcon)
+      },
+      {
         label: '权限管理',
-        key: 'authority-manage',
+        key: 'AdminAccountManage',
         icon: renderIcon(BugIcon)
       },
       {
@@ -60,10 +66,7 @@ const menuOptions: MenuOption[] = [
   }
 ];
 
-const message = useMessage();
-
 const handleUpdateValue = (key: string, item: MenuOption) => {
-  message.info(`${item.label}`);
   emit('getRoute', key);
 };
 </script>

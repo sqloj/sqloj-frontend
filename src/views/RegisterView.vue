@@ -15,6 +15,9 @@ const loading = ref(false);
 const router = useRouter();
 const message = useMessage();
 
+/*
+  注册框内容 
+*/
 const formInline = ref({
   userid: '',
   username: '',
@@ -32,6 +35,9 @@ const rules = {
   password2: { required: true, message: '请再次输入密码' }
 };
 
+/*
+  提交注册 localStorage.user{userid, password}
+*/
 const handleSubmit = () => {
   if (formInline.value.userid === '') {
     return message.error('请填写您的学号!');
@@ -101,6 +107,7 @@ const handleSubmit = () => {
     <div class="view-account-container">
       <n-h1 style="text-align: center"> 注册账号 </n-h1>
       <div class="view-account-form">
+        <!-- form 表单 -->
         <n-form
           ref="formRef"
           label-placement="left"
@@ -134,7 +141,7 @@ const handleSubmit = () => {
           </n-form-item>
 
           <!-- input class -->
-          <n-form-item label="班级" class="inputtext" path="class">
+          <n-form-item label="班级" class="inputtext" path="classes">
             <n-input
               v-model:value="formInline.classes"
               placeholder="请输入班级"

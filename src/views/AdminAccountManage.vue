@@ -9,10 +9,7 @@ import axios from 'axios';
 */
 const columns = [
   {
-    type: 'selection'
-  },
-  {
-    title: '学号',
+    title: '工号',
     key: 'userid'
   },
   {
@@ -20,12 +17,8 @@ const columns = [
     key: 'username'
   },
   {
-    title: '班级',
+    title: '学院',
     key: 'classes'
-  },
-  {
-    title: '过题数',
-    key: 'acnum'
   }
 ];
 
@@ -44,56 +37,23 @@ const handleCheck = (rowKeys: any) => {
 */
 const query = () => {
   axios
-    .post('/api/student/manage/list')
+    .post('/api/admin/manage/list')
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.user;
+      dataRef.value = data.admin;
       loadingRef.value = false;
     });
 };
 
 onMounted(query);
 
-/*
-  批量删除学生
-*/
-const handleDelete = () => {
-  let promises = [];
-  for (let id of checkedRowKeysRef.value) {
-    console.log(id);
-    // 依据 id 一个个发起删除请求
-    promises.push(
-      axios
-        .post('/api/student/delete', { userid: id })
-        .then(res => {
-          loadingRef.value = false;
-          return res.data;
-        })
-        .then(data => {
-          if (data.success) {
-            message.success('删除成功');
-          } else {
-            message.error(data.message);
-          }
-        })
-        .catch(error => {
-          console.error(error);
-          message.error('ERROR!');
-        })
-    );
-  }
-  // 重新加载列表
-  Promise.all(promises).finally(() => {
-    query();
-  });
-};
-
-// 添加学生
+// 添加老师
 const formInline = ref({
   userid: '',
   username: '',
   classes: '',
-  password: '123456'
+  password: '123456',
+  admin: true
 });
 
 const handleSubmit = () => {
@@ -112,11 +72,9 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if (formInline.value.classes === '') {
-    return message.error('请填写班级!');
-  } else if (formInline.value.classes.length > 30) {
+  if (formInline.value.classes.length > 30) {
     formInline.value.classes = '';
-    return message.error('班级名过长，请重新输入！');
+    return message.error('学院名过长，请重新输入！');
   }
 
   if (formInline.value.password === '') {
@@ -152,7 +110,7 @@ const handleSubmit = () => {
 <template>
   <n-layout id="manage-container">
     <n-space vertical>
-      <n-h1>学生管理</n-h1>
+      <n-h1>管理员列表</n-h1>
       <n-data-table
         :bordered="false"
         :columns="columns"
@@ -171,22 +129,6 @@ const handleSubmit = () => {
           type="primary"
           size="large"
           class="space"
-          @click="handleDelete"
-        >
-          <template #icon>
-            <n-icon size="18">
-              <Pencil />
-            </n-icon>
-          </template>
-          批量删除
-        </n-button>
-
-        <n-button
-          secondary
-          strong
-          type="primary"
-          size="large"
-          class="space"
           @click="showModal = true"
         >
           <template #icon>
@@ -194,14 +136,14 @@ const handleSubmit = () => {
               <PersonAddOutline />
             </n-icon>
           </template>
-          添加学生
+          新增管理员
         </n-button>
 
         <!--弹出的卡片-->
         <n-modal v-model:show="showModal">
           <n-card
             style="width: 500px"
-            title="添加学生"
+            title="添加管理员"
             :bordered="false"
             size="medium"
             role="dialog"
@@ -212,8 +154,8 @@ const handleSubmit = () => {
             <!-- 内容 -->
             <n-form label-placement="left" size="medium" :model="formInline">
               <!-- input ID -->
-              <n-form-item label="学号" class="inputtext" path="userid">
-                <n-input v-model:value="formInline.userid" placeholder="学号">
+              <n-form-item label="工号" class="inputtext" path="userid">
+                <n-input v-model:value="formInline.userid" placeholder="工号">
                 </n-input>
               </n-form-item>
               <!-- input name -->
@@ -222,8 +164,8 @@ const handleSubmit = () => {
                 </n-input>
               </n-form-item>
               <!-- input class -->
-              <n-form-item label="班级" class="inputtext" path="classes">
-                <n-input v-model:value="formInline.classes" placeholder="班级">
+              <n-form-item label="学院" class="inputtext" path="classes">
+                <n-input v-model:value="formInline.classes" placeholder="学院">
                 </n-input>
               </n-form-item>
               <!-- input password-->
