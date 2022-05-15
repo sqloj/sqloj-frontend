@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useMessage } from 'naive-ui';
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Pencil, BugOutline } from '@vicons/ionicons5';
 import axios from 'axios';
@@ -11,7 +11,7 @@ import axios from 'axios';
 
 const router = useRouter();
 const message = useMessage();
-let question = JSON.parse(localStorage.question);
+let question = ref({ id: '', content: '', answer: '', testcase_id: '' });
 let useranswer = ref('');
 // 权限管理，是否为编辑页面
 let Control = ref({
@@ -29,27 +29,37 @@ let options: Array<Object> = [];
 
 onMounted(() => {
   Control.value.admin = JSON.parse(localStorage.account).admin;
-  if (question.id != router.currentRoute.value.params.QuestionId) {
-    // !== 出问题
-    message.error('题目信息错误');
-    router.back();
-  }
-  // 如果是老师，调用查找依赖数据库（切换时再调用有bug）
-  if (Control.value.admin) {
-    axios
-      .post(`/api/testcase/list`)
-      .then(res => res.data)
-      .then(data => {
-        const testcase = data.testcase;
-        for (let t of testcase) {
-          options.push({ label: t.describe, value: t.id });
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        message.error('错误！');
-      });
-  }
+  // 从路由中读取 QuestionId 的值
+  const questionid = router.currentRoute.value.params.QuestionId;
+  console.log(questionid);
+  axios
+    .post(`/api/question/find/{id}`, { id: Number(questionid) })
+    .then(res => res.data)
+    .then(data => {
+      if (data.success) {
+        question.value = data.question;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .finally(() => {
+      // 如果是老师，调用查找依赖数据库（切换时再调用有bug）
+      if (Control.value.admin) {
+        axios
+          .post(`/api/testcase/list`)
+          .then(res => res.data)
+          .then(data => {
+            const testcase = data.testcase;
+            for (let t of testcase) {
+              options.push({ label: t.describe, value: t.id });
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            message.error('错误！');
+          });
+      }
+    });
 });
 /*
   切换到编辑状态
@@ -57,9 +67,9 @@ onMounted(() => {
 const handleEdit = () => {
   Control.value.edit = true;
   // 信息
-  QueEdit.value.content = question.content;
-  QueEdit.value.answer = question.answer;
-  QueEdit.value.testcase_id = question.testcase_id;
+  QueEdit.value.content = question.value.content;
+  QueEdit.value.answer = question.value.answer;
+  QueEdit.value.testcase_id = question.value.testcase_id;
 };
 
 /*
@@ -74,19 +84,18 @@ const run = () => {
 const handleSubmit = () => {
   axios
     .post(`/api/question/update`, {
-      id: question.id,
+      id: question.value.id,
       ...QueEdit.value
     })
     .then(res => {
       //切回答题页面，并更新内容
       Control.value.edit = false;
-      question.content = QueEdit.value.content;
+      question.value.content = QueEdit.value.content;
       const newquestion = {
-        id: question.id,
-        passnum: question.passnum,
+        id: question.value.id,
         ...QueEdit.value
       };
-      question = newquestion;
+      question.value = newquestion;
       localStorage.question = JSON.stringify(newquestion);
       return res.data;
     })
@@ -94,7 +103,7 @@ const handleSubmit = () => {
       console.log(data);
       if (data.success) {
         const userJson = {
-          id: question.id,
+          id: question.value.id,
           ...QueEdit.value
         };
         localStorage.question = JSON.stringify(userJson);

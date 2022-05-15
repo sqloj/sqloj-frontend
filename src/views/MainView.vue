@@ -19,8 +19,11 @@ const getRoute = (e: string) => {
 
 // 设置初始显示界面
 onMounted(() => {
-  const subRounte = '/Main/' + 'StudentManage';
-  router.push(subRounte);
+  console.log(router.currentRoute.value.name);
+  if (router.currentRoute.value.name == 'Main') {
+    const subRounte = '/Main/' + 'StudentManage';
+    router.push(subRounte);
+  }
 });
 </script>
 

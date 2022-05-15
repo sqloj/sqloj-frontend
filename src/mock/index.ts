@@ -154,7 +154,7 @@ mock(`/api/question/update`, 'post', (option: any) => {
     success: false
   };
 });
-
+// 通过题目id查找题目 （不需要passnum）
 mock(`/api/question/find/{id}`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
   for (let t of question) {
@@ -171,7 +171,7 @@ mock(`/api/question/find/{id}`, 'post', (option: any) => {
     message: '未找到题目'
   };
 });
-
+// questionid 和 userid 查找
 mock(`/api/submit`, 'post', (option: any) => {
   const { questionid, userid } = JSON.parse(option.body);
   let ret = [];
