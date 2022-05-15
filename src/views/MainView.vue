@@ -19,8 +19,7 @@ const getRoute = (e: string) => {
 
 // 设置初始显示界面
 onMounted(() => {
-  console.log(router.currentRoute.value.name);
-  if (router.currentRoute.value.name == 'main') {
+  if (router.currentRoute.value.name === 'main') {
     const subRounte = '/main/' + 'question-manage';
     router.push(subRounte);
   }

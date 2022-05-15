@@ -100,7 +100,6 @@ const handleSubmit = () => {
       return res.data;
     })
     .then(data => {
-      console.log(data);
       if (data.success) {
         const userJson = {
           id: question.value.id,

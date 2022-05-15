@@ -72,19 +72,6 @@ let questionGen = () => {
   return ret;
 };
 
-let TestCaseGen = () => [
-  {
-    id: 1,
-    describe: '全校学生表',
-    sql: 'Mysql'
-  },
-  {
-    id: 2,
-    describe: '计算机专业表',
-    sql: 'sqlServer'
-  }
-];
-
 let submitsGen = () => {
   let ret = mock({
     'submits|5-20': [
@@ -119,5 +106,23 @@ let submitsGen = () => {
   );
   return ret;
 };
+
+let TestCaseGen = () => [
+  {
+    id: 1,
+    describe: '全校学生表',
+    sql: 'Mysql'
+  },
+  {
+    id: 2,
+    describe: '计算机专业表',
+    sql: 'sqlServer'
+  },
+  {
+    id: 3,
+    describe: '数据库班级信息表',
+    sql: 'mysql'
+  }
+];
 
 export { userGen, questionGen, submitsGen, TestCaseGen };

@@ -44,7 +44,6 @@ onMounted(() => {
 */
 
 const handleSubmit = () => {
-  console.log(formInline.value.admin);
   if (formInline.value.username === '') {
     return message.error('姓名不能为空!');
   } else if (formInline.value.username.length > 30) {

@@ -9,7 +9,8 @@ import {
   InformationCircleOutline as InfoIcon,
   BugOutline as BugIcon,
   GitCommitOutline as CommitIcon,
-  ArrowBackCircleOutline as ArrowBack
+  ArrowBackCircleOutline as ArrowBack,
+  ServerOutline as DataBase
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -52,6 +53,11 @@ const menuOptions: MenuOption[] = [
         label: '题目管理',
         key: 'question-manage',
         icon: renderIcon(AddIcon)
+      },
+      {
+        label: '测试数据库',
+        key: 'test-case',
+        icon: renderIcon(DataBase)
       },
       {
         label: '提交记录',
