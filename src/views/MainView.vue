@@ -10,9 +10,9 @@ const message = useMessage();
 const getRoute = (e: string) => {
   if (e == 'logout') {
     message.success('退出成功');
-    router.replace('/Login');
+    router.replace('/login');
   } else {
-    const subRounte = '/Main/' + e;
+    const subRounte = '/main/' + e;
     router.push(subRounte);
   }
 };
@@ -20,8 +20,8 @@ const getRoute = (e: string) => {
 // 设置初始显示界面
 onMounted(() => {
   console.log(router.currentRoute.value.name);
-  if (router.currentRoute.value.name == 'Main') {
-    const subRounte = '/Main/' + 'StudentManage';
+  if (router.currentRoute.value.name == 'main') {
+    const subRounte = '/main/' + 'question-manage';
     router.push(subRounte);
   }
 });

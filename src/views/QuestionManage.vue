@@ -28,7 +28,7 @@ const columns = [
             localStorage.question = JSON.stringify(question);
             // 页面跳转
             router.push({
-              name: 'Question',
+              name: 'question',
               params: {
                 QuestionId: question.id
               }
@@ -86,7 +86,7 @@ const findQuestionById = () => {
         localStorage.question = JSON.stringify(question);
         // 页面跳转
         router.push({
-          name: 'Question',
+          name: 'question',
           params: {
             QuestionId: question.id
           }

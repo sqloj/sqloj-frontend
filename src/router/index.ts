@@ -3,58 +3,58 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/Login'
+    redirect: '/login'
   },
   {
-    path: '/Login',
-    name: 'Login',
+    path: '/login',
+    name: 'login',
     component: () => import('../views/LoginView.vue')
   },
   {
-    path: '/Register',
-    name: 'Register',
+    path: '/register',
+    name: 'register',
     component: () => import('../views/RegisterView.vue')
   },
   {
-    path: '/Main',
-    name: 'Main',
-    component: () => import('../views/MainView.vue'),
+    path: '/main',
+    name: 'main',
+    component: () => import('../views/mainView.vue'),
     children: [
       {
-        path: 'QuestionManage',
-        name: 'QuestionManage',
+        path: 'question-manage',
+        name: 'question-manage',
         component: () => import('../views/QuestionManage.vue')
       },
       {
-        path: 'StudentManage',
-        name: 'StudentManage',
+        path: 'student-manage',
+        name: 'student-manage',
         component: () => import('../views/StudentManage.vue')
       },
       {
-        path: 'SelfInfo',
-        name: 'SelfInfo',
+        path: 'self-info',
+        name: 'self-info',
         component: () => import('../views/SelfInfo.vue')
       },
       {
-        path: 'AdminAccountManage',
-        name: 'AdminAccountManage',
+        path: 'admin-accoun-manage',
+        name: 'admin-accoun-manage',
         component: () => import('../views/AdminAccountManage.vue')
       },
       {
-        path: 'SubmitRecord',
-        name: 'SubmitRecord',
+        path: 'submit-record',
+        name: 'submit-record',
         component: () => import('../views/SubmitRecord.vue')
       },
       {
-        path: 'Question/:QuestionId',
-        name: 'Question',
+        path: 'question/:QuestionId',
+        name: 'question',
         component: () => import('../views/QuestionPage.vue')
       }
     ]
   },
   {
     path: '/404',
-    name: 'NotFound',
+    name: 'not-found',
     component: () => import('../views/404Page.vue')
   },
   {

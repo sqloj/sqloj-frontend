@@ -90,7 +90,7 @@ const handleSubmit = () => {
         };
         localStorage.user = JSON.stringify(userJson);
         message.success('注册成功！');
-        router.replace('/Login');
+        router.replace('/login');
       } else {
         message.error(data.message);
       }

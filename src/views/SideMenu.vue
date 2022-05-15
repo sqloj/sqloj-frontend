@@ -28,7 +28,7 @@ const menuOptions: MenuOption[] = [
     children: [
       {
         label: accout.username,
-        key: 'SelfInfo',
+        key: 'self-info',
         icon: renderIcon(InfoIcon)
       },
       {
@@ -45,22 +45,22 @@ const menuOptions: MenuOption[] = [
     children: [
       {
         label: '学生管理',
-        key: 'StudentManage',
+        key: 'student-manage',
         icon: renderIcon(PersonIcon)
       },
       {
         label: '题目管理',
-        key: 'QuestionManage',
+        key: 'question-manage',
         icon: renderIcon(AddIcon)
       },
       {
         label: '提交记录',
-        key: 'SubmitRecord',
+        key: 'submit-record',
         icon: renderIcon(CommitIcon)
       },
       {
         label: '权限管理',
-        key: 'AdminAccountManage',
+        key: 'admin-accoun-manage',
         icon: renderIcon(BugIcon)
       },
       {
