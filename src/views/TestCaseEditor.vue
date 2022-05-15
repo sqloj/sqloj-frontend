@@ -6,7 +6,6 @@ import { Pencil, BugOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 
 const router = useRouter();
-const message = useMessage();
 // 依赖数据库选择
 
 onMounted(() => {
