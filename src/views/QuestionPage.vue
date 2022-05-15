@@ -18,21 +18,27 @@ const questionid = router.currentRoute.value.params.QuestionId;
 const admin = JSON.parse(localStorage.account).admin;
 
 onMounted(() => {
-  axios
-    .post(`/api/question/find/{id}`, { id: Number(questionid) })
-    .then(res => res.data)
-    .then(data => {
-      if (data.success) {
-        question.value = data.question;
-      } else {
-        message.error(data.message);
-      }
-    })
-    .finally(() => {
-      if (admin) {
-        useranswer.value = question.value.answer;
-      }
-    });
+  if (Number.isFinite(Number(questionid))) {
+    axios
+      .post(`/api/question/find/{id}`, { id: Number(questionid) })
+      .then(res => res.data)
+      .then(data => {
+        if (data.success) {
+          question.value = data.question;
+        } else {
+          message.error(data.message);
+          router.back();
+        }
+      })
+      .finally(() => {
+        if (admin) {
+          useranswer.value = question.value.answer;
+        }
+      });
+  } else {
+    message.error('错误的编号');
+    router.back();
+  }
 });
 
 /*

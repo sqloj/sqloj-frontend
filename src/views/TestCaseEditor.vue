@@ -10,7 +10,7 @@ const message = useMessage();
 // 依赖数据库选择
 
 onMounted(() => {
-  // 从路由中读取 QuestionId 的值
+  // 从路由中读取 testcaseid 的值
   const testcaseid = router.currentRoute.value.params.testcaseId;
   console.log(testcaseid);
 });

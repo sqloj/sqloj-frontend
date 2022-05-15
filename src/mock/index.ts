@@ -200,6 +200,7 @@ mock(`/api/submit`, 'post', (option: any) => {
 // 删除题目
 mock(`/api/question/delete`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
+  console.log(id);
   let newquestion = [];
   let flag = false;
   for (let i of question) {
@@ -221,6 +222,22 @@ mock(`/api/question/delete`, 'post', (option: any) => {
       message: '删除失败'
     };
   }
+});
+
+// 添加题目
+mock(`/api/question/insert`, 'post', (option: any) => {
+  const que = JSON.parse(option.body);
+  let id = question.length + 1;
+  question.push({
+    id: id,
+    ...que
+  });
+
+  return {
+    id: id,
+    message: '添加成功',
+    success: true
+  };
 });
 
 // 删除测试集

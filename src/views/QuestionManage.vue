@@ -2,6 +2,7 @@
 import { h, onMounted, ref } from 'vue';
 import { NA, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
+import { Add } from '@vicons/ionicons5';
 import axios from 'axios';
 
 const admin = JSON.parse(localStorage.account).admin;
@@ -104,6 +105,10 @@ const findQuestionById = () => {
       }
     });
 };
+
+const addQuestion = () => {
+  router.push('question-add');
+};
 </script>
 
 <template>
@@ -120,6 +125,16 @@ const findQuestionById = () => {
           <n-form-item>
             <n-button type="primary" size="medium" @click="findQuestionById">
               跳转
+            </n-button>
+          </n-form-item>
+          <n-form-item>
+            <n-button type="primary" size="medium" @click="addQuestion">
+              <template #icon>
+                <n-icon size="18">
+                  <Add />
+                </n-icon>
+              </template>
+              新增题目
             </n-button>
           </n-form-item>
         </n-form>
