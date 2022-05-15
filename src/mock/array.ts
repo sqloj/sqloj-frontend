@@ -54,7 +54,7 @@ let questionGen = () => {
   }).question;
   ret.push(
     {
-      id: '1',
+      id: 1,
       content:
         '查询系编号为‘0501’学生的基本信息（学号、姓名、性别、出生日期）。',
       answer: "SELECT snum, sname, ssex, sbirth FROM s WHERE dnum = '0501'",
@@ -62,7 +62,7 @@ let questionGen = () => {
       testcase_id: 1
     },
     {
-      id: '2',
+      id: 2,
       content: "查询学号为'201305010101'的学生的姓名。",
       answer: "SELECT sname FROM s WHERE snum = '201305010101'",
       passnum: 100,

@@ -4,6 +4,7 @@ import { NA, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
+const admin = JSON.parse(localStorage.account).admin;
 /*
   展示题目信息 {id, content<a>, passnum, testcase_id}
 */
@@ -27,12 +28,21 @@ const columns = [
             const question = row;
             localStorage.question = JSON.stringify(question);
             // 页面跳转
-            router.push({
-              name: 'question',
-              params: {
-                QuestionId: question.id
-              }
-            });
+            if (admin) {
+              router.push({
+                name: 'question-editor',
+                params: {
+                  QuestionId: question.id
+                }
+              });
+            } else {
+              router.push({
+                name: 'question',
+                params: {
+                  QuestionId: question.id
+                }
+              });
+            }
           }
         },
         {
@@ -82,13 +92,11 @@ const findQuestionById = () => {
     .then(res => res.data)
     .then(data => {
       if (data.success) {
-        const question = data.question;
-        localStorage.question = JSON.stringify(question);
         // 页面跳转
         router.push({
           name: 'question',
           params: {
-            QuestionId: question.id
+            QuestionId: data.question.id
           }
         });
       } else {

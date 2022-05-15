@@ -131,12 +131,12 @@ mock(`/api/student/delete`, 'post', (option: any) => {
 
 // 更新题目
 mock(`/api/question/update`, 'post', (option: any) => {
-  const que = JSON.parse(option.body);
+  const { id, content, answer, testcase_id } = JSON.parse(option.body);
   for (let t of question) {
-    if (t.id === que.id) {
-      t.content = que.content;
-      t.answer = que.answer;
-      t.testcase_id = que.testcase_id;
+    if (t.id === id) {
+      t.content = content;
+      t.answer = answer;
+      t.testcase_id = testcase_id;
       return {
         ...t,
         message: '信息更新成功',

@@ -51,6 +51,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/QuestionPage.vue')
       },
       {
+        path: 'question-editor/:QuestionId',
+        name: 'question-editor',
+        component: () => import('../views/QuestionEditor.vue')
+      },
+      {
         path: 'test-case',
         name: 'test-case',
         component: () => import('../views/TestCase.vue')
