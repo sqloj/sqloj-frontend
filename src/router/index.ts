@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/main',
     name: 'main',
-    component: () => import('../views/mainView.vue'),
+    component: () => import('../views/MainView.vue'),
     children: [
       {
         path: 'question-manage',
