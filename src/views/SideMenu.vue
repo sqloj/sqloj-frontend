@@ -55,7 +55,7 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(AddIcon)
       },
       {
-        label: '测试数据库',
+        label: '测试数据集',
         key: 'test-case',
         icon: renderIcon(DataBase)
       },

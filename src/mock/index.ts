@@ -197,10 +197,36 @@ mock(`/api/submit`, 'post', (option: any) => {
     };
   }
 });
+// 删除题目
+mock(`/api/question/delete`, 'post', (option: any) => {
+  const { id } = JSON.parse(option.body);
+  let newquestion = [];
+  let flag = false;
+  for (let i of question) {
+    if (id == i.id) {
+      flag = true;
+    } else {
+      newquestion.push(i);
+    }
+  }
+  if (flag) {
+    question = newquestion;
+    return {
+      success: true,
+      message: '删除成功'
+    };
+  } else {
+    return {
+      success: false,
+      message: '删除失败'
+    };
+  }
+});
 
 // 删除测试集
 mock(`/api/testcase/delete`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
+  console.log(id);
   let newTestCase = [];
   let flag = false;
   for (let i of TestCase) {

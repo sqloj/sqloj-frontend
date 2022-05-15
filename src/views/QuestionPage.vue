@@ -31,7 +31,6 @@ onMounted(() => {
   Control.value.admin = JSON.parse(localStorage.account).admin;
   // 从路由中读取 QuestionId 的值
   const questionid = router.currentRoute.value.params.QuestionId;
-  console.log(questionid);
   axios
     .post(`/api/question/find/{id}`, { id: Number(questionid) })
     .then(res => res.data)
@@ -57,6 +56,12 @@ onMounted(() => {
           .catch(error => {
             console.error(error);
             message.error('错误！');
+          })
+          .finally(() => {
+            Control.value.edit = true;
+            QueEdit.value.content = question.value.content;
+            QueEdit.value.answer = question.value.answer;
+            QueEdit.value.testcase_id = question.value.testcase_id;
           });
       }
     });
@@ -198,6 +203,22 @@ const handleSubmit = () => {
             </n-icon>
           </template>
           运行
+        </n-button>
+        <n-button secondary strong type="primary" size="large" @click="run">
+          <template #icon>
+            <n-icon size="18">
+              <BugOutline />
+            </n-icon>
+          </template>
+          测试
+        </n-button>
+        <n-button secondary strong type="primary" size="large" @click="run">
+          <template #icon>
+            <n-icon size="18">
+              <BugOutline />
+            </n-icon>
+          </template>
+          删除
         </n-button>
         <n-button
           secondary

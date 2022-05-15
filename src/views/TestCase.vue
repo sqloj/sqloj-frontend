@@ -17,14 +17,13 @@ const actions = [
           testcaseId: id
         }
       });
-      console.log(router);
     }
   },
   {
     title: '删除',
     act: (id: any) => {
       axios
-        .post('/api/testcase/delete')
+        .post('/api/testcase/delete', { id: id })
         .then(res => res.data)
         .then(data => {
           if (data.success) {
@@ -36,6 +35,9 @@ const actions = [
         .catch(error => {
           console.error(error);
           message.error('ERROR!');
+        })
+        .finally(() => {
+          query();
         });
     }
   }

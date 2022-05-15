@@ -34,9 +34,6 @@ const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
-const handleCheck = (rowKeys: any) => {
-  checkedRowKeysRef.value = rowKeys;
-};
 
 /*
   查询学生列表的api （应当只有学生）
@@ -152,13 +149,13 @@ const handleSubmit = () => {
     <n-space vertical>
       <n-h1>学生管理</n-h1>
       <n-data-table
+        v-model:checked-row-keys="checkedRowKeysRef"
         :bordered="false"
         :columns="columns"
         :data="dataRef"
         :pagination="{ pageSize: 10 }"
         :row-key="(row: any) => row.userid"
         :loading="loadingRef"
-        @update:checked-row-keys="handleCheck"
       />
 
       <!--delete and addStudents button -->
