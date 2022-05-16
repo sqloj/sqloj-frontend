@@ -66,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/TestCase.vue')
       },
       {
-        path: 'test-case-editor:testcaseId',
+        path: 'test-case-editor/:testcaseId',
         name: 'test-case-editor',
         component: () => import('../views/TestCaseEditor.vue')
       }
