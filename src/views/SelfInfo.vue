@@ -77,7 +77,7 @@ const handleSubmit = () => {
   }
 
   axios
-    .post(`/api/user/update/info`, {
+    .post(`/api/v1/user/update`, {
       userid: formInline.value.userid,
       username: formInline.value.username,
       password: formInline.value.newpassword,

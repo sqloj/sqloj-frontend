@@ -85,7 +85,7 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/student/insert', formInline.value)
+    .post('/api/v1/user/register', formInline.value)
     .then(res => res.data)
     .then(data => {
       if (data.success) {

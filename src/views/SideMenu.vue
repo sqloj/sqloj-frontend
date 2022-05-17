@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, Component } from 'vue';
+import { h, Component, ref } from 'vue';
 import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
@@ -81,8 +81,14 @@ const menuOptions: MenuOption[] = [
 const handleUpdateValue = (key: String) => {
   emit('getRoute', key);
 };
+
+const containerRef = ref<HTMLElement>(null as unknown as HTMLElement);
 </script>
 
 <template>
-  <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
+  <div ref="containerRef">
+    <n-affix :top="0" :trigger-top="0" :listen-to="() => containerRef">
+      <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
+    </n-affix>
+  </div>
 </template>

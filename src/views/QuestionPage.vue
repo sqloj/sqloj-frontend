@@ -20,7 +20,7 @@ const admin = JSON.parse(localStorage.account).admin;
 onMounted(() => {
   if (Number.isFinite(Number(questionid))) {
     axios
-      .post(`/api/question/find/{id}`, { id: Number(questionid) })
+      .post(`/api/v1/question/info/{id}`, { id: Number(questionid) })
       .then(res => res.data)
       .then(data => {
         if (data.success) {

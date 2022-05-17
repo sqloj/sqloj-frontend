@@ -37,7 +37,7 @@ onMounted(() => {
 */
 const handleAdd = () => {
   axios
-    .post(`/api/question/insert`, {
+    .post(`/api/v1/question/insert`, {
       content: question.value.content,
       answer: question.value.answer,
       testcase_id: question.value.testcase_id

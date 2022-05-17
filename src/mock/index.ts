@@ -16,7 +16,7 @@ Mock.setup({
 
 // 使用拦截规则拦截命中的请求，mock(url, post/get, 返回的数据);
 // 登录
-mock(`/api/user/login`, 'post', (option: any) => {
+mock(`/api/v1/user/login`, 'post', (option: any) => {
   const { userid, password } = JSON.parse(option.body);
   for (let u of user) {
     if (u.userid === userid && u.password === password) {
@@ -33,7 +33,7 @@ mock(`/api/user/login`, 'post', (option: any) => {
   };
 });
 // 学生注册
-mock(`/api/student/insert`, 'post', (option: any) => {
+mock(`/api/v1/user/register`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
     if (u.userid === userInfo.userid) {
@@ -51,7 +51,7 @@ mock(`/api/student/insert`, 'post', (option: any) => {
   };
 });
 // 用户信息更新
-mock(`/api/user/update/info`, 'post', (option: any) => {
+mock(`/api/v1/user/update`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
     if (u.userid === userInfo.userid) {
@@ -73,7 +73,7 @@ mock(`/api/student/manage/list`, 'post', () => {
   };
 });
 // 题目列表
-mock(`/api/question/manage/list`, 'post', () => {
+mock(`/api/v1/question/list`, 'post', () => {
   return {
     question: question
   };
@@ -102,7 +102,7 @@ mock(`/api/admin/manage/list`, 'post', () => {
 });
 
 // 删除学生
-mock(`/api/student/delete`, 'post', (option: any) => {
+mock(`/api/v1/user/delete`, 'post', (option: any) => {
   const { userid } = JSON.parse(option.body);
   let newUser = [];
   let flag = false;
@@ -130,7 +130,7 @@ mock(`/api/student/delete`, 'post', (option: any) => {
 });
 
 // 更新题目
-mock(`/api/question/update`, 'post', (option: any) => {
+mock(`/api/v1/question/update`, 'post', (option: any) => {
   const { id, content, answer, testcase_id } = JSON.parse(option.body);
   for (let t of question) {
     if (t.id === id) {
@@ -150,7 +150,7 @@ mock(`/api/question/update`, 'post', (option: any) => {
   };
 });
 // 通过题目id查找题目 （不需要passnum）
-mock(`/api/question/find/{id}`, 'post', (option: any) => {
+mock(`/api/v1/question/info/{id}`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
   for (let t of question) {
     if (t.id === id) {
@@ -198,7 +198,7 @@ mock(`/api/submit`, 'post', (option: any) => {
   }
 });
 // 删除题目
-mock(`/api/question/delete`, 'post', (option: any) => {
+mock(`/api/v1/question/delete`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
   console.log(id);
   let newquestion = [];
@@ -225,7 +225,7 @@ mock(`/api/question/delete`, 'post', (option: any) => {
 });
 
 // 添加题目
-mock(`/api/question/insert`, 'post', (option: any) => {
+mock(`/api/v1/question/insert`, 'post', (option: any) => {
   const que = JSON.parse(option.body);
   let id = question.length + 1;
   question.push({

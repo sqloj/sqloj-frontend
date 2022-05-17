@@ -63,7 +63,7 @@ const handleSubmit = () => {
 
   loadingRef.value = true;
   axios
-    .post('/api/user/login', formInline.value)
+    .post('/api/v1/user/login', formInline.value)
 
     .then(res => {
       loadingRef.value = false;

@@ -59,7 +59,7 @@ const handleDelete = () => {
     // 依据 id 一个个发起删除请求
     promises.push(
       axios
-        .post('/api/student/delete', { userid: id })
+        .post('/api/v1/user/delete', { userid: id })
         .then(res => {
           loadingRef.value = false;
           return res.data;
@@ -124,7 +124,7 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/student/insert', formInline.value)
+    .post('/api/v1/user/register', formInline.value)
     .then(res => res.data)
     .then(data => {
       if (data.success) {

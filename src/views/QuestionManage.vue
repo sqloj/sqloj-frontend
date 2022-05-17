@@ -77,7 +77,7 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .post(`/api/question/manage/list`)
+    .post(`/api/v1/question/list`)
     .then(res => res.data)
     .then(data => {
       dataRef.value = data.question;
@@ -89,7 +89,7 @@ onMounted(query);
 const findQuestionById = () => {
   const id = Number(formValue.value.queid);
   axios
-    .post(`/api/question/find/{id}`, { id })
+    .post(`/api/v1/question/info/{id}`, { id })
     .then(res => res.data)
     .then(data => {
       if (data.success) {

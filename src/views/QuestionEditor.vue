@@ -36,7 +36,7 @@ onMounted(() => {
     .finally(() => {
       if (Number.isFinite(Number(questionid))) {
         axios
-          .post(`/api/question/find/{id}`, { id: Number(questionid) })
+          .post(`/api/v1/question/info/{id}`, { id: Number(questionid) })
           .then(res => res.data)
           .then(data => {
             if (data.success) {
@@ -60,7 +60,7 @@ onMounted(() => {
 */
 const handleSubmit = () => {
   axios
-    .post(`/api/question/update`, question.value)
+    .post(`/api/v1/question/update`, question.value)
     .then(res => res.data)
     .then(data => {
       if (data.success) {
@@ -95,7 +95,7 @@ const handleRun = () => {
 
 const handleDelete = () => {
   axios
-    .post(`/api/question/delete`, { id: questionid })
+    .post(`/api/v1/question/delete`, { id: questionid })
     .then(res => res.data)
     .then(data => {
       if (data.success) {
