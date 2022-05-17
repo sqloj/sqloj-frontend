@@ -28,7 +28,6 @@ const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
 const handleCheck = (rowKeys: any) => {
-  console.log(rowKeys);
   checkedRowKeysRef.value = rowKeys;
 };
 
@@ -57,7 +56,6 @@ const formInline = ref({
 });
 
 const handleSubmit = () => {
-  console.log(formInline.value);
   if (formInline.value.userid === '') {
     return message.error('请填写学号!');
   } else if (formInline.value.userid.length > 20) {

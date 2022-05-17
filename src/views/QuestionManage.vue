@@ -2,8 +2,10 @@
 import { h, onMounted, ref } from 'vue';
 import { NA, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
+import { Add } from '@vicons/ionicons5';
 import axios from 'axios';
 
+const admin = JSON.parse(localStorage.account).admin;
 /*
   展示题目信息 {id, content<a>, passnum, testcase_id}
 */
@@ -25,14 +27,23 @@ const columns = [
         {
           onClick() {
             const question = row;
-            sessionStorage.question = JSON.stringify(question);
+            localStorage.question = JSON.stringify(question);
             // 页面跳转
-            router.push({
-              name: 'Question',
-              params: {
-                QuestionId: question.id
-              }
-            });
+            if (admin) {
+              router.push({
+                name: 'question-editor',
+                params: {
+                  QuestionId: question.id
+                }
+              });
+            } else {
+              router.push({
+                name: 'question',
+                params: {
+                  QuestionId: question.id
+                }
+              });
+            }
           }
         },
         {
@@ -82,19 +93,21 @@ const findQuestionById = () => {
     .then(res => res.data)
     .then(data => {
       if (data.success) {
-        const question = data.question;
-        sessionStorage.question = JSON.stringify(question);
         // 页面跳转
         router.push({
-          name: 'Question',
+          name: 'question',
           params: {
-            QuestionId: question.id
+            QuestionId: data.question.id
           }
         });
       } else {
         message.error(data.message);
       }
     });
+};
+
+const addQuestion = () => {
+  router.push('question-add');
 };
 </script>
 
@@ -106,12 +119,22 @@ const findQuestionById = () => {
       <n-space>
         <n-form ref="formRef" label-placement="left" inline :model="formValue">
           <n-form-item label="题目ID" path="queid">
-            <n-input v-model:value="formValue.queid" placeholder="输入题目ID" />
+            <n-input v-model:value="formValue.queid" placeholder="" />
           </n-form-item>
 
           <n-form-item>
             <n-button type="primary" size="medium" @click="findQuestionById">
               跳转
+            </n-button>
+          </n-form-item>
+          <n-form-item>
+            <n-button type="primary" size="medium" @click="addQuestion">
+              <template #icon>
+                <n-icon size="18">
+                  <Add />
+                </n-icon>
+              </template>
+              新增题目
             </n-button>
           </n-form-item>
         </n-form>

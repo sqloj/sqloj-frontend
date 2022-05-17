@@ -1,0 +1,80 @@
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import SqlEditor from '../components/SqlEditor.vue';
+
+const router = useRouter();
+const db_options = [
+  {
+    value: 1,
+    label: 'MySQL'
+  },
+  {
+    value: 2,
+    label: 'SQL Server'
+  },
+  {
+    value: 3,
+    label: 'MariaDB'
+  }
+];
+
+onMounted(() => {
+  // 从路由中读取 testcaseid 的值
+  const testcaseid = router.currentRoute.value.params.testcaseId;
+  console.log(testcaseid);
+});
+
+let testcase = ref({
+  label: '',
+  abstract: '',
+  content: '',
+  lang: null
+});
+
+const handleSubmit = () => {
+  console.log(testcase.value);
+};
+
+const handleDelete = () => {};
+</script>
+
+<template>
+  <div class="manage-container">
+    <n-h1>测试集</n-h1>
+    <n-form :model="testcase">
+      <n-form-item label="标签" class="inputtext" path="label">
+        <n-input
+          v-model:value="testcase.label"
+          placeholder="请填写标签内容"
+          :autofocus="true"
+        />
+      </n-form-item>
+      <n-form-item label="数据库" class="inputtext" path="lang">
+        <n-select v-model:value="testcase.lang" :options="db_options" />
+      </n-form-item>
+      <n-form-item label="建表语句" class="inputtext" path="abstract">
+        <sql-editor v-model:value="testcase.abstract" />
+      </n-form-item>
+      <n-form-item label="插入语句" class="inputtext" path="content">
+        <sql-editor v-model:value="testcase.content" />
+      </n-form-item>
+    </n-form>
+    <n-space>
+      <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
+
+      <n-button type="error" @click="handleDelete"> 删除 </n-button>
+    </n-space>
+  </div>
+</template>
+
+<style scoped>
+.manage-container {
+  max-width: 700px;
+  margin: 80px auto;
+}
+
+.card {
+  text-align: left;
+}
+</style>

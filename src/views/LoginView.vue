@@ -38,7 +38,7 @@ onMounted(() => {
   跳转注册界面
 */
 const logon = () => {
-  router.push('/Register');
+  router.push('/register');
 };
 
 /*
@@ -71,14 +71,14 @@ const handleSubmit = () => {
     })
     .then(data => {
       if (data.success) {
-        sessionStorage.account = JSON.stringify({
+        localStorage.account = JSON.stringify({
           ...formInline.value,
           username: data.username,
           admin: data.admin,
           classes: data.classes
         });
         message.success(`欢迎回来！${data.username}`);
-        router.replace('/Main');
+        router.replace('/main');
       } else {
         message.error('用户名或密码错误！');
       }

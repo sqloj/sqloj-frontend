@@ -47,7 +47,6 @@ const query = () => {
 onMounted(query);
 
 const findSubmit = () => {
-  console.log(formValue.value);
   loadingRef.value = true;
   axios
     .post(`/api/submit`, formValue.value)

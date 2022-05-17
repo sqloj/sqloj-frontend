@@ -26,7 +26,6 @@ const rules = {
 };
 
 const handleSubmit = () => {
-  console.log(formInline.value);
   if (formInline.value.userid === '') {
     return message.error('请填写学号!');
   } else if (formInline.value.userid.length > 20) {

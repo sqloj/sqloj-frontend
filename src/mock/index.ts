@@ -44,7 +44,6 @@ mock(`/api/student/insert`, 'post', (option: any) => {
     }
   }
   user.push(userInfo);
-  console.log(user);
 
   return {
     message: '注册成功',
@@ -59,7 +58,6 @@ mock(`/api/user/update/info`, 'post', (option: any) => {
       u.username = userInfo.username;
       u.password = userInfo.password;
       u.classes = userInfo.classes;
-      console.log(u);
       return {
         ...u,
         message: '信息更新成功',
@@ -98,7 +96,6 @@ mock(`/api/admin/manage/list`, 'post', () => {
   for (let i of user) {
     if (i.admin) ret.push(i);
   }
-  console.log(ret);
   return {
     admin: ret
   };
@@ -109,7 +106,6 @@ mock(`/api/student/delete`, 'post', (option: any) => {
   const { userid } = JSON.parse(option.body);
   let newUser = [];
   let flag = false;
-  console.log(userid);
 
   for (let u of user) {
     if (u.userid !== userid) {
@@ -118,7 +114,6 @@ mock(`/api/student/delete`, 'post', (option: any) => {
       flag = true;
     }
   }
-  console.log(newUser);
 
   user = newUser;
   if (flag) {
@@ -136,12 +131,12 @@ mock(`/api/student/delete`, 'post', (option: any) => {
 
 // 更新题目
 mock(`/api/question/update`, 'post', (option: any) => {
-  const que = JSON.parse(option.body);
+  const { id, content, answer, testcase_id } = JSON.parse(option.body);
   for (let t of question) {
-    if (t.id === que.id) {
-      t.content = que.content;
-      t.answer = que.answer;
-      t.testcase_id = que.testcase_id;
+    if (t.id === id) {
+      t.content = content;
+      t.answer = answer;
+      t.testcase_id = testcase_id;
       return {
         ...t,
         message: '信息更新成功',
@@ -154,7 +149,7 @@ mock(`/api/question/update`, 'post', (option: any) => {
     success: false
   };
 });
-
+// 通过题目id查找题目 （不需要passnum）
 mock(`/api/question/find/{id}`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
   for (let t of question) {
@@ -171,7 +166,7 @@ mock(`/api/question/find/{id}`, 'post', (option: any) => {
     message: '未找到题目'
   };
 });
-
+// questionid 和 userid 查找
 mock(`/api/submit`, 'post', (option: any) => {
   const { questionid, userid } = JSON.parse(option.body);
   let ret = [];
@@ -191,7 +186,6 @@ mock(`/api/submit`, 'post', (option: any) => {
     };
   } else if (userid !== '') {
     for (let t of submits) {
-      console.log(t.userid, userid);
       if (t.userid == userid) ret.push(t);
     }
     return {
@@ -200,6 +194,75 @@ mock(`/api/submit`, 'post', (option: any) => {
   } else {
     return {
       submits: submits
+    };
+  }
+});
+// 删除题目
+mock(`/api/question/delete`, 'post', (option: any) => {
+  const { id } = JSON.parse(option.body);
+  console.log(id);
+  let newquestion = [];
+  let flag = false;
+  for (let i of question) {
+    if (id == i.id) {
+      flag = true;
+    } else {
+      newquestion.push(i);
+    }
+  }
+  if (flag) {
+    question = newquestion;
+    return {
+      success: true,
+      message: '删除成功'
+    };
+  } else {
+    return {
+      success: false,
+      message: '删除失败'
+    };
+  }
+});
+
+// 添加题目
+mock(`/api/question/insert`, 'post', (option: any) => {
+  const que = JSON.parse(option.body);
+  let id = question.length + 1;
+  question.push({
+    id: id,
+    ...que
+  });
+
+  return {
+    id: id,
+    message: '添加成功',
+    success: true
+  };
+});
+
+// 删除测试集
+mock(`/api/testcase/delete`, 'post', (option: any) => {
+  const { id } = JSON.parse(option.body);
+  console.log(id);
+  let newTestCase = [];
+  let flag = false;
+  for (let i of TestCase) {
+    if (id == i.id) {
+      flag = true;
+    } else {
+      newTestCase.push(i);
+    }
+  }
+  if (flag) {
+    TestCase = newTestCase;
+    return {
+      success: true,
+      message: '删除成功'
+    };
+  } else {
+    return {
+      success: false,
+      message: '删除失败'
     };
   }
 });

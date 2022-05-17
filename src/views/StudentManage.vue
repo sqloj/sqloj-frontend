@@ -34,10 +34,6 @@ const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
-const handleCheck = (rowKeys: any) => {
-  console.log(rowKeys);
-  checkedRowKeysRef.value = rowKeys;
-};
 
 /*
   查询学生列表的api （应当只有学生）
@@ -60,7 +56,6 @@ onMounted(query);
 const handleDelete = () => {
   let promises = [];
   for (let id of checkedRowKeysRef.value) {
-    console.log(id);
     // 依据 id 一个个发起删除请求
     promises.push(
       axios
@@ -85,6 +80,7 @@ const handleDelete = () => {
   // 重新加载列表
   Promise.all(promises).finally(() => {
     query();
+    checkedRowKeysRef.value = [];
   });
 };
 
@@ -97,7 +93,6 @@ const formInline = ref({
 });
 
 const handleSubmit = () => {
-  console.log(formInline.value);
   if (formInline.value.userid === '') {
     return message.error('请填写学号!');
   } else if (formInline.value.userid.length > 20) {
@@ -154,13 +149,13 @@ const handleSubmit = () => {
     <n-space vertical>
       <n-h1>学生管理</n-h1>
       <n-data-table
+        v-model:checked-row-keys="checkedRowKeysRef"
         :bordered="false"
         :columns="columns"
         :data="dataRef"
         :pagination="{ pageSize: 10 }"
         :row-key="(row: any) => row.userid"
         :loading="loadingRef"
-        @update:checked-row-keys="handleCheck"
       />
 
       <!--delete and addStudents button -->

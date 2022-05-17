@@ -8,14 +8,16 @@ import {
   CallOutline as CallIcon,
   InformationCircleOutline as InfoIcon,
   BugOutline as BugIcon,
-  GitCommitOutline as CommitIcon
+  GitCommitOutline as CommitIcon,
+  ArrowBackCircleOutline as ArrowBack,
+  ServerOutline as DataBase
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-const accout = JSON.parse(sessionStorage.account);
+const accout = JSON.parse(localStorage.account);
 
 const emit = defineEmits(['getRoute']);
 
@@ -27,8 +29,13 @@ const menuOptions: MenuOption[] = [
     children: [
       {
         label: accout.username,
-        key: 'SelfInfo',
+        key: 'self-info',
         icon: renderIcon(InfoIcon)
+      },
+      {
+        label: '退出登录',
+        key: 'logout',
+        icon: renderIcon(ArrowBack)
       }
     ]
   },
@@ -39,22 +46,27 @@ const menuOptions: MenuOption[] = [
     children: [
       {
         label: '学生管理',
-        key: 'StudentManage',
+        key: 'student-manage',
         icon: renderIcon(PersonIcon)
       },
       {
         label: '题目管理',
-        key: 'QuestionManage',
+        key: 'question-manage',
         icon: renderIcon(AddIcon)
       },
       {
+        label: '测试数据集',
+        key: 'test-case',
+        icon: renderIcon(DataBase)
+      },
+      {
         label: '提交记录',
-        key: 'SubmitRecord',
+        key: 'submit-record',
         icon: renderIcon(CommitIcon)
       },
       {
         label: '权限管理',
-        key: 'AdminAccountManage',
+        key: 'admin-accoun-manage',
         icon: renderIcon(BugIcon)
       },
       {
@@ -66,7 +78,7 @@ const menuOptions: MenuOption[] = [
   }
 ];
 
-const handleUpdateValue = (key: string, item: MenuOption) => {
+const handleUpdateValue = (key: String) => {
   emit('getRoute', key);
 };
 </script>
