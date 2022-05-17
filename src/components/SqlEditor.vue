@@ -1,63 +1,43 @@
-<script>
-import { getCurrentInstance, onMounted, watch } from 'vue';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js';
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
-// 解决vite Monaco提示错误
-self.MonacoEnvironment = {
-    getWorker() {
-        return new JsonWorker();
-    },
-};
-export default {
-    props: {
-        value: String,
-    },
-    setup(props, { emit }) {
-        let monacoEditor = null;
-        const { proxy } = getCurrentInstance();
+<script lang="ts" setup>
+import * as monaco from 'monaco-editor';
+import { onMounted, ref } from 'vue';
 
-        watch(
-            () => props.value,
-            (value) => {
-                // 防止改变编辑器内容时光标重定向
-                if (value !== monacoEditor?.getValue()) {
-                    monacoEditor.setValue(value);
-                }
-            },
-        );
+const props = defineProps<{
+  value: string;
+}>();
 
-        onMounted(() => {
-            monacoEditor = monaco.editor.create(proxy.$refs.editContainer, {
-                value: props.value,
-                readOnly: false,
-                language: 'sql',
-                theme: 'vs',
-                selectOnLineNumbers: true,
-                renderSideBySide: false,
-            });
-            // 监听值变化
-            monacoEditor.onDidChangeModelContent(() => {
-                const currenValue = monacoEditor.getValue();
-                emit('update:value', currenValue);
-            });
-        });
-        return {};
-    },
-};
+let instance: monaco.editor.IStandaloneCodeEditor;
+const editContainer = ref();
+
+const emit = defineEmits(['update:value']);
+
+onMounted(() => {
+  instance = monaco.editor.create(editContainer.value, {
+    value: props.value,
+    language: 'sql'
+  });
+  instance.onDidChangeModelContent(() => {
+    emit('update:value', instance.getValue());
+  });
+});
 </script>
 
 <template>
+  <div class="editor-wrapper">
     <div ref="editContainer" class="code-editor"></div>
+  </div>
 </template>
 
 <style scoped>
 .code-editor {
-    max-width: 100%;
-    min-height: 300px;
-    border: 1px solid rgb(224, 224, 230);
-    /* box-shadow: 0 0 0 1px gray; */
-    /* border-radius:3px; */
+  min-height: 300px;
+  /* box-shadow: 0 0 0 1px gray; */
+  /* border-radius:3px; */
+}
+
+.editor-wrapper {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgb(224, 224, 230);
 }
 </style>
-
-
