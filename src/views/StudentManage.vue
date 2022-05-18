@@ -34,6 +34,11 @@ const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
+const formValue = ref({
+  userid: '',
+  username: '',
+  classes: ''
+});
 
 /*
   查询学生列表的api （应当只有学生）
@@ -65,8 +70,8 @@ const handleDelete = () => {
           return res.data;
         })
         .then(data => {
-          if (data.success) {
-            message.success('删除成功');
+          if (data.code) {
+            message.code('删除成功');
           } else {
             message.error(data.message);
           }
@@ -82,6 +87,13 @@ const handleDelete = () => {
     query();
     checkedRowKeysRef.value = [];
   });
+};
+
+const findSubmit = () => {
+  axios
+    .post(`api/v1/user/search`, formValue.value)
+    .then(res => res.data)
+    .then(data => {});
 };
 
 // 添加学生
@@ -127,8 +139,8 @@ const handleSubmit = () => {
     .post('/api/v1/user/register', formInline.value)
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
-        message.success('添加成功！');
+      if (data.code) {
+        message.code('添加成功！');
         showModal.value = false;
       } else {
         message.error(data.message);
@@ -148,6 +160,24 @@ const handleSubmit = () => {
   <n-layout id="manage-container">
     <n-space vertical>
       <n-h1>学生管理</n-h1>
+      <n-space>
+        <n-form ref="formRef" label-placement="left" inline :model="formValue">
+          <n-form-item label="用户ID" path="queid">
+            <n-input v-model:value="formValue.userid" placeholder="" />
+          </n-form-item>
+          <n-form-item label="姓名" path="userid">
+            <n-input v-model:value="formValue.username" placeholder="" />
+          </n-form-item>
+          <n-form-item label="班级" path="userid">
+            <n-input v-model:value="formValue.classes" placeholder="" />
+          </n-form-item>
+          <n-form-item>
+            <n-button type="primary" size="medium" @click="findSubmit">
+              查找
+            </n-button>
+          </n-form-item>
+        </n-form>
+      </n-space>
       <n-data-table
         v-model:checked-row-keys="checkedRowKeysRef"
         :bordered="false"

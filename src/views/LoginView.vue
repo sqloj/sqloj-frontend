@@ -63,12 +63,13 @@ const handleSubmit = () => {
 
   loadingRef.value = true;
   axios
-    .post('/api/v1/user/login', formInline.value)
-
-    .then(res => {
-      loadingRef.value = false;
-      return res.data;
+    .post('/api/v1/user/login', null, {
+      params: {
+        id: formInline.value.userid,
+        password: formInline.value.password
+      }
     })
+    .then(res => res.data)
     .then(data => {
       if (data.success) {
         localStorage.account = JSON.stringify({
@@ -86,6 +87,9 @@ const handleSubmit = () => {
     .catch(error => {
       console.error(error);
       message.error('ERROR!');
+    })
+    .finally(() => {
+      loadingRef.value = false;
     });
 };
 </script>
