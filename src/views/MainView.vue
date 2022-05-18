@@ -35,7 +35,11 @@ onMounted(() => {
       </nav>
     </n-layout-sider>
     <!-- 主显示 -->
-    <n-layout>
+    <n-layout
+      id="main-container"
+      :native-scrollbar="false"
+      style="height: 100vh"
+    >
       <router-view />
     </n-layout>
   </n-layout>

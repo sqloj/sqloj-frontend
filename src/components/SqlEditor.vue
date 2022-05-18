@@ -40,4 +40,15 @@ onMounted(() => {
   height: 100%;
   border: 1px solid rgb(224, 224, 230);
 }
+.editor-wrapper:active {
+  border: 1px solid #36ad6a;
+  box-shadow: 0 0 0 2px rgba(24, 160, 88, 0.2);
+}
+.editor-wrapper:focus {
+  border: 1px solid #36ad6a;
+  box-shadow: 0 0 0 2px rgba(24, 160, 88, 0.2);
+}
+.editor-wrapper:hover {
+  border: 1px solid #36ad6a;
+}
 </style>

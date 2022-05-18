@@ -53,7 +53,8 @@ const columns = [
   },
   {
     title: '描述',
-    key: 'describe'
+    key: 'describe',
+    width: '50%'
   },
   {
     title: '数据库类型',
@@ -110,7 +111,7 @@ onMounted(query);
         :columns="columns"
         :data="dataRef"
         :pagination="{ pageSize: 10 }"
-        :row-key="(row: any) => row.userid"
+        :row-key="(row: any) => row.id"
         :loading="loadingRef"
       />
 

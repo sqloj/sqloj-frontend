@@ -10,7 +10,8 @@ import {
   BugOutline as BugIcon,
   GitCommitOutline as CommitIcon,
   ArrowBackCircleOutline as ArrowBack,
-  ServerOutline as DataBase
+  ServerOutline as DataBase,
+  CloudDoneOutline as CloudIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -70,6 +71,11 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(BugIcon)
       },
       {
+        label: '测评机管理',
+        key: 'judge-server',
+        icon: renderIcon(CloudIcon)
+      },
+      {
         label: '联系我们',
         key: 'call-us',
         icon: renderIcon(CallIcon)
@@ -81,14 +87,8 @@ const menuOptions: MenuOption[] = [
 const handleUpdateValue = (key: String) => {
   emit('getRoute', key);
 };
-
-const containerRef = ref<HTMLElement>(null as unknown as HTMLElement);
 </script>
 
 <template>
-  <div ref="containerRef">
-    <n-affix :top="0" :trigger-top="0" :listen-to="() => containerRef">
-      <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
-    </n-affix>
-  </div>
+  <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
 </template>

@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Pencil, BugOutline } from '@vicons/ionicons5';
 import axios from 'axios';
+import SqlEditor from '../components/SqlEditor.vue';
 
 /*
   读取当前的题目信息，{id, content, answer, passnum, testcase_id}
@@ -79,12 +80,15 @@ const handleEdit = () => {
     <n-h2>题目描述</n-h2>
     <n-h4>{{ question.content }}</n-h4>
     <n-h2>答题框</n-h2>
-    <n-input
+    <!-- <n-form-item label="插入语句" class="inputtext" path="useranswer"> -->
+    <sql-editor v-model:value="useranswer" />
+    <!-- </n-form-item> -->
+    <!-- <n-input
       v-model:value="useranswer"
       type="textarea"
       placeholder="在此处填写答案"
       :autofocus="true"
-    />
+    /> -->
     <n-space justify="space-between">
       <n-button
         secondary
@@ -124,7 +128,6 @@ const handleEdit = () => {
 .manage-container {
   padding: 20px;
   padding-top: 80px;
-  overflow: auto;
   text-align: left;
   margin: 0 auto;
   max-width: 800px;

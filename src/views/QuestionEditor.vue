@@ -4,6 +4,7 @@ import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Pencil, BugOutline, CloseOutline } from '@vicons/ionicons5';
 import axios from 'axios';
+import SqlEditor from '../components/SqlEditor.vue';
 
 /*
   读取当前的题目信息，{id, content, answer, passnum, testcase_id}
@@ -124,11 +125,12 @@ const handleDelete = () => {
         :autofocus="true"
       />
       <n-h2>题目答案</n-h2>
-      <n-input
+      <sql-editor v-model:value="question.answer" />
+      <!-- <n-input
         v-model:value="question.answer"
         type="textarea"
         placeholder="请填写答案"
-      />
+      /> -->
       <n-h2>依赖数据库</n-h2>
       <n-select
         v-model:value="question.testcase_id"
@@ -185,9 +187,7 @@ const handleDelete = () => {
 
 <style scoped>
 .manage-container {
-  padding: 20px;
   padding-top: 80px;
-  overflow: auto;
   text-align: left;
   margin: 0 auto;
   max-width: 800px;

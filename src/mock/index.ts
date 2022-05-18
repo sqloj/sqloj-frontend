@@ -1,6 +1,12 @@
 // 引入mockjs
 import Mock from 'mockjs';
-import { userGen, questionGen, submitsGen, TestCaseGen } from './array';
+import {
+  userGen,
+  questionGen,
+  submitsGen,
+  TestCaseGen,
+  ServerGen
+} from './array';
 // 引入模板函数类
 
 // Mock函数
@@ -9,6 +15,7 @@ let user = userGen();
 let question = questionGen();
 let submits = submitsGen();
 let TestCase = TestCaseGen();
+let server = ServerGen();
 // 设置延时
 Mock.setup({
   timeout: 200
@@ -98,6 +105,12 @@ mock(`/api/admin/manage/list`, 'post', () => {
   }
   return {
     admin: ret
+  };
+});
+
+mock(`/api/server/list`, 'post', () => {
+  return {
+    server: server
   };
 });
 

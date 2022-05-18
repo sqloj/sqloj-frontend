@@ -125,4 +125,25 @@ let TestCaseGen = () => [
   }
 ];
 
-export { userGen, questionGen, submitsGen, TestCaseGen };
+let ServerGen = () => [
+  {
+    id: 1,
+    url: 'http://localhost:3306',
+    password: '123456',
+    sqltype: 'MySQL'
+  },
+  {
+    id: 2,
+    url: 'http://localhost:11080',
+    password: '123456',
+    sqltype: 'MySQL'
+  },
+  {
+    id: 3,
+    url: 'http://localhost:3333',
+    password: '123456',
+    sqltype: 'SQL Server'
+  }
+];
+
+export { userGen, questionGen, submitsGen, TestCaseGen, ServerGen };

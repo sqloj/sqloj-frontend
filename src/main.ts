@@ -7,6 +7,6 @@ import App from './App.vue';
 import router from './router';
 
 import './mock';
-import './useWorker';
+// import './useWorker';
 
 createApp(App).use(router).use(naive).mount('#app');

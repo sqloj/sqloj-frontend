@@ -10,6 +10,12 @@
   width: 100%;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
 input:-webkit-autofill,
 input:autofill {
   box-shadow: 0 0 0 100px #fff inset !important;

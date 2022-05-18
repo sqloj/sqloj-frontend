@@ -70,7 +70,7 @@ const handleDelete = () => {};
 
 <style scoped>
 .manage-container {
-  max-width: 700px;
+  max-width: 800px;
   margin: 80px auto;
 }
 
