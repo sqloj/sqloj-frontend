@@ -2,7 +2,15 @@
 import axios from 'axios';
 import { useMessage } from 'naive-ui';
 import { onMounted, ref } from 'vue';
-
+import { RESULT } from '../setting/const';
+/*
+"id": 1,
+      "userID": "1",
+      "questionID": 3,
+      "code": "SELECT 1;",
+      "result": 4,
+      time
+*/
 const columns = [
   {
     title: '编号',
@@ -10,11 +18,11 @@ const columns = [
   },
   {
     title: '题目编号',
-    key: 'questionId'
+    key: 'questionID'
   },
   {
     title: '提交者',
-    key: 'userid'
+    key: 'userID'
   },
   {
     title: '结果',
@@ -30,16 +38,19 @@ const dataRef = ref([]);
 const loadingRef = ref(true);
 const message = useMessage();
 const formValue = ref({
-  questionid: '',
-  userid: ''
+  questionID: '',
+  userID: ''
 });
 
 const query = () => {
   axios
-    .post(`/api/submission/list`)
+    .get(`/api/v1/submit/list`)
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.submits;
+      for (let i of data.data) {
+        i.result = RESULT[i.result];
+      }
+      dataRef.value = data.data;
       loadingRef.value = false;
     });
 };
@@ -64,10 +75,10 @@ const findSubmit = () => {
     <n-space>
       <n-form ref="formRef" label-placement="left" inline :model="formValue">
         <n-form-item label="题目ID" path="queid">
-          <n-input v-model:value="formValue.questionid" placeholder="" />
+          <n-input v-model:value="formValue.questionID" placeholder="" />
         </n-form-item>
-        <n-form-item label="用户ID" path="userid">
-          <n-input v-model:value="formValue.userid" placeholder="" />
+        <n-form-item label="用户ID" path="userID">
+          <n-input v-model:value="formValue.userID" placeholder="" />
         </n-form-item>
         <n-form-item>
           <n-button type="primary" size="medium" @click="findSubmit">

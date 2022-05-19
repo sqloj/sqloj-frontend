@@ -11,6 +11,7 @@ import {
 } from '@vicons/ionicons5';
 import axios from 'axios';
 import { useMessage } from 'naive-ui';
+import { STUDENT } from '../setting/const';
 
 const formRef = ref();
 const router = useRouter();
@@ -18,24 +19,24 @@ const message = useMessage();
 let oldpassword = '';
 
 const formInline = ref({
-  userid: '',
+  id: '',
   username: '',
-  classes: '',
+  department: '',
   password: '',
   newpassword: '',
   newpassword_again: '',
-  admin: false
+  role: STUDENT
 });
 
 /*
-  加载区分老师和学生，{admin, username, userid, classes, passwoed}
+  加载区分老师和学生，{role, username, id, department , passwoed}
 */
 onMounted(() => {
   let account = JSON.parse(localStorage.account);
-  formInline.value.admin = account.admin;
+  formInline.value.role = account.role;
   formInline.value.username = account.username;
-  formInline.value.userid = account.userid;
-  formInline.value.classes = account.classes;
+  formInline.value.id = account.id;
+  formInline.value.department = account.department;
   oldpassword = account.password;
 });
 
@@ -51,10 +52,10 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if (formInline.value.admin === false && formInline.value.classes === '') {
+  if (formInline.value.role === STUDENT && formInline.value.department === '') {
     return message.error('请填写您的班级!');
-  } else if (formInline.value.classes.length > 30) {
-    formInline.value.classes = '';
+  } else if (formInline.value.department.length > 30) {
+    formInline.value.department = '';
     return message.error('班级名过长，请重新输入！');
   }
 
@@ -74,24 +75,35 @@ const handleSubmit = () => {
         return message.error('两次密码不一致！');
       }
     }
+  } else {
+    formInline.value.password = oldpassword;
   }
 
   axios
-    .post(`/api/v1/user/update`, {
-      userid: formInline.value.userid,
-      username: formInline.value.username,
-      password: formInline.value.newpassword,
-      classes: formInline.value.classes
-    })
+    .post(
+      `/api/v1/user/update`,
+      {
+        id: formInline.value.id,
+        username: formInline.value.username,
+        password: formInline.value.newpassword,
+        department: formInline.value.department,
+        role: formInline.value.role
+      },
+      {
+        params: {
+          oldpassword: oldpassword
+        }
+      }
+    )
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         const userJson = {
-          userid: data.userid,
+          id: data.id,
           password: data.password,
           username: data.username,
-          classes: data.classes,
-          admin: data.admin
+          department: data.department,
+          role: data.role
         };
         localStorage.account = JSON.stringify(userJson);
         message.success('信息更新成功！');
@@ -118,14 +130,14 @@ const goback = () => {
         <n-h1 style="margin-bottom: 3rem"> 个人信息 </n-h1>
         <n-form ref="formRef" size="large" :model="formInline">
           <!-- input ID 老师和学生分开显示-->
-          <div v-if="formInline.admin">
+          <div v-if="formInline.role !== STUDENT">
             <n-form-item
-              v-if="formInline.admin"
+              v-if="formInline.role"
               label="工号"
               class="inputtext"
-              path="userid"
+              path="id"
             >
-              <n-input v-model:value="formInline.userid" readonly="true">
+              <n-input v-model:value="formInline.id" readonly="true">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
                     <AccessibilityOutline />
@@ -135,8 +147,8 @@ const goback = () => {
             </n-form-item>
           </div>
           <div v-else>
-            <n-form-item label="学号" class="inputtext" path="userid">
-              <n-input v-model:value="formInline.userid" readonly="true">
+            <n-form-item label="学号" class="inputtext" path="id">
+              <n-input v-model:value="formInline.id" readonly="true">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
                     <AccessibilityOutline />
@@ -156,10 +168,21 @@ const goback = () => {
             </n-input>
           </n-form-item>
 
-          <!-- input class 只有学生显示-->
-          <div v-if="!formInline.admin">
-            <n-form-item label="班级" class="inputtext" path="classes">
-              <n-input v-model:value="formInline.classes">
+          <!-- input class -->
+          <div v-if="formInline.role === STUDENT">
+            <n-form-item label="班级" class="inputtext" path="department ">
+              <n-input v-model:value="formInline.department">
+                <template #prefix>
+                  <n-icon size="18" color="#808695">
+                    <PeopleOutline />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
+          </div>
+          <div v-else>
+            <n-form-item label="部门" class="inputtext" path="department ">
+              <n-input v-model:value="formInline.department">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
                     <PeopleOutline />

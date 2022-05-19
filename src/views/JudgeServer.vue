@@ -3,13 +3,11 @@ import { h, onMounted, ref } from 'vue';
 import { NButton, useMessage } from 'naive-ui';
 import { Add } from '@vicons/ionicons5';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
 
 const dataRef = ref([]);
 const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
-const router = useRouter();
 const showModal = ref(false);
 const showAddModal = ref(false);
 
@@ -17,7 +15,7 @@ const formInline = ref({
   id: 0,
   url: '',
   password: '',
-  sqltype: ''
+  typeName: ''
 });
 
 const actions = [
@@ -32,9 +30,15 @@ const actions = [
     title: 'ping',
     act: (row: any) => {
       axios
-        .post('/api/ping', { id: row.id })
+        .post('/api/v1/server/ping', { id: row.id })
         .then(res => res.data)
-        .then(data => {})
+        .then(data => {
+          if (data.code === 0) {
+            message.success('连接正常');
+          } else {
+            message.error(data.message);
+          }
+        })
         .catch(error => {
           console.error(error);
           message.error('ERROR!');
@@ -45,10 +49,10 @@ const actions = [
     title: '删除',
     act: (row: any) => {
       axios
-        .post('/api/server/delete', { id: row.id })
+        .post('/api/v1/server/delete', null, { params: { id: row.id } })
         .then(res => res.data)
         .then(data => {
-          if (data.success) {
+          if (data.code === 0) {
             message.success('删除成功');
           } else {
             message.error(data.message);
@@ -79,7 +83,7 @@ const columns = [
   },
   {
     title: '数据库类型',
-    key: 'sqltype'
+    key: 'typeName'
   },
   {
     title: '操作',
@@ -105,11 +109,19 @@ const columns = [
 
 const query = () => {
   axios
-    .post('/api/server/list')
+    .get('/api/v1/judge/list')
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.server;
-      loadingRef.value = false;
+      if (data.code === 0) {
+        dataRef.value = data.data;
+        loadingRef.value = false;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      message.error('出错');
     });
 };
 
@@ -121,10 +133,18 @@ const addJudge = () => {
 const handleAdd = () => {
   showAddModal.value = false;
   axios
-    .post('/api/server/insert', formInline.value)
+    .post('/api/v1/judge/insert', formInline.value)
     .then(res => res.data)
     .then(data => {
-      message.success('添加成功');
+      if (data.code === 0) {
+        message.success('插入成功');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      message.error('出错');
     })
     .finally(() => {
       query();
@@ -134,10 +154,14 @@ const handleAdd = () => {
 const handleUpdate = () => {
   showModal.value = false;
   axios
-    .post('/api/server/update', formInline.value)
+    .post('/api/v1/judge/update', formInline.value)
     .then(res => res.data)
     .then(data => {
-      message.success('更新成功');
+      if (data.code === 0) {
+        message.success('更新成功');
+      } else {
+        message.error(data.message);
+      }
     })
     .finally(() => {
       query();

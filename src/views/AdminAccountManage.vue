@@ -88,7 +88,7 @@ const handleSubmit = () => {
     .post('/api/v1/user/register', formInline.value)
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         message.success('添加成功！');
         showModal.value = false;
       } else {

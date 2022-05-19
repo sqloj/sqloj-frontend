@@ -6,9 +6,9 @@ let userGen = () => {
   let ret = mock({
     'user|10-20': [
       {
-        'userid|+10000': 201800000101,
+        'id|+10000': 201800000101,
         username: '@cname',
-        classes: '寄科221',
+        department: '寄科221',
         'acnum|1-10': 10
       }
     ]
@@ -16,24 +16,24 @@ let userGen = () => {
 
   ret.push(
     {
-      userid: 'admin',
+      id: 'admin',
       username: '老师',
       password: '123456',
-      classes: '',
+      department: '',
       admin: true
     },
     {
-      userid: 'stu',
+      id: 'stu',
       username: '学生',
       password: '123456',
-      classes: '101',
+      department: '101',
       admin: false
     },
     {
-      userid: 'tourist',
+      id: 'tourist',
       username: 't老师',
       password: '123456',
-      classes: 'codeforce',
+      department: 'codeforce',
       admin: true
     }
   );

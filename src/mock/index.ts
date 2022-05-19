@@ -1,5 +1,6 @@
 // 引入mockjs
 import Mock from 'mockjs';
+import { encrypt } from '../setting/const';
 import {
   userGen,
   questionGen,
@@ -21,29 +22,47 @@ Mock.setup({
   timeout: 200
 });
 
+function parseQueryString(url: String, key: String) {
+  let arr;
+  url = url.split('#')[0];
+  arr = url.split('?');
+  arr.shift();
+  let queryStr = arr.join('?');
+
+  //获取参数
+  arr = queryStr.split('&');
+  for (let i = 0; i < arr.length; i++) {
+    let itemArr = arr[i].split('=');
+    let name = itemArr.shift();
+    let value = itemArr.join('=');
+    if (name === key) return value;
+  }
+}
+
 // 使用拦截规则拦截命中的请求，mock(url, post/get, 返回的数据);
 // 登录
-mock(`/api/v1/user/login`, 'post', (option: any) => {
-  const { userid, password } = JSON.parse(option.body);
+mock(/\/api\/v1\/user\/login/, 'post', (option: any) => {
+  let id = parseQueryString(option.url, 'id');
+  let password = parseQueryString(option.url, 'password');
   for (let u of user) {
-    if (u.userid === userid && u.password === password) {
+    if (u.id === id && encrypt(u.password) === password) {
       return {
-        ...u,
+        data: u,
         message: '请求成功',
-        success: true
+        code: 0
       };
     }
   }
   return {
     message: '请求失败',
-    success: false
+    code: 1
   };
 });
 // 学生注册
 mock(`/api/v1/user/register`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
-    if (u.userid === userInfo.userid) {
+    if (u.id === userInfo.id) {
       return {
         message: '用户ID已存在',
         success: false
@@ -61,7 +80,7 @@ mock(`/api/v1/user/register`, 'post', (option: any) => {
 mock(`/api/v1/user/update`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
-    if (u.userid === userInfo.userid) {
+    if (u.id === userInfo.id) {
       u.username = userInfo.username;
       u.password = userInfo.password;
       u.classes = userInfo.classes;
@@ -74,13 +93,13 @@ mock(`/api/v1/user/update`, 'post', (option: any) => {
   }
 });
 // 学生列表
-mock(`/api/student/manage/list`, 'post', () => {
+mock(`/mapi/v1/user/list`, 'post', () => {
   return {
-    user: user
+    data: user
   };
 });
 // 题目列表
-mock(`/api/v1/question/list`, 'post', () => {
+mock(`/api/v1/question/list`, 'get', () => {
   return {
     question: question
   };
@@ -92,7 +111,7 @@ mock(`/api/submission/list`, 'post', () => {
   };
 });
 // 依赖数据库表
-mock(`/api/testcase/list`, 'post', () => {
+mock(`/api/v1/testcase/list`, 'get', () => {
   return {
     testcase: TestCase
   };
@@ -116,12 +135,12 @@ mock(`/api/server/list`, 'post', () => {
 
 // 删除学生
 mock(`/api/v1/user/delete`, 'post', (option: any) => {
-  const { userid } = JSON.parse(option.body);
+  const { id } = JSON.parse(option.body);
   let newUser = [];
   let flag = false;
 
   for (let u of user) {
-    if (u.userid !== userid) {
+    if (u.id !== id) {
       newUser.push(u);
     } else {
       flag = true;
@@ -179,16 +198,16 @@ mock(`/api/v1/question/info/{id}`, 'post', (option: any) => {
     message: '未找到题目'
   };
 });
-// questionid 和 userid 查找
+// questionid 和 id 查找
 mock(`/api/submit`, 'post', (option: any) => {
-  const { questionid, userid } = JSON.parse(option.body);
+  const { questionid, id } = JSON.parse(option.body);
   let ret = [];
   if (questionid !== '') {
     let queid = Number(questionid);
     for (let t of submits) {
       if (t.questionId == queid) {
-        if (userid !== '') {
-          if (t.userid == userid) ret.push(t);
+        if (id !== '') {
+          if (t.id == id) ret.push(t);
         } else {
           ret.push(t);
         }
@@ -197,9 +216,9 @@ mock(`/api/submit`, 'post', (option: any) => {
     return {
       submits: ret
     };
-  } else if (userid !== '') {
+  } else if (id !== '') {
     for (let t of submits) {
-      if (t.userid == userid) ret.push(t);
+      if (t.id == id) ret.push(t);
     }
     return {
       submits: ret

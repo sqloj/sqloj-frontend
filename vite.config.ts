@@ -7,9 +7,13 @@ export default defineConfig({
    cors: true,
    proxy: { 
     '/api': {
-     target: "http://124.221.134.229:10085/",
+     target: "http://81.68.84.209:10086/",
      changeOrigin: true,
-    }
+    },
+    '/mapi': {
+      target: "http://81.68.84.209:10086/",
+      changeOrigin: true,
+     }
    }
   },
   plugins: [vue()]

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import axios from 'axios';
 import { PersonOutline, LockClosedOutline } from '@vicons/ionicons5';
+import { encrypt } from '../setting/const';
 
 const formRef = ref();
 const loadingRef = ref(false);
@@ -12,15 +13,17 @@ const router = useRouter();
 const message = useMessage();
 
 /*    
-  输入框内容 {userid, password}
+  输入框内容 {id, password}
 */
 const formInline = ref({
-  userid: '',
+  id: '',
   password: ''
 });
-
+/*
+  文本规则
+*/
 const rules = {
-  userid: { required: true, trigger: ['blur'], message: '请输入 ID' },
+  id: { required: true, trigger: ['blur'], message: '请输入 ID' },
   password: { required: true, trigger: ['blur'], message: '请输入密码' }
 };
 
@@ -35,53 +38,47 @@ onMounted(() => {
 });
 
 /*
-  跳转注册界面
-*/
-const logon = () => {
-  router.push('/register');
-};
-
-/*
-  发生登录请求， account{userid, password, username, classes, admin}
-  localStorage.user{userid, password}
+  发生登录请求， account{id, password, username, department, role}
+  localStorage.user{id, password}
 */
 const handleSubmit = () => {
   // 是否保存账号密码
   if (autoLogin.value) {
     localStorage.user = JSON.stringify(formInline.value);
   } else {
+    // 清空原有的保存
     localStorage.removeItem('user');
   }
 
-  if (formInline.value.userid === '') {
-    return message.error('请填写您的 ID!');
+  if (formInline.value.id === '') {
+    return message.warning('请输入您的 ID');
   }
 
   if (formInline.value.password === '') {
-    return message.error('请填写密码！');
+    return message.warning('请输入您的密码');
   }
-
+  // 加载
   loadingRef.value = true;
   axios
     .post('/api/v1/user/login', null, {
       params: {
-        id: formInline.value.userid,
-        password: formInline.value.password
+        id: formInline.value.id,
+        password: encrypt(formInline.value.password)
       }
     })
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         localStorage.account = JSON.stringify({
           ...formInline.value,
-          username: data.username,
-          admin: data.admin,
-          classes: data.classes
+          username: data.data.username,
+          department: data.data.department,
+          role: data.data.role
         });
-        message.success(`欢迎回来！${data.username}`);
+        message.success(`欢迎回来！${data.data.username}`);
         router.replace('/main');
       } else {
-        message.error('用户名或密码错误！');
+        message.error(data.message);
       }
     })
     .catch(error => {
@@ -91,6 +88,13 @@ const handleSubmit = () => {
     .finally(() => {
       loadingRef.value = false;
     });
+};
+
+/*
+  跳转注册界面
+*/
+const logon = () => {
+  router.push('/register');
 };
 </script>
 
@@ -107,9 +111,9 @@ const handleSubmit = () => {
           :model="formInline"
           :rules="rules"
         >
-          <!-- userid input -->
-          <n-form-item class="inputtext" path="userid">
-            <n-input v-model:value="formInline.userid" placeholder="ID">
+          <!-- id input -->
+          <n-form-item class="inputtext" path="id">
+            <n-input v-model:value="formInline.id" placeholder="ID">
               <template #prefix>
                 <n-icon :component="PersonOutline" />
               </template>

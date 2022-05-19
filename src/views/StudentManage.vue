@@ -3,9 +3,10 @@ import { onMounted, ref } from 'vue';
 import { useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
+import { STUDENT } from '../setting/const';
 
 /*
-  展示学生管理信息 {userid, username, classes, acnum}
+  展示学生管理信息 {id, username, department, acnum}
 */
 const columns = [
   {
@@ -13,7 +14,7 @@ const columns = [
   },
   {
     title: '学号',
-    key: 'userid'
+    key: 'id'
   },
   {
     title: '姓名',
@@ -21,7 +22,7 @@ const columns = [
   },
   {
     title: '班级',
-    key: 'classes'
+    key: 'department'
   },
   {
     title: '过题数',
@@ -35,9 +36,9 @@ const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
 const formValue = ref({
-  userid: '',
+  id: '',
   username: '',
-  classes: ''
+  department: ''
 });
 
 /*
@@ -45,10 +46,16 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .post('/api/student/manage/list')
+    .get('/mapi/v1/user/list')
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.user;
+      if (data.code === 0) {
+        dataRef.value = data.data;
+      } else {
+        message.error('请求失败');
+      }
+    })
+    .finally(() => {
       loadingRef.value = false;
     });
 };
@@ -64,14 +71,13 @@ const handleDelete = () => {
     // 依据 id 一个个发起删除请求
     promises.push(
       axios
-        .post('/api/v1/user/delete', { userid: id })
+        .post('/api/v1/user/delete', null, { params: { id: id } })
         .then(res => {
-          loadingRef.value = false;
           return res.data;
         })
         .then(data => {
-          if (data.code) {
-            message.code('删除成功');
+          if (data.code === 0) {
+            message.success('删除成功');
           } else {
             message.error(data.message);
           }
@@ -98,17 +104,17 @@ const findSubmit = () => {
 
 // 添加学生
 const formInline = ref({
-  userid: '',
+  id: '',
   username: '',
-  classes: '',
+  department: '',
   password: '123456'
 });
 
 const handleSubmit = () => {
-  if (formInline.value.userid === '') {
+  if (formInline.value.id === '') {
     return message.error('请填写学号!');
-  } else if (formInline.value.userid.length > 20) {
-    formInline.value.userid = '';
+  } else if (formInline.value.id.length > 20) {
+    formInline.value.id = '';
     return message.error('学号过长，请重新输入！');
   }
 
@@ -119,10 +125,10 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if (formInline.value.classes === '') {
+  if (formInline.value.department === '') {
     return message.error('请填写班级!');
-  } else if (formInline.value.classes.length > 30) {
-    formInline.value.classes = '';
+  } else if (formInline.value.department.length > 30) {
+    formInline.value.department = '';
     return message.error('班级名过长，请重新输入！');
   }
 
@@ -136,11 +142,17 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/v1/user/register', formInline.value)
+    .post('/api/v1/user/register', {
+      id: formInline.value.id,
+      username: formInline.value.username,
+      password: formInline.value.password,
+      department: formInline.value.department,
+      role: STUDENT
+    })
     .then(res => res.data)
     .then(data => {
-      if (data.code) {
-        message.code('添加成功！');
+      if (data.code === 0) {
+        message.success('添加成功！');
         showModal.value = false;
       } else {
         message.error(data.message);
@@ -163,13 +175,13 @@ const handleSubmit = () => {
       <n-space>
         <n-form ref="formRef" label-placement="left" inline :model="formValue">
           <n-form-item label="用户ID" path="queid">
-            <n-input v-model:value="formValue.userid" placeholder="" />
+            <n-input v-model:value="formValue.id" placeholder="" />
           </n-form-item>
-          <n-form-item label="姓名" path="userid">
+          <n-form-item label="姓名" path="id">
             <n-input v-model:value="formValue.username" placeholder="" />
           </n-form-item>
-          <n-form-item label="班级" path="userid">
-            <n-input v-model:value="formValue.classes" placeholder="" />
+          <n-form-item label="班级" path="id">
+            <n-input v-model:value="formValue.department" placeholder="" />
           </n-form-item>
           <n-form-item>
             <n-button type="primary" size="medium" @click="findSubmit">
@@ -184,7 +196,7 @@ const handleSubmit = () => {
         :columns="columns"
         :data="dataRef"
         :pagination="{ pageSize: 10 }"
-        :row-key="(row: any) => row.userid"
+        :row-key="(row: any) => row.id"
         :loading="loadingRef"
       />
 
@@ -237,8 +249,8 @@ const handleSubmit = () => {
             <!-- 内容 -->
             <n-form label-placement="left" size="medium" :model="formInline">
               <!-- input ID -->
-              <n-form-item label="学号" class="inputtext" path="userid">
-                <n-input v-model:value="formInline.userid" placeholder="学号">
+              <n-form-item label="学号" class="inputtext" path="id">
+                <n-input v-model:value="formInline.id" placeholder="学号">
                 </n-input>
               </n-form-item>
               <!-- input name -->
@@ -247,8 +259,11 @@ const handleSubmit = () => {
                 </n-input>
               </n-form-item>
               <!-- input class -->
-              <n-form-item label="班级" class="inputtext" path="classes">
-                <n-input v-model:value="formInline.classes" placeholder="班级">
+              <n-form-item label="班级" class="inputtext" path="department">
+                <n-input
+                  v-model:value="formInline.department"
+                  placeholder="班级"
+                >
                 </n-input>
               </n-form-item>
               <!-- input password-->

@@ -5,34 +5,48 @@ import { useRouter } from 'vue-router';
 import { Pencil, BugOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
+import { TEACHER } from '../setting/const';
 
 /*
-  读取当前的题目信息，{id, content, answer, passnum, testcase_id}
+  读取当前的题目信息，
+    "id", "content", "answer", "testcaseID" ,"label" ,"abstract" ,"lang"
 */
 
 const router = useRouter();
 const message = useMessage();
-let question = ref({ id: '', content: '', answer: '', testcase_id: '' });
+let question = ref({
+  id: '',
+  content: '',
+  answer: '',
+  testcaseID: '',
+  label: '',
+  abstract: '',
+  lang: ''
+});
 let useranswer = ref('');
 // 从路由中读取 QuestionId 的值
 const questionid = router.currentRoute.value.params.QuestionId;
-const admin = JSON.parse(localStorage.account).admin;
+const role = JSON.parse(localStorage.account).role;
 
 onMounted(() => {
   if (Number.isFinite(Number(questionid))) {
     axios
-      .post(`/api/v1/question/info/{id}`, { id: Number(questionid) })
+      .get(`/api/v1/question/info/${Number(questionid)}`)
       .then(res => res.data)
       .then(data => {
-        if (data.success) {
-          question.value = data.question;
+        if (data.code === 0) {
+          question.value = data.data;
         } else {
           message.error(data.message);
-          router.back();
+          router.replace('/main/question-manage');
         }
       })
+      .catch(error => {
+        console.error(error);
+        message.error('错误！');
+      })
       .finally(() => {
-        if (admin) {
+        if (role === TEACHER) {
           useranswer.value = question.value.answer;
         }
       });
@@ -62,7 +76,7 @@ const handleEdit = () => {
   <div class="manage-container">
     <n-h1 style="text-align: center">#{{ question.id }}</n-h1>
     <n-button
-      v-if="admin"
+      v-if="role === TEACHER"
       secondary
       strong
       type="primary"

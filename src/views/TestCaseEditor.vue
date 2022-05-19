@@ -1,9 +1,14 @@
 <script lang="ts" setup>
+import axios from 'axios';
+import { editor } from 'monaco-editor';
+import { useMessage } from 'naive-ui';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SqlEditor from '../components/SqlEditor.vue';
 
 const router = useRouter();
+const message = useMessage();
+const testcaseid = router.currentRoute.value.params.testcaseId;
 const db_options = [
   {
     value: 1,
@@ -18,13 +23,6 @@ const db_options = [
     label: 'MariaDB'
   }
 ];
-
-onMounted(() => {
-  // 从路由中读取 testcaseid 的值
-  const testcaseid = router.currentRoute.value.params.testcaseId;
-  console.log(testcaseid);
-});
-
 let testcase = ref({
   label: '',
   abstract: '',
@@ -32,11 +30,64 @@ let testcase = ref({
   lang: null
 });
 
+onMounted(() => {
+  // 从路由中读取 testcaseid 的值
+  console.log(testcaseid);
+  axios
+    .get(`/api/v1/testcase/info/${testcaseid}`)
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        testcase.value = data.data;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.log(error);
+    });
+});
+
 const handleSubmit = () => {
   console.log(testcase.value);
+  axios
+    .post(`/api/v1/testcase/update`, {
+      id: testcaseid,
+      ...testcase.value
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.error('更新成功');
+        router.replace('/main/test-case');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.log(error);
+    });
 };
 
-const handleDelete = () => {};
+const handleDelete = () => {
+  axios
+    .post(`/api/v1/testcase/delete`, null, { params: { id: testcaseid } })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.error('删除成功');
+        router.replace('/main/test-case');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.log(error);
+    });
+};
 </script>
 
 <template>

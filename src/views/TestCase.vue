@@ -4,6 +4,7 @@ import { NButton, useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { SQL } from '../setting/const';
 
 const router = useRouter();
 
@@ -26,7 +27,7 @@ const actions = [
         .post('/api/testcase/delete', { id: id })
         .then(res => res.data)
         .then(data => {
-          if (data.success) {
+          if (data.code === 0) {
             message.success('删除成功');
           } else {
             message.error(data.message);
@@ -43,9 +44,6 @@ const actions = [
   }
 ];
 
-/*
-  展示学生管理信息 {userid, username, classes, acnum}
-*/
 const columns = [
   {
     title: '编号',
@@ -53,12 +51,12 @@ const columns = [
   },
   {
     title: '描述',
-    key: 'describe',
+    key: 'label',
     width: '50%'
   },
   {
     title: '数据库类型',
-    key: 'sql'
+    key: 'lang'
   },
   {
     title: '操作',
@@ -87,14 +85,17 @@ const loadingRef = ref(true);
 const message = useMessage();
 
 /*
-  查询数据集
+  查询数据集{"id" ,"label" ,"abstract" ,"content" ,"lang"},
 */
 const query = () => {
   axios
-    .post('/api/testcase/list')
+    .get('/api/v1/testcase/list')
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.testcase;
+      for (let i of data.data) {
+        i.lang = SQL[i.lang];
+      }
+      dataRef.value = data.data;
       loadingRef.value = false;
     });
 };

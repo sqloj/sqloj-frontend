@@ -19,6 +19,7 @@
     "mockjs": "^1.1.0",
     "monaco-editor": "^0.33.0",
     "naive-ui": "^2.27.0",
+    "ts-md5": "^1.2.11",
     "vfonts": "^0.0.3",
     "vue": "^3.2.25",
     "vue-router": "^4.0.14"

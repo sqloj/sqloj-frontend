@@ -2,28 +2,29 @@
 import { useMessage } from 'naive-ui';
 import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Pencil, BugOutline, CloseOutline } from '@vicons/ionicons5';
+import { Pencil } from '@vicons/ionicons5';
+import SqlEditor from '../components/SqlEditor.vue';
 import axios from 'axios';
 
 /*
-  读取当前的题目信息，{id, content, answer, passnum, testcase_id}
+  读取当前的题目信息，{"id", "content", "answer", "testcaseID"}
 */
 
 const router = useRouter();
 const message = useMessage();
 const loadingRef = ref(true);
-let question = ref({ id: '', content: '', answer: '', testcase_id: '' });
+let question = ref({ id: '', content: '', answer: '', testcaseID: '' });
 
 // 依赖数据库选择
 let optionsRef: Ref<{}[]> = ref([]);
 
 onMounted(() => {
   axios
-    .post(`/api/testcase/list`)
+    .get(`/api/v1/testcase/list`)
     .then(res => res.data)
     .then(data => {
-      for (let t of data.testcase) {
-        optionsRef.value.push({ label: t.describe, value: t.id });
+      for (let t of data.data) {
+        optionsRef.value.push({ label: t.label, value: t.id });
       }
       loadingRef.value = false;
     })
@@ -36,15 +37,12 @@ onMounted(() => {
   修改题目
 */
 const handleAdd = () => {
+  console.log(question.value);
   axios
-    .post(`/api/v1/question/insert`, {
-      content: question.value.content,
-      answer: question.value.answer,
-      testcase_id: question.value.testcase_id
-    })
+    .post(`/api/v1/question/insert`, question.value)
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         question.value.id = data.id;
         message.success('信息更新成功！');
       } else {
@@ -79,14 +77,15 @@ const handleAdd = () => {
         :autofocus="true"
       />
       <n-h2>题目答案</n-h2>
-      <n-input
+      <sql-editor v-model:value="question.answer" />
+      <!-- <n-input
         v-model:value="question.answer"
         type="textarea"
         placeholder="请填写答案"
-      />
+      /> -->
       <n-h2>依赖数据库</n-h2>
       <n-select
-        v-model:value="question.testcase_id"
+        v-model:value="question.testcaseID"
         :options="optionsRef"
         style="max-width: 500px"
         default-value="default_choose"

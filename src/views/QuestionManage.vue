@@ -73,10 +73,10 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .post(`/api/v1/question/list`)
+    .get(`/api/v1/question/list`)
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.question;
+      dataRef.value = data.data;
       loadingRef.value = false;
     });
 };
@@ -85,20 +85,24 @@ onMounted(query);
 const findQuestionById = () => {
   const id = Number(formValue.value.queid);
   axios
-    .post(`/api/v1/question/info/{id}`, { id })
+    .get(`/api/v1/question/info/${id}`)
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         // 页面跳转
         router.push({
           name: 'question',
           params: {
-            QuestionId: data.question.id
+            QuestionId: data.data.id
           }
         });
       } else {
         message.error(data.message);
       }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('错误！');
     });
 };
 
