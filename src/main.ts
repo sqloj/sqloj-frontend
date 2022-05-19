@@ -6,7 +6,7 @@ import 'vfonts/FiraCode.css';
 import App from './App.vue';
 import router from './router';
 
-import './mock';
+// import './mock';
 // import './useWorker';
 
 createApp(App).use(router).use(naive).mount('#app');

@@ -4,8 +4,9 @@ import { NA, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import { Add } from '@vicons/ionicons5';
 import axios from 'axios';
+import { USER } from '../setting/const';
 
-const admin = JSON.parse(localStorage.account).admin;
+const role = JSON.parse(localStorage.account).role;
 /*
   展示题目信息 {id, content<a>, passnum, testcase_id}
 */
@@ -27,7 +28,7 @@ const columns = [
             const question = row;
             localStorage.question = JSON.stringify(question);
             // 页面跳转
-            if (admin) {
+            if (role === USER.TEACHER) {
               router.push({
                 name: 'question-editor',
                 params: {
@@ -55,8 +56,8 @@ const columns = [
     key: 'passnum'
   },
   {
-    title: '依赖数据库',
-    key: 'testcase_id'
+    title: '依赖数据集',
+    key: 'label'
   }
 ];
 
@@ -73,7 +74,7 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .get(`/api/v1/question/list`)
+    .get(`api/v1/question/listWithTestcase`)
     .then(res => res.data)
     .then(data => {
       dataRef.value = data.data;

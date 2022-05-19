@@ -2,27 +2,15 @@
 import axios from 'axios';
 import { editor } from 'monaco-editor';
 import { useMessage } from 'naive-ui';
-import { onMounted, ref } from 'vue';
+import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SqlEditor from '../components/SqlEditor.vue';
 
 const router = useRouter();
 const message = useMessage();
+const valueChange = ref(false);
 const testcaseid = router.currentRoute.value.params.testcaseId;
-const db_options = [
-  {
-    value: 1,
-    label: 'MySQL'
-  },
-  {
-    value: 2,
-    label: 'SQL Server'
-  },
-  {
-    value: 3,
-    label: 'MariaDB'
-  }
-];
+const db_options: Ref<{}[]> = ref([]);
 let testcase = ref({
   label: '',
   abstract: '',
@@ -31,21 +19,40 @@ let testcase = ref({
 });
 
 onMounted(() => {
-  // 从路由中读取 testcaseid 的值
-  console.log(testcaseid);
   axios
-    .get(`/api/v1/testcase/info/${testcaseid}`)
+    .get(`api/v1/judge/allSupport`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        testcase.value = data.data;
+        for (let i of data.data) {
+          db_options.value.push({ value: i.typeID, label: i.typeName });
+        }
       } else {
         message.error(data.message);
+        router.back();
       }
     })
     .catch(error => {
       message.error('错误');
       console.log(error);
+    })
+    .finally(() => {
+      axios
+        .get(`/api/v1/testcase/info/${testcaseid}`)
+        .then(res => res.data)
+        .then(data => {
+          if (data.code === 0) {
+            console.log(data.data);
+            testcase.value = data.data;
+            valueChange.value = !valueChange.value;
+          } else {
+            message.error(data.message);
+          }
+        })
+        .catch(error => {
+          message.error('错误');
+          console.log(error);
+        });
     });
 });
 
@@ -59,7 +66,7 @@ const handleSubmit = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        message.error('更新成功');
+        message.success('更新成功');
         router.replace('/main/test-case');
       } else {
         message.error(data.message);
@@ -77,7 +84,7 @@ const handleDelete = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        message.error('删除成功');
+        message.success('删除成功');
         router.replace('/main/test-case');
       } else {
         message.error(data.message);
@@ -104,11 +111,17 @@ const handleDelete = () => {
       <n-form-item label="数据库" class="inputtext" path="lang">
         <n-select v-model:value="testcase.lang" :options="db_options" />
       </n-form-item>
-      <n-form-item label="建表语句" class="inputtext" path="abstract">
-        <sql-editor v-model:value="testcase.abstract" />
+      <n-form-item label="申明语句" class="inputtext" path="abstract">
+        <sql-editor
+          v-model:value="testcase.abstract"
+          :value-change="valueChange"
+        />
       </n-form-item>
       <n-form-item label="插入语句" class="inputtext" path="content">
-        <sql-editor v-model:value="testcase.content" />
+        <sql-editor
+          v-model:value="testcase.content"
+          :value-change="valueChange"
+        />
       </n-form-item>
     </n-form>
     <n-space>

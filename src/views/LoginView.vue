@@ -38,7 +38,7 @@ onMounted(() => {
 });
 
 /*
-  发生登录请求， account{id, password, username, department, role}
+  发生登录请求， account{id, password, username, department, role, isload}
   localStorage.user{id, password}
 */
 const handleSubmit = () => {
@@ -63,12 +63,13 @@ const handleSubmit = () => {
     .post('/api/v1/user/login', null, {
       params: {
         id: formInline.value.id,
-        password: encrypt(formInline.value.password)
+        password: formInline.value.password
       }
     })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
+        // 存储信息
         localStorage.account = JSON.stringify({
           ...formInline.value,
           username: data.data.username,

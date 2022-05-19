@@ -11,7 +11,7 @@ import {
 } from '@vicons/ionicons5';
 import axios from 'axios';
 import { useMessage } from 'naive-ui';
-import { STUDENT } from '../setting/const';
+import { USER } from '../setting/const';
 
 const formRef = ref();
 const router = useRouter();
@@ -25,7 +25,7 @@ const formInline = ref({
   password: '',
   newpassword: '',
   newpassword_again: '',
-  role: STUDENT
+  role: USER.STUDENT
 });
 
 /*
@@ -52,7 +52,10 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if (formInline.value.role === STUDENT && formInline.value.department === '') {
+  if (
+    formInline.value.role === USER.STUDENT &&
+    formInline.value.department === ''
+  ) {
     return message.error('请填写您的班级!');
   } else if (formInline.value.department.length > 30) {
     formInline.value.department = '';
@@ -62,18 +65,10 @@ const handleSubmit = () => {
   if (formInline.value.password !== '') {
     if (formInline.value.password !== oldpassword) {
       return message.error('密码错误!');
-    } else {
-      if (formInline.value.newpassword.length < 6) {
-        return message.error('密码过短，长度小于 6 字符！');
-      } else if (formInline.value.newpassword.length > 50) {
-        formInline.value.newpassword = '';
-        formInline.value.newpassword_again = '';
-        return message.error('密码过长！');
-      } else if (
-        formInline.value.newpassword !== formInline.value.newpassword_again
-      ) {
-        return message.error('两次密码不一致！');
-      }
+    } else if (
+      formInline.value.newpassword !== formInline.value.newpassword_again
+    ) {
+      return message.error('两次密码不一致！');
     }
   } else {
     formInline.value.password = oldpassword;
@@ -98,14 +93,13 @@ const handleSubmit = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        const userJson = {
+        localStorage.account = JSON.stringify({
           id: data.id,
           password: data.password,
           username: data.username,
           department: data.department,
           role: data.role
-        };
-        localStorage.account = JSON.stringify(userJson);
+        });
         message.success('信息更新成功！');
         location.reload();
       } else {
@@ -130,13 +124,8 @@ const goback = () => {
         <n-h1 style="margin-bottom: 3rem"> 个人信息 </n-h1>
         <n-form ref="formRef" size="large" :model="formInline">
           <!-- input ID 老师和学生分开显示-->
-          <div v-if="formInline.role !== STUDENT">
-            <n-form-item
-              v-if="formInline.role"
-              label="工号"
-              class="inputtext"
-              path="id"
-            >
+          <div v-if="formInline.role === USER.STUDENT">
+            <n-form-item label="学号" class="inputtext" path="id">
               <n-input v-model:value="formInline.id" readonly="true">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
@@ -147,7 +136,12 @@ const goback = () => {
             </n-form-item>
           </div>
           <div v-else>
-            <n-form-item label="学号" class="inputtext" path="id">
+            <n-form-item
+              v-if="formInline.role"
+              label="工号"
+              class="inputtext"
+              path="id"
+            >
               <n-input v-model:value="formInline.id" readonly="true">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
@@ -168,9 +162,9 @@ const goback = () => {
             </n-input>
           </n-form-item>
 
-          <!-- input class -->
-          <div v-if="formInline.role === STUDENT">
-            <n-form-item label="班级" class="inputtext" path="department ">
+          <!-- input department -->
+          <div v-if="formInline.role === USER.STUDENT">
+            <n-form-item label="班级" class="inputtext" path="department">
               <n-input v-model:value="formInline.department">
                 <template #prefix>
                   <n-icon size="18" color="#808695">
@@ -181,7 +175,7 @@ const goback = () => {
             </n-form-item>
           </div>
           <div v-else>
-            <n-form-item label="部门" class="inputtext" path="department ">
+            <n-form-item label="部门" class="inputtext" path="department">
               <n-input v-model:value="formInline.department">
                 <template #prefix>
                   <n-icon size="18" color="#808695">

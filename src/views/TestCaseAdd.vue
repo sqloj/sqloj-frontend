@@ -1,26 +1,32 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import axios from 'axios';
+import { useMessage } from 'naive-ui';
+import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SqlEditor from '../components/SqlEditor.vue';
 
 const router = useRouter();
-const db_options = [
-  {
-    value: 1,
-    label: 'MySQL'
-  },
-  {
-    value: 2,
-    label: 'SQL Server'
-  },
-  {
-    value: 3,
-    label: 'MariaDB'
-  }
-];
+const message = useMessage();
+const db_options: Ref<{}[]> = ref([]);
 
 onMounted(() => {
-  // 从路由中读取 testcaseid 的值
+  axios
+    .get(`api/v1/judge/allSupport`)
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        for (let i of data.data) {
+          db_options.value.push({ value: i.typeID, label: i.typeName });
+        }
+      } else {
+        message.error(data.message);
+        router.back();
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.log(error);
+    });
 });
 
 let testcase = ref({
@@ -31,10 +37,25 @@ let testcase = ref({
 });
 
 const handleSubmit = () => {
-  console.log(testcase.value);
+  if (testcase.value.lang === null) {
+    return message.error('请选择数据库');
+  }
+  axios
+    .post(`api/v1/testcase/insert`, testcase.value)
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.success('添加成功');
+        router.replace('/main/test-case');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.log(error);
+    });
 };
-
-const handleDelete = () => {};
 </script>
 
 <template>
@@ -59,9 +80,7 @@ const handleDelete = () => {};
       </n-form-item>
     </n-form>
     <n-space>
-      <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
-
-      <n-button type="error" @click="handleDelete"> 删除 </n-button>
+      <n-button type="primary" @click="handleSubmit"> 添加 </n-button>
     </n-space>
   </div>
 </template>

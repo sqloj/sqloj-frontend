@@ -15,7 +15,8 @@ const formInline = ref({
   id: 0,
   url: '',
   password: '',
-  typeName: ''
+  typeName: '',
+  typeID: ''
 });
 
 const actions = [
@@ -49,7 +50,7 @@ const actions = [
     title: '删除',
     act: (row: any) => {
       axios
-        .post('/api/v1/server/delete', null, { params: { id: row.id } })
+        .post('api/v1/judge/delete', null, { params: { id: row.id } })
         .then(res => res.data)
         .then(data => {
           if (data.code === 0) {
@@ -109,7 +110,7 @@ const columns = [
 
 const query = () => {
   axios
-    .get('/api/v1/judge/list')
+    .get('api/v1/judge/list')
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -137,7 +138,7 @@ const handleAdd = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        message.success('插入成功');
+        message.success('添加成功');
       } else {
         message.error(data.message);
       }

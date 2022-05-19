@@ -2,7 +2,7 @@
 import { useMessage } from 'naive-ui';
 import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Pencil, BugOutline, CloseOutline } from '@vicons/ionicons5';
+import { Pencil, ArrowBack, CloseOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
 
@@ -13,6 +13,7 @@ import SqlEditor from '../components/SqlEditor.vue';
 const router = useRouter();
 const message = useMessage();
 const loadingRef = ref(true);
+const valueChange = ref(false);
 let question = ref({
   id: '',
   content: '',
@@ -28,14 +29,16 @@ let optionsRef: Ref<{}[]> = ref([]);
 const questionid = router.currentRoute.value.params.QuestionId;
 
 onMounted(() => {
-  // 从路由中读取 QuestionId 的值
-
   axios
     .get(`/api/v1/testcase/list`)
     .then(res => res.data)
     .then(data => {
-      for (let t of data.data) {
-        optionsRef.value.push({ label: t.label, value: t.id });
+      if (data.code === 0) {
+        for (let t of data.data) {
+          optionsRef.value.push({ label: t.label, value: t.id });
+        }
+      } else {
+        message.error(data.message);
       }
     })
     .catch(error => {
@@ -50,7 +53,8 @@ onMounted(() => {
           .then(data => {
             if (data.code === 0) {
               question.value = data.data;
-              // console.log(question.value);
+              valueChange.value = !valueChange.value;
+              console.log(question.value);
             } else {
               message.error(data.message);
               router.replace('/main/question-manage');
@@ -146,8 +150,8 @@ const handleDelete = () => {
         :autofocus="true"
       />
       <n-h2>题目答案</n-h2>
-      <sql-editor v-model:value="question.answer" />
-      <n-h2>依赖数据库</n-h2>
+      <sql-editor v-model:value="question.answer" :value-change="valueChange" />
+      <n-h2>依赖数据集</n-h2>
       <n-select
         v-model:value="question.testcaseID"
         :options="optionsRef"
@@ -161,10 +165,10 @@ const handleDelete = () => {
       <n-button secondary strong type="primary" size="large" @click="handleRun">
         <template #icon>
           <n-icon size="18">
-            <BugOutline />
+            <ArrowBack />
           </n-icon>
         </template>
-        测试
+        返回
       </n-button>
 
       <n-button

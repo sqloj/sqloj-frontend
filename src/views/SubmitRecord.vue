@@ -60,7 +60,11 @@ onMounted(query);
 const findSubmit = () => {
   loadingRef.value = true;
   axios
-    .post(`/api/submit`, formValue.value)
+    .post(`/api/submit`, null, {
+      params: {
+        ...formValue
+      }
+    })
     .then(res => res.data)
     .then(data => {
       dataRef.value = data.submits;

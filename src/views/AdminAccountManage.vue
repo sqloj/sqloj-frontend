@@ -3,14 +3,15 @@ import { onMounted, ref } from 'vue';
 import { useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
+import { USER } from '../setting/const';
 
 /*
-  展示学生管理信息 {userid, username, classes, acnum}
+  展示学生管理信息 {id, username, department, acnum}
 */
 const columns = [
   {
     title: '工号',
-    key: 'userid'
+    key: 'id'
   },
   {
     title: '姓名',
@@ -18,7 +19,7 @@ const columns = [
   },
   {
     title: '学院',
-    key: 'classes'
+    key: 'department'
   }
 ];
 
@@ -36,10 +37,20 @@ const handleCheck = (rowKeys: any) => {
 */
 const query = () => {
   axios
-    .post('/api/admin/manage/list')
+    .post(`api/v1/user/filter`, null, {
+      params: {
+        role: 2
+      }
+    })
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.admin;
+      if (data.code === 0) {
+        dataRef.value = data.data;
+      } else {
+        message.error('请求失败');
+      }
+    })
+    .finally(() => {
       loadingRef.value = false;
     });
 };
@@ -48,19 +59,19 @@ onMounted(query);
 
 // 添加老师
 const formInline = ref({
-  userid: '',
+  id: '',
   username: '',
-  classes: '',
+  department: '',
   password: '123456',
-  admin: true
+  role: USER.TEACHER
 });
 
 const handleSubmit = () => {
-  if (formInline.value.userid === '') {
+  if (formInline.value.id === '') {
     return message.error('请填写学号!');
-  } else if (formInline.value.userid.length > 20) {
-    formInline.value.userid = '';
-    return message.error('学号过长，请重新输入！');
+  } else if (formInline.value.id.length > 20) {
+    formInline.value.id = '';
+    return message.error('工号过长，请重新输入！');
   }
 
   if (formInline.value.username === '') {
@@ -70,26 +81,22 @@ const handleSubmit = () => {
     return message.error('姓名过长，请重新输入！');
   }
 
-  if (formInline.value.classes.length > 30) {
-    formInline.value.classes = '';
-    return message.error('学院名过长，请重新输入！');
-  }
-
   if (formInline.value.password === '') {
     return message.error('密码不能为空!');
-  } else if (formInline.value.password.length < 6) {
-    return message.error('密码过短，长度小于 6 字符！');
-  } else if (formInline.value.password.length > 50) {
-    formInline.value.password = '';
-    return message.error('密码过长！');
   }
 
   axios
-    .post('/api/v1/user/register', formInline.value)
+    .post('/api/v1/user/register', {
+      id: formInline.value.id,
+      username: formInline.value.username,
+      password: formInline.value.password,
+      department: formInline.value.department,
+      role: USER.TEACHER
+    })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        message.success('添加成功！');
+        message.success('添加成功');
         showModal.value = false;
       } else {
         message.error(data.message);
@@ -114,7 +121,7 @@ const handleSubmit = () => {
         :columns="columns"
         :data="dataRef"
         :pagination="{ pageSize: 10 }"
-        :row-key="(row: any) => row.userid"
+        :row-key="(row: any) => row.id"
         :loading="loadingRef"
         @update:checked-row-keys="handleCheck"
       />
@@ -152,8 +159,8 @@ const handleSubmit = () => {
             <!-- 内容 -->
             <n-form label-placement="left" size="medium" :model="formInline">
               <!-- input ID -->
-              <n-form-item label="工号" class="inputtext" path="userid">
-                <n-input v-model:value="formInline.userid" placeholder="工号">
+              <n-form-item label="工号" class="inputtext" path="id">
+                <n-input v-model:value="formInline.id" placeholder="工号">
                 </n-input>
               </n-form-item>
               <!-- input name -->
@@ -162,8 +169,11 @@ const handleSubmit = () => {
                 </n-input>
               </n-form-item>
               <!-- input class -->
-              <n-form-item label="学院" class="inputtext" path="classes">
-                <n-input v-model:value="formInline.classes" placeholder="学院">
+              <n-form-item label="学院" class="inputtext" path="department">
+                <n-input
+                  v-model:value="formInline.department"
+                  placeholder="学院"
+                >
                 </n-input>
               </n-form-item>
               <!-- input password-->

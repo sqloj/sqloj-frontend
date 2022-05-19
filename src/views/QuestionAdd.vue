@@ -38,6 +38,9 @@ onMounted(() => {
 */
 const handleAdd = () => {
   console.log(question.value);
+  if (question.value.testcaseID === '') {
+    return message.error('请选择数据集');
+  }
   axios
     .post(`/api/v1/question/insert`, question.value)
     .then(res => res.data)
@@ -78,12 +81,7 @@ const handleAdd = () => {
       />
       <n-h2>题目答案</n-h2>
       <sql-editor v-model:value="question.answer" />
-      <!-- <n-input
-        v-model:value="question.answer"
-        type="textarea"
-        placeholder="请填写答案"
-      /> -->
-      <n-h2>依赖数据库</n-h2>
+      <n-h2>依赖数据集</n-h2>
       <n-select
         v-model:value="question.testcaseID"
         :options="optionsRef"

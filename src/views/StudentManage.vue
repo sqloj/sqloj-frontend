@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
-import { STUDENT } from '../setting/const';
+import { USER } from '../setting/const';
 
 /*
   展示学生管理信息 {id, username, department, acnum}
@@ -46,7 +46,7 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .get('/mapi/v1/user/list')
+    .get('mapi/v1/user/list')
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -96,10 +96,26 @@ const handleDelete = () => {
 };
 
 const findSubmit = () => {
+  loadingRef.value = true;
   axios
-    .post(`api/v1/user/search`, formValue.value)
+    .post(`api/v1/user/filter`, null, {
+      params: {
+        id: formValue.value.id,
+        username: formValue.value.username,
+        department: formValue.value.department
+      }
+    })
     .then(res => res.data)
-    .then(data => {});
+    .then(data => {
+      if (data.code === 0) {
+        dataRef.value = data.data;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .finally(() => {
+      loadingRef.value = false;
+    });
 };
 
 // 添加学生
@@ -112,33 +128,28 @@ const formInline = ref({
 
 const handleSubmit = () => {
   if (formInline.value.id === '') {
-    return message.error('请填写学号!');
+    return message.error('请填写学号');
   } else if (formInline.value.id.length > 20) {
     formInline.value.id = '';
-    return message.error('学号过长，请重新输入！');
+    return message.error('学号过长，请重新输入');
   }
 
   if (formInline.value.username === '') {
-    return message.error('请填写姓名!');
+    return message.error('请填写姓名');
   } else if (formInline.value.username.length > 30) {
     formInline.value.username = '';
-    return message.error('姓名过长，请重新输入！');
+    return message.error('姓名过长，请重新输入');
   }
 
   if (formInline.value.department === '') {
-    return message.error('请填写班级!');
+    return message.error('请填写班级');
   } else if (formInline.value.department.length > 30) {
     formInline.value.department = '';
-    return message.error('班级名过长，请重新输入！');
+    return message.error('班级名过长，请重新输入');
   }
 
   if (formInline.value.password === '') {
-    return message.error('密码不能为空!');
-  } else if (formInline.value.password.length < 6) {
-    return message.error('密码过短，长度小于 6 字符！');
-  } else if (formInline.value.password.length > 50) {
-    formInline.value.password = '';
-    return message.error('密码过长！');
+    return message.error('密码不能为空');
   }
 
   axios
@@ -147,12 +158,12 @@ const handleSubmit = () => {
       username: formInline.value.username,
       password: formInline.value.password,
       department: formInline.value.department,
-      role: STUDENT
+      role: USER.STUDENT
     })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        message.success('添加成功！');
+        message.success('添加成功');
         showModal.value = false;
       } else {
         message.error(data.message);
@@ -160,7 +171,7 @@ const handleSubmit = () => {
     })
     .catch(error => {
       console.error(error);
-      message.error('错误！');
+      message.error('错误');
     })
     .finally(() => {
       query();

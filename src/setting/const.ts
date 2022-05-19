@@ -1,15 +1,9 @@
 import { Md5 } from 'ts-md5';
 
-/* 
-    1 -> 学生
-    2 -> 老师
-*/
-const STUDENT = 1;
-const TEACHER = 2;
-
-enum SQL {
-  'MySql' = 1,
-  'SQL Server' = 2
+const enum USER {
+  STUDENT = 1,
+  TEACHER = 2,
+  ADMIN = 3
 }
 
 enum RESULT {
@@ -26,4 +20,4 @@ const encrypt = (str: string) => {
   return md5.end();
 };
 
-export { STUDENT, TEACHER, RESULT, SQL, encrypt };
+export { USER, RESULT, encrypt };

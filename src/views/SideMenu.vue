@@ -19,17 +19,16 @@ function renderIcon(icon: Component) {
 }
 
 const accout = JSON.parse(localStorage.account);
-
 const emit = defineEmits(['getRoute']);
 
 const menuOptions: MenuOption[] = [
   {
     type: 'group',
-    label: '个人信息',
+    label: accout.username,
     key: 'info',
     children: [
       {
-        label: accout.username,
+        label: '个人信息',
         key: 'self-info',
         icon: renderIcon(InfoIcon)
       },
@@ -84,11 +83,58 @@ const menuOptions: MenuOption[] = [
   }
 ];
 
+const menuOptionsForStu: MenuOption[] = [
+  {
+    type: 'group',
+    label: '个人信息',
+    key: 'info',
+    children: [
+      {
+        label: accout.username,
+        key: 'self-info',
+        icon: renderIcon(InfoIcon)
+      },
+      {
+        label: '退出登录',
+        key: 'logout',
+        icon: renderIcon(ArrowBack)
+      }
+    ]
+  },
+  {
+    type: 'group',
+    label: '控制台',
+    key: 'console',
+    children: [
+      {
+        label: '题目列表',
+        key: 'question-manage',
+        icon: renderIcon(AddIcon)
+      },
+      {
+        label: '提交记录',
+        key: 'submit-record',
+        icon: renderIcon(CommitIcon)
+      },
+      {
+        label: '联系我们',
+        key: 'call-us',
+        icon: renderIcon(CallIcon)
+      }
+    ]
+  }
+];
+
 const handleUpdateValue = (key: String) => {
   emit('getRoute', key);
 };
 </script>
 
 <template>
-  <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
+  <div v-if="accout.role === 1">
+    <n-menu :options="menuOptionsForStu" @update:value="handleUpdateValue" />
+  </div>
+  <div v-else>
+    <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
+  </div>
 </template>
