@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-import { useMessage } from 'naive-ui';
-import { onMounted, ref } from 'vue';
+import { NH4, useMessage } from 'naive-ui';
+import { h, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Pencil, BugOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
 import { USER } from '../setting/const';
+import MarkdownIt from 'markdown-it';
+import hljs from 'highlight.js';
 
 /*
   读取当前的题目信息，
-    "id", "content", "answer", "testcaseID" ,"label" ,"abstract" ,"lang"
+    "id", "content", "answer", "testcaseID" ,"label" ,"testcaseAbstract" ,"lang"
 */
 
 const router = useRouter();
@@ -21,12 +23,12 @@ let question = ref({
   answer: '',
   testcaseID: '',
   label: '',
-  abstract: '',
+  testcaseAbstract: '',
   lang: ''
 });
 let useranswer = ref('');
 const showAbstract = ref(false);
-let TestCaseAbstract = '';
+let md = new MarkdownIt();
 
 // 从路由中读取 QuestionId 的值
 const questionid = router.currentRoute.value.params.QuestionId;
@@ -39,8 +41,8 @@ onMounted(() => {
       .then(res => res.data)
       .then(data => {
         if (data.code === 0) {
+          console.log(data.data);
           question.value = data.data;
-          TestCaseAbstract = question.value.abstract;
         } else {
           message.error(data.message);
           router.replace('/main/question-manage');
@@ -51,6 +53,9 @@ onMounted(() => {
         message.error('错误！');
       })
       .finally(() => {
+        console.log(question.value);
+        console.log(question.value.testcaseAbstract);
+        console.log(md.render(question.value.testcaseAbstract));
         if (role === USER.TEACHER) {
           useranswer.value = question.value.answer;
           valueChange.value = !valueChange.value;
@@ -63,7 +68,7 @@ onMounted(() => {
 });
 
 const show = () => {
-  question.value.abstract = TestCaseAbstract;
+  question.value.content = '# 123';
   showAbstract.value = !showAbstract.value;
 };
 const run = () => {
@@ -104,20 +109,12 @@ const handleEdit = () => {
       编辑题目
     </n-button>
     <n-h2>题目描述</n-h2>
-    <n-h4>{{ question.content }}</n-h4>
+    <n-h4 v-dompurify-html="md.render(question.content)"></n-h4>
     <n-h2>测试集信息</n-h2>
     <n-space vertical>
       <n-h4>{{ question.label }}</n-h4>
-      <n-button secondary strong type="default" size="medium" @click="show">
-        显示建表信息
-      </n-button>
     </n-space>
-    <div v-if="showAbstract">
-      <sql-editor
-        v-model:value="question.abstract"
-        :value-change="showAbstract"
-      />
-    </div>
+    <n-h4 v-dompurify-html="md.render(question.testcaseAbstract)"></n-h4>
     <n-h2>答题框</n-h2>
     <sql-editor v-model:value="useranswer" :value-change="valueChange" />
 
