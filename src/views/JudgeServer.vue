@@ -30,20 +30,7 @@ const actions = [
   {
     title: 'ping',
     act: (row: any) => {
-      axios
-        .post('/api/v1/server/ping', { id: row.id })
-        .then(res => res.data)
-        .then(data => {
-          if (data.code === 0) {
-            message.success('连接正常');
-          } else {
-            message.error(data.message);
-          }
-        })
-        .catch(error => {
-          console.error(error);
-          message.error('ERROR!');
-        });
+      handlePing(row.id);
     }
   },
   {
@@ -132,13 +119,13 @@ const addJudge = () => {
   showAddModal.value = true;
 };
 const handleAdd = () => {
-  showAddModal.value = false;
   axios
     .post('/api/v1/judge/insert', formInline.value)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
         message.success('添加成功');
+        showAddModal.value = false;
       } else {
         message.error(data.message);
       }
@@ -149,6 +136,23 @@ const handleAdd = () => {
     })
     .finally(() => {
       query();
+    });
+};
+
+const handlePing = (id: any) => {
+  axios
+    .post('/api/v1/server/ping', { id: id })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.success('连接正常');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('ERROR!');
     });
 };
 
@@ -180,7 +184,7 @@ const handleUpdate = () => {
             <Add />
           </n-icon>
         </template>
-        新增测评机
+        添加测评机
       </n-button>
     </n-space>
     <n-data-table
@@ -219,9 +223,14 @@ const handleUpdate = () => {
 
         <template #footer>
           <!-- 尾部 -->
-          <n-button type="primary" size="medium" @click="handleUpdate">
-            编辑
-          </n-button>
+          <n-space justify="center">
+            <n-button type="primary" size="medium" @click="handlePing">
+              Ping
+            </n-button>
+            <n-button type="primary" size="medium" @click="handleUpdate">
+              编辑
+            </n-button>
+          </n-space>
         </template>
       </n-card>
     </n-modal>
@@ -251,9 +260,14 @@ const handleUpdate = () => {
 
         <template #footer>
           <!-- 尾部 -->
-          <n-button type="primary" size="medium" @click="handleAdd">
-            添加
-          </n-button>
+          <n-space justify="center">
+            <n-button type="primary" size="medium" @click="handlePing">
+              Ping
+            </n-button>
+            <n-button type="primary" size="medium" @click="handleAdd">
+              添加
+            </n-button>
+          </n-space>
         </template>
       </n-card>
     </n-modal>

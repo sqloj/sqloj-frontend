@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const goHome = () => {
-  router.push('/');
+  router.push('/main');
 };
 const goback = () => {
   router.back();
@@ -25,7 +25,7 @@ const goback = () => {
             style="background-color: #18a058"
             @click="goHome"
           >
-            首页
+            主页
           </n-button>
           <n-button
             type="info"
