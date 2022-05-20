@@ -30,7 +30,7 @@ const actions = [
   {
     title: 'ping',
     act: (row: any) => {
-      handlePing(row.id);
+      handlePing(row.url, row.password);
     }
   },
   {
@@ -139,9 +139,15 @@ const handleAdd = () => {
     });
 };
 
-const handlePing = (id: any) => {
+const handlePing = (url: String, password: String) => {
   axios
-    .post('/api/v1/server/ping', { id: id })
+    .post('/api/v1/judge/ping', {
+      id: 0,
+      typeID: 0,
+      typeName: '',
+      url: url,
+      password: password
+    })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -224,7 +230,11 @@ const handleUpdate = () => {
         <template #footer>
           <!-- 尾部 -->
           <n-space justify="center">
-            <n-button type="primary" size="medium" @click="handlePing">
+            <n-button
+              type="primary"
+              size="medium"
+              @click="handlePing(formInline.url, formInline.password)"
+            >
               Ping
             </n-button>
             <n-button type="primary" size="medium" @click="handleUpdate">
@@ -261,7 +271,11 @@ const handleUpdate = () => {
         <template #footer>
           <!-- 尾部 -->
           <n-space justify="center">
-            <n-button type="primary" size="medium" @click="handlePing">
+            <n-button
+              type="primary"
+              size="medium"
+              @click="handlePing(formInline.url, formInline.password)"
+            >
               Ping
             </n-button>
             <n-button type="primary" size="medium" @click="handleAdd">

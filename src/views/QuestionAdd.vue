@@ -46,8 +46,8 @@ const handleAdd = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        question.value.id = data.id;
-        message.success('信息更新成功！');
+        question.value.id = data.data.id;
+        message.success('添加成功');
       } else {
         message.error(data.message);
       }
@@ -57,6 +57,7 @@ const handleAdd = () => {
       message.error('错误！');
     })
     .finally(() => {
+      console.log(Number(question.value.id));
       //切回答题页面
       router.push({
         name: 'question',

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { NH4, useMessage } from 'naive-ui';
-import { h, onMounted, ref } from 'vue';
+import { h, onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Pencil, BugOutline } from '@vicons/ionicons5';
+import { Pencil, BugOutline, Body } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
-import { USER } from '../setting/const';
+import { RESULT, USER } from '../setting/const';
+import SmartTable from '../components/SmartTable.vue';
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 
@@ -26,12 +27,13 @@ let question = ref({
   testcaseAbstract: '',
   lang: ''
 });
-let useranswer = ref('');
+const useranswer = ref('');
 const showAbstract = ref(false);
 let md = new MarkdownIt();
 
 // 从路由中读取 QuestionId 的值
 const questionid = router.currentRoute.value.params.QuestionId;
+const userid = JSON.parse(localStorage.account).id;
 const role = JSON.parse(localStorage.account).role;
 
 onMounted(() => {
@@ -41,7 +43,6 @@ onMounted(() => {
       .then(res => res.data)
       .then(data => {
         if (data.code === 0) {
-          console.log(data.data);
           question.value = data.data;
         } else {
           message.error(data.message);
@@ -53,9 +54,6 @@ onMounted(() => {
         message.error('错误！');
       })
       .finally(() => {
-        console.log(question.value);
-        console.log(question.value.testcaseAbstract);
-        console.log(md.render(question.value.testcaseAbstract));
         if (role === USER.TEACHER) {
           useranswer.value = question.value.answer;
           valueChange.value = !valueChange.value;
@@ -67,17 +65,56 @@ onMounted(() => {
   }
 });
 
-const show = () => {
-  question.value.content = '# 123';
-  showAbstract.value = !showAbstract.value;
-};
+const dataRef: Ref<{}[][]> = ref([[]]);
+const showResult = ref(false);
 const run = () => {
-  console.log('运行');
+  const handleAnswer = useranswer.value.replace(/\r\n/, ' ');
+
+  axios
+    .post(`api/v1/submit/test`, {
+      testcaseID: Number(question.value.testcaseID),
+      code: handleAnswer
+    })
+    .then(res => res.data)
+    .then(data => {
+      console.log(data.data);
+      if (data.code === 0) {
+        dataRef.value = data.data;
+        console.log(dataRef.value);
+        showResult.value = true;
+      } else {
+        if (data.message !== null) message.error(data.message);
+        else message.error('代码有误');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('错误！');
+    });
 };
 
 const submit = () => {
-  axios;
-  // .post(`api/v1/submit/submit`,)
+  const handleAnswer = useranswer.value.replace(/\r\n/, ' ');
+  axios
+    .post(`api/v1/submit/submit`, {
+      questionID: question.value.id,
+      userID: userid,
+      code: handleAnswer
+    })
+    .then(res => res.data)
+    .then(data => {
+      console.log(data.data);
+      if (data.code === 0) {
+        message.info(RESULT[data.data.result]);
+      } else {
+        if (data.message !== null) message.error(data.message);
+        else message.error('提交失败');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('错误！');
+    });
 };
 
 const handleEdit = () => {
@@ -111,9 +148,6 @@ const handleEdit = () => {
     <n-h2>题目描述</n-h2>
     <n-h4 v-dompurify-html="md.render(question.content)"></n-h4>
     <n-h2>测试集信息</n-h2>
-    <n-space vertical>
-      <n-h4>{{ question.label }}</n-h4>
-    </n-space>
     <n-h4 v-dompurify-html="md.render(question.testcaseAbstract)"></n-h4>
     <n-h2>答题框</n-h2>
     <sql-editor v-model:value="useranswer" :value-change="valueChange" />
@@ -140,7 +174,7 @@ const handleEdit = () => {
         type="primary"
         size="large"
         style="margin-top: 1.6rem"
-        @click="run"
+        @click="submit"
       >
         <template #icon>
           <n-icon size="18">
@@ -150,6 +184,9 @@ const handleEdit = () => {
         提交
       </n-button>
     </n-space>
+    <div v-if="showResult">
+      <smart-table :data-ref="dataRef" />
+    </div>
   </div>
 </template>
 

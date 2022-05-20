@@ -24,6 +24,7 @@
     "ts-md5": "^1.2.11",
     "vfonts": "^0.0.3",
     "vue": "^3.2.25",
+    "vue-dompurify-html": "^3.0.0",
     "vue-router": "^4.0.14"
   },
   "devDependencies": {

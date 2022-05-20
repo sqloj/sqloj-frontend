@@ -15,7 +15,7 @@ let testcase = ref({
   label: '',
   abstract: '',
   content: '',
-  lang: null
+  typeID: null
 });
 
 onMounted(() => {
@@ -109,7 +109,7 @@ const handleDelete = () => {
         />
       </n-form-item>
       <n-form-item label="数据库" class="inputtext" path="lang">
-        <n-select v-model:value="testcase.lang" :options="db_options" />
+        <n-select v-model:value="testcase.typeID" :options="db_options" />
       </n-form-item>
       <n-form-item label="申明语句" class="inputtext" path="abstract">
         <sql-editor

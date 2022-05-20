@@ -7,11 +7,11 @@ const enum USER {
 }
 
 enum RESULT {
-  'UNKNOWN',
-  'ACCEPT',
-  'WAITING',
-  'WRONG ANSWER',
-  'COMPLETE ERROR'
+  'UNKNOWN' = 1,
+  'ACCEPT' = 2,
+  'WAITING' = 3,
+  'WRONG ANSWER' = 4,
+  'COMPLETE ERROR' = 5
 }
 
 const encrypt = (str: string) => {
