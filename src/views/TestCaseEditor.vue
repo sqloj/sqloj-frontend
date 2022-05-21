@@ -34,7 +34,7 @@ onMounted(() => {
     })
     .catch(error => {
       message.error('错误');
-      console.log(error);
+      console.error(error);
     })
     .finally(() => {
       axios
@@ -42,7 +42,6 @@ onMounted(() => {
         .then(res => res.data)
         .then(data => {
           if (data.code === 0) {
-            console.log(data.data);
             testcase.value = data.data;
             valueChange.value = !valueChange.value;
           } else {
@@ -51,7 +50,7 @@ onMounted(() => {
         })
         .catch(error => {
           message.error('错误');
-          console.log(error);
+          console.error(error);
         });
     });
 });
@@ -82,7 +81,7 @@ const handleSubmit = () => {
     })
     .catch(error => {
       message.error('错误');
-      console.log(error);
+      console.error(error);
     });
 };
 
@@ -100,7 +99,7 @@ const handleDelete = () => {
     })
     .catch(error => {
       message.error('错误');
-      console.log(error);
+      console.error(error);
     });
 };
 </script>
