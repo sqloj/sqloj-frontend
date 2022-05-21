@@ -32,6 +32,10 @@ const listRender = () => {
   set.length = 0;
   count = 0;
 
+  if (props.dataRef.length === 0) {
+    dataArr.push(new Array<Listform>());
+    set.push(count);
+  }
   for (let i of props.dataRef) {
     let array: Array<Listform> = new Array<Listform>();
     if (i.length > 0) {
@@ -47,14 +51,14 @@ const listRender = () => {
   isready.value = true;
 };
 
-onBeforeMount(() => {
+onMounted(() => {
   listRender();
 });
 </script>
 
 <template>
   <div :v-if="isready">
-    <div v-for="idx in set" id="manage-container">
+    <div v-for="idx in set" id="manage-container" :key="idx">
       <n-data-table
         :bordered="false"
         :columns="dataArr[idx]"

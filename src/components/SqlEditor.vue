@@ -37,7 +37,7 @@ onMounted(() => {
 
 <style scoped>
 .code-editor {
-  min-height: 300px;
+  min-height: 250px;
   /* box-shadow: 0 0 0 1px gray; */
   /* border-radius:3px; */
 }

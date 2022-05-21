@@ -76,7 +76,9 @@ const handleAdd = () => {
         v-model:value="question.content"
         type="textarea"
         placeholder="请填写题目内容"
+        :autosize="{ minRows: 5 }"
         :autofocus="true"
+        style="font-family: monospace"
       />
       <n-h2>题目答案</n-h2>
       <sql-editor v-model:value="question.answer" />

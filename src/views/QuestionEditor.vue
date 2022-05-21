@@ -147,6 +147,8 @@ const handleDelete = () => {
         type="textarea"
         placeholder="请填写题目内容"
         :autofocus="true"
+        :autosize="{ minRows: 5 }"
+        style="font-family: monospace"
       />
       <n-h2>题目答案</n-h2>
       <sql-editor v-model:value="question.answer" :value-change="valueChange" />
