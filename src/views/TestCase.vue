@@ -35,7 +35,7 @@ const actions = [
         })
         .catch(error => {
           message.error('错误');
-          console.log(error);
+          console.error(error);
         })
         .finally(() => {
           query();

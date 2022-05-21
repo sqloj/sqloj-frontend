@@ -77,10 +77,8 @@ const run = () => {
     })
     .then(res => res.data)
     .then(data => {
-      console.log(data.data);
       if (data.code === 0) {
         dataRef.value = data.data;
-        console.log(dataRef.value);
         showResult.value = true;
       } else {
         if (data.message !== null) message.error(data.message);
@@ -103,7 +101,6 @@ const submit = () => {
     })
     .then(res => res.data)
     .then(data => {
-      console.log(data.data);
       if (data.code === 0) {
         message.info(RESULT[data.data.result]);
       } else {

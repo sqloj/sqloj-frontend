@@ -37,7 +37,6 @@ onMounted(() => {
   修改题目
 */
 const handleAdd = () => {
-  console.log(question.value);
   if (question.value.testcaseID === '') {
     return message.error('请选择数据集');
   }
@@ -57,7 +56,6 @@ const handleAdd = () => {
       message.error('错误！');
     })
     .finally(() => {
-      console.log(Number(question.value.id));
       //切回答题页面
       router.push({
         name: 'question',

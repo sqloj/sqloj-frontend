@@ -54,7 +54,6 @@ onMounted(() => {
             if (data.code === 0) {
               question.value = data.data;
               valueChange.value = !valueChange.value;
-              console.log(question.value);
             } else {
               message.error(data.message);
               router.replace('/main/question-manage');

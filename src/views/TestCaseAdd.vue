@@ -25,7 +25,7 @@ onMounted(() => {
     })
     .catch(error => {
       message.error('错误');
-      console.log(error);
+      console.error(error);
     });
 });
 
@@ -53,7 +53,7 @@ const handleSubmit = () => {
     })
     .catch(error => {
       message.error('错误');
-      console.log(error);
+      console.error(error);
     });
 };
 </script>

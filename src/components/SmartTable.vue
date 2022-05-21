@@ -33,11 +33,9 @@ const listRender = () => {
   count = 0;
 
   for (let i of props.dataRef) {
-    console.log(i);
     let array: Array<Listform> = new Array<Listform>();
     if (i.length > 0) {
       for (let col in i[0]) {
-        console.log(col);
         let value = new Listform(col, col);
         array.push(value);
       }

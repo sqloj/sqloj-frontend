@@ -108,7 +108,7 @@ const query = () => {
       }
     })
     .catch(error => {
-      console.log(error);
+      console.error(error);
       message.error('出错');
     });
 };
@@ -131,7 +131,7 @@ const handleAdd = () => {
       }
     })
     .catch(error => {
-      console.log(error);
+      console.error(error);
       message.error('出错');
     })
     .finally(() => {

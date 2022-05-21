@@ -232,7 +232,6 @@ mock(`/api/submit`, 'post', (option: any) => {
 // 删除题目
 mock(`/api/v1/question/delete`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
-  console.log(id);
   let newquestion = [];
   let flag = false;
   for (let i of question) {
@@ -275,7 +274,6 @@ mock(`/api/v1/question/insert`, 'post', (option: any) => {
 // 删除测试集
 mock(`/api/testcase/delete`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
-  console.log(id);
   let newTestCase = [];
   let flag = false;
   for (let i of TestCase) {
