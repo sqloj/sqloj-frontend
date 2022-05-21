@@ -5,8 +5,16 @@ import 'vfonts/FiraCode.css';
 import VueDOMPurifyHTML from 'vue-dompurify-html';
 import App from './App.vue';
 import router from './router';
+import katex from './setting/katex';
+import hljs from './setting/highlight';
 
 // import './mock';
 // import './useWorker';
 
-createApp(App).use(router).use(VueDOMPurifyHTML).use(naive).mount('#app');
+createApp(App)
+  .use(router)
+  .use(VueDOMPurifyHTML)
+  .use(naive)
+  .use(hljs)
+  .use(katex)
+  .mount('#app');

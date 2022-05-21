@@ -8,7 +8,6 @@ import SqlEditor from '../components/SqlEditor.vue';
 import { RESULT, USER } from '../setting/const';
 import SmartTable from '../components/SmartTable.vue';
 import MarkdownIt from 'markdown-it';
-import hljs from 'highlight.js';
 
 /*
   读取当前的题目信息，
@@ -44,6 +43,14 @@ onMounted(() => {
       .then(data => {
         if (data.code === 0) {
           question.value = data.data;
+          if (question.value.testcaseAbstract.length === 0) {
+            question.value.content += '\n### 测试集信息\n\n```\n[[空]]\n```\n';
+          } else {
+            question.value.content +=
+              '\n### 测试集信息\n\n```sql\n' +
+              question.value.testcaseAbstract +
+              '\n```';
+          }
         } else {
           message.error(data.message);
           router.replace('/main/question-manage');
@@ -66,9 +73,9 @@ onMounted(() => {
 });
 
 const dataRef: Ref<{}[][]> = ref([[]]);
-const showResult = ref(false);
+const showResult = ref(true);
 const run = () => {
-  const handleAnswer = useranswer.value.replace(/\r\n/, ' ');
+  const handleAnswer = useranswer.value;
 
   axios
     .post(`api/v1/submit/test`, {
@@ -78,6 +85,7 @@ const run = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
+        message.success('运行成功');
         dataRef.value = data.data;
         showResult.value = true;
       } else {
@@ -92,7 +100,7 @@ const run = () => {
 };
 
 const submit = () => {
-  const handleAnswer = useranswer.value.replace(/\r\n/, ' ');
+  const handleAnswer = useranswer.value;
   axios
     .post(`api/v1/submit/submit`, {
       questionID: question.value.id,
@@ -143,12 +151,11 @@ const handleEdit = () => {
       编辑题目
     </n-button>
     <n-h2>题目描述</n-h2>
-    <n-h4 v-dompurify-html="md.render(question.content)"></n-h4>
-    <n-h2>测试集信息</n-h2>
-    <sql-editor
-      v-model:value="question.testcaseAbstract"
-      :value-change="valueChange"
-    />
+    <n-p
+      v-dompurify-html="md.render(question.content)"
+      v-highlight
+      v-katex
+    ></n-p>
     <n-h2>答题框</n-h2>
     <sql-editor v-model:value="useranswer" :value-change="valueChange" />
 
