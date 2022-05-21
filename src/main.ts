@@ -3,7 +3,6 @@ import naive from 'naive-ui';
 import 'vfonts/Lato.css';
 import 'vfonts/FiraCode.css';
 import VueDOMPurifyHTML from 'vue-dompurify-html';
-// Vue.use(VueDOMPurifyHTML)
 import App from './App.vue';
 import router from './router';
 

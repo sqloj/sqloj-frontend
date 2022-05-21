@@ -7,11 +7,11 @@ export default defineConfig({
    cors: true,
    proxy: { 
     '/api': {
-     target: "http://192.168.212.82:10086/",
+     target: "http://124.221.134.229:10086/",
      changeOrigin: true,
     },
     '/mapi': {
-      target: "http://192.168.212.82:10086/",
+      target: "http://124.221.134.229:10086/",
       changeOrigin: true,
      }
    }

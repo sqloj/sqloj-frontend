@@ -57,11 +57,19 @@ onMounted(() => {
 });
 
 const handleSubmit = () => {
-  console.log(testcase.value);
+  // console.log({id: testcaseid,
+  //     label:  testcase.value.label,
+  //     content: testcase.value.content.replace(/\r\n/, ' '),
+  //     abstract: testcase.value.abstract.replace(/\r\n/, ' '),
+  //     typeID: testcase.value.typeID});
   axios
     .post(`/api/v1/testcase/update`, {
       id: testcaseid,
-      ...testcase.value
+      label: testcase.value.label,
+      content: testcase.value.content.replace(/\r\n/, ' '),
+      abstract: testcase.value.abstract.replace(/\r\n/, ' '),
+      // typeID: testcase.value.typeID,
+      typeName: testcase.value.typeID
     })
     .then(res => res.data)
     .then(data => {

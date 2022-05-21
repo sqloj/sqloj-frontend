@@ -91,7 +91,7 @@ const handleDelete = () => {
   // 重新加载列表
   Promise.all(promises).finally(() => {
     query();
-    checkedRowKeysRef.value = [];
+    checkedRowKeysRef.value.length = 0;
   });
 };
 

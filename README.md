@@ -1,16 +1,50 @@
-# Vue 3 + Typescript + Vite
+# sqloj frontend
 
-This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+sqloj 的前端部分，由 [Vue 3](https://v3.cn.vuejs.org/) 、[Typescript](https://www.typescriptlang.org/) 和 [Vite](https://cn.vitejs.dev/) 构建而成。
 
-## Recommended IDE Setup
+组件库：[Naive UI](https://www.naiveui.com/zh-CN/os-theme)
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+## Vscode 插件推荐 
 
-## Type Support For `.vue` Imports in TS
+全能 Vue 插件：[Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+格式化工具：[Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+## yarn 安装依赖
 
-1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+使用的是 [nodejs v17](https://nodejs.org/en/blog/release/v17.0.0/) 和 [yarn](https://www.yarnpkg.cn/) 作为包管理工具
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+```shell
+$ yarn
+```
+
+## Vite 运行
+
+在运行前，请确保依赖已经安装完成
+
+```shell
+$ yarn dev
+```
+
+## build 构建
+
+```shell
+$ yarn build
+```
+
+## 格式化与代码检测
+
+使用 prettier 进行格式化
+
+```shell
+$ yarn fmt
+```
+
+[ESLint](https://eslint.org/) 代码检测
+
+```shell
+$ yarn lint
+```
+
+## mockjs
+
+可使用 [mockjs](http://mockjs.com/) 模拟后端，由于 API 变动暂未完成 mock 文件的更新

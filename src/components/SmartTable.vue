@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, onMounted, watch } from 'vue';
-import axios from 'axios';
 
 class Listform {
   title: string;

@@ -148,7 +148,10 @@ const handleEdit = () => {
     <n-h2>题目描述</n-h2>
     <n-h4 v-dompurify-html="md.render(question.content)"></n-h4>
     <n-h2>测试集信息</n-h2>
-    <n-h4 v-dompurify-html="md.render(question.testcaseAbstract)"></n-h4>
+    <sql-editor
+      v-model:value="question.testcaseAbstract"
+      :value-change="valueChange"
+    />
     <n-h2>答题框</n-h2>
     <sql-editor v-model:value="useranswer" :value-change="valueChange" />
 

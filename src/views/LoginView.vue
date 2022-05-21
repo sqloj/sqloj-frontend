@@ -38,7 +38,7 @@ onMounted(() => {
 });
 
 /*
-  发生登录请求， account{id, password, username, department, role, isload}
+  发生登录请求， account{id, password, username, department, role}
   localStorage.user{id, password}
 */
 const handleSubmit = () => {
