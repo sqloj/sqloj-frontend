@@ -44,8 +44,9 @@ function parseQueryString(url: String, key: String) {
 mock(/\/api\/v1\/user\/login/, 'post', (option: any) => {
   let id = parseQueryString(option.url, 'id');
   let password = parseQueryString(option.url, 'password');
+  console.log(id, password);
   for (let u of user) {
-    if (u.id === id && encrypt(u.password) === password) {
+    if (u.id === id && u.password === password) {
       return {
         data: u,
         message: '请求成功',

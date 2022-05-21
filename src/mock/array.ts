@@ -18,21 +18,21 @@ let userGen = () => {
     {
       id: 'admin',
       username: '老师',
-      password: '123456',
+      password: 'admin',
       department: '',
       admin: true
     },
     {
-      id: 'stu',
+      id: 'test',
       username: '学生',
-      password: '123456',
+      password: 'test',
       department: '101',
       admin: false
     },
     {
       id: 'tourist',
       username: 't老师',
-      password: '123456',
+      password: 'tourist',
       department: 'codeforce',
       admin: true
     }

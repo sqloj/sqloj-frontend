@@ -8,7 +8,9 @@ import router from './router';
 import katex from './setting/katex';
 import hljs from './setting/highlight';
 
-// import './mock';
+if (process.env.NODE_ENV === 'mock') {
+  import('./mock');
+}
 // import './useWorker';
 
 createApp(App)
