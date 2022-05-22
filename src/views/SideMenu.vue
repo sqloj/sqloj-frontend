@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, Component } from 'vue';
+import { h, Component, ref } from 'vue';
 import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
@@ -10,7 +10,8 @@ import {
   BugOutline as BugIcon,
   GitCommitOutline as CommitIcon,
   ArrowBackCircleOutline as ArrowBack,
-  ServerOutline as DataBase
+  ServerOutline as DataBase,
+  CloudDoneOutline as CloudIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -18,17 +19,16 @@ function renderIcon(icon: Component) {
 }
 
 const accout = JSON.parse(localStorage.account);
-
 const emit = defineEmits(['getRoute']);
 
 const menuOptions: MenuOption[] = [
   {
     type: 'group',
-    label: '个人信息',
+    label: accout.username,
     key: 'info',
     children: [
       {
-        label: accout.username,
+        label: '个人信息',
         key: 'self-info',
         icon: renderIcon(InfoIcon)
       },
@@ -70,6 +70,53 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(BugIcon)
       },
       {
+        label: '测评机管理',
+        key: 'judge-server',
+        icon: renderIcon(CloudIcon)
+      },
+      {
+        label: '联系我们',
+        key: 'call-us',
+        icon: renderIcon(CallIcon)
+      }
+    ]
+  }
+];
+
+const menuOptionsForStu: MenuOption[] = [
+  {
+    type: 'group',
+    label: '个人信息',
+    key: 'info',
+    children: [
+      {
+        label: accout.username,
+        key: 'self-info',
+        icon: renderIcon(InfoIcon)
+      },
+      {
+        label: '退出登录',
+        key: 'logout',
+        icon: renderIcon(ArrowBack)
+      }
+    ]
+  },
+  {
+    type: 'group',
+    label: '控制台',
+    key: 'console',
+    children: [
+      {
+        label: '题目列表',
+        key: 'question-manage',
+        icon: renderIcon(AddIcon)
+      },
+      {
+        label: '提交记录',
+        key: 'submit-record',
+        icon: renderIcon(CommitIcon)
+      },
+      {
         label: '联系我们',
         key: 'call-us',
         icon: renderIcon(CallIcon)
@@ -84,5 +131,10 @@ const handleUpdateValue = (key: String) => {
 </script>
 
 <template>
-  <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
+  <div v-if="accout.role === 1">
+    <n-menu :options="menuOptionsForStu" @update:value="handleUpdateValue" />
+  </div>
+  <div v-else>
+    <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
+  </div>
 </template>

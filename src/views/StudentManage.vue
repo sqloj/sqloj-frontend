@@ -3,9 +3,10 @@ import { onMounted, ref } from 'vue';
 import { useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
+import { USER } from '../setting/const';
 
 /*
-  展示学生管理信息 {userid, username, classes, acnum}
+  展示学生管理信息 {id, username, department, acnum}
 */
 const columns = [
   {
@@ -13,7 +14,7 @@ const columns = [
   },
   {
     title: '学号',
-    key: 'userid'
+    key: 'id'
   },
   {
     title: '姓名',
@@ -21,7 +22,7 @@ const columns = [
   },
   {
     title: '班级',
-    key: 'classes'
+    key: 'department'
   },
   {
     title: '过题数',
@@ -34,16 +35,27 @@ const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
+const formValue = ref({
+  id: '',
+  username: '',
+  department: ''
+});
 
 /*
   查询学生列表的api （应当只有学生）
 */
 const query = () => {
   axios
-    .post('/api/student/manage/list')
+    .get('mapi/v1/user/list')
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.user;
+      if (data.code === 0) {
+        dataRef.value = data.data;
+      } else {
+        message.error('请求失败');
+      }
+    })
+    .finally(() => {
       loadingRef.value = false;
     });
 };
@@ -59,13 +71,12 @@ const handleDelete = () => {
     // 依据 id 一个个发起删除请求
     promises.push(
       axios
-        .post('/api/student/delete', { userid: id })
+        .post('/api/v1/user/delete', null, { params: { id: id } })
         .then(res => {
-          loadingRef.value = false;
           return res.data;
         })
         .then(data => {
-          if (data.success) {
+          if (data.code === 0) {
             message.success('删除成功');
           } else {
             message.error(data.message);
@@ -80,55 +91,79 @@ const handleDelete = () => {
   // 重新加载列表
   Promise.all(promises).finally(() => {
     query();
-    checkedRowKeysRef.value = [];
+    checkedRowKeysRef.value.length = 0;
   });
+};
+
+const findSubmit = () => {
+  loadingRef.value = true;
+  axios
+    .post(`api/v1/user/filter`, null, {
+      params: {
+        id: formValue.value.id,
+        username: formValue.value.username,
+        department: formValue.value.department
+      }
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        dataRef.value = data.data;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .finally(() => {
+      loadingRef.value = false;
+    });
 };
 
 // 添加学生
 const formInline = ref({
-  userid: '',
+  id: '',
   username: '',
-  classes: '',
+  department: '',
   password: '123456'
 });
 
 const handleSubmit = () => {
-  if (formInline.value.userid === '') {
-    return message.error('请填写学号!');
-  } else if (formInline.value.userid.length > 20) {
-    formInline.value.userid = '';
-    return message.error('学号过长，请重新输入！');
+  if (formInline.value.id === '') {
+    return message.error('请填写学号');
+  } else if (formInline.value.id.length > 20) {
+    formInline.value.id = '';
+    return message.error('学号过长，请重新输入');
   }
 
   if (formInline.value.username === '') {
-    return message.error('请填写姓名!');
+    return message.error('请填写姓名');
   } else if (formInline.value.username.length > 30) {
     formInline.value.username = '';
-    return message.error('姓名过长，请重新输入！');
+    return message.error('姓名过长，请重新输入');
   }
 
-  if (formInline.value.classes === '') {
-    return message.error('请填写班级!');
-  } else if (formInline.value.classes.length > 30) {
-    formInline.value.classes = '';
-    return message.error('班级名过长，请重新输入！');
+  if (formInline.value.department === '') {
+    return message.error('请填写班级');
+  } else if (formInline.value.department.length > 30) {
+    formInline.value.department = '';
+    return message.error('班级名过长，请重新输入');
   }
 
   if (formInline.value.password === '') {
-    return message.error('密码不能为空!');
-  } else if (formInline.value.password.length < 6) {
-    return message.error('密码过短，长度小于 6 字符！');
-  } else if (formInline.value.password.length > 50) {
-    formInline.value.password = '';
-    return message.error('密码过长！');
+    return message.error('密码不能为空');
   }
 
   axios
-    .post('/api/student/insert', formInline.value)
+    .post('/api/v1/user/register', {
+      id: formInline.value.id,
+      username: formInline.value.username,
+      password: formInline.value.password,
+      department: formInline.value.department,
+      role: USER.STUDENT
+    })
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
-        message.success('添加成功！');
+      if (data.code === 0) {
+        message.success('添加成功');
         showModal.value = false;
       } else {
         message.error(data.message);
@@ -136,7 +171,7 @@ const handleSubmit = () => {
     })
     .catch(error => {
       console.error(error);
-      message.error('错误！');
+      message.error('错误');
     })
     .finally(() => {
       query();
@@ -148,13 +183,31 @@ const handleSubmit = () => {
   <n-layout id="manage-container">
     <n-space vertical>
       <n-h1>学生管理</n-h1>
+      <n-space>
+        <n-form ref="formRef" label-placement="left" inline :model="formValue">
+          <n-form-item label="用户ID" path="queid">
+            <n-input v-model:value="formValue.id" placeholder="" />
+          </n-form-item>
+          <n-form-item label="姓名" path="id">
+            <n-input v-model:value="formValue.username" placeholder="" />
+          </n-form-item>
+          <n-form-item label="班级" path="id">
+            <n-input v-model:value="formValue.department" placeholder="" />
+          </n-form-item>
+          <n-form-item>
+            <n-button type="primary" size="medium" @click="findSubmit">
+              查找
+            </n-button>
+          </n-form-item>
+        </n-form>
+      </n-space>
       <n-data-table
         v-model:checked-row-keys="checkedRowKeysRef"
         :bordered="false"
         :columns="columns"
         :data="dataRef"
         :pagination="{ pageSize: 10 }"
-        :row-key="(row: any) => row.userid"
+        :row-key="(row: any) => row.id"
         :loading="loadingRef"
       />
 
@@ -207,8 +260,8 @@ const handleSubmit = () => {
             <!-- 内容 -->
             <n-form label-placement="left" size="medium" :model="formInline">
               <!-- input ID -->
-              <n-form-item label="学号" class="inputtext" path="userid">
-                <n-input v-model:value="formInline.userid" placeholder="学号">
+              <n-form-item label="学号" class="inputtext" path="id">
+                <n-input v-model:value="formInline.id" placeholder="学号">
                 </n-input>
               </n-form-item>
               <!-- input name -->
@@ -217,8 +270,11 @@ const handleSubmit = () => {
                 </n-input>
               </n-form-item>
               <!-- input class -->
-              <n-form-item label="班级" class="inputtext" path="classes">
-                <n-input v-model:value="formInline.classes" placeholder="班级">
+              <n-form-item label="班级" class="inputtext" path="department">
+                <n-input
+                  v-model:value="formInline.department"
+                  placeholder="班级"
+                >
                 </n-input>
               </n-form-item>
               <!-- input password-->

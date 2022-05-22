@@ -6,9 +6,9 @@ let userGen = () => {
   let ret = mock({
     'user|10-20': [
       {
-        'userid|+10000': 201800000101,
+        'id|+10000': 201800000101,
         username: '@cname',
-        classes: '寄科221',
+        department: '寄科221',
         'acnum|1-10': 10
       }
     ]
@@ -16,24 +16,24 @@ let userGen = () => {
 
   ret.push(
     {
-      userid: 'admin',
+      id: 'admin',
       username: '老师',
-      password: '123456',
-      classes: '',
+      password: 'admin',
+      department: '',
       admin: true
     },
     {
-      userid: 'stu',
+      id: 'test',
       username: '学生',
-      password: '123456',
-      classes: '101',
+      password: 'test',
+      department: '101',
       admin: false
     },
     {
-      userid: 'tourist',
+      id: 'tourist',
       username: 't老师',
-      password: '123456',
-      classes: 'codeforce',
+      password: 'tourist',
+      department: 'codeforce',
       admin: true
     }
   );
@@ -125,4 +125,25 @@ let TestCaseGen = () => [
   }
 ];
 
-export { userGen, questionGen, submitsGen, TestCaseGen };
+let ServerGen = () => [
+  {
+    id: 1,
+    url: 'http://localhost:3306',
+    password: '123456',
+    sqltype: 'MySQL'
+  },
+  {
+    id: 2,
+    url: 'http://localhost:11080',
+    password: '123456',
+    sqltype: 'MySQL'
+  },
+  {
+    id: 3,
+    url: 'http://localhost:3333',
+    password: '123456',
+    sqltype: 'SQL Server'
+  }
+];
+
+export { userGen, questionGen, submitsGen, TestCaseGen, ServerGen };

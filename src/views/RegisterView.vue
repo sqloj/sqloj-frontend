@@ -9,6 +9,7 @@ import {
 } from '@vicons/ionicons5';
 import axios from 'axios';
 import { useMessage } from 'naive-ui';
+import { USER } from '../setting/const';
 
 const formRef = ref();
 const loading = ref(false);
@@ -19,55 +20,49 @@ const message = useMessage();
   注册框内容 
 */
 const formInline = ref({
-  userid: '',
+  id: '',
   username: '',
-  classes: '',
+  department: '',
   password1: '',
   password2: '',
   password: ''
 });
 
 const rules = {
-  userid: { required: true, message: '请输入学号' },
+  id: { required: true, message: '请输入学号' },
   username: { required: true, message: '请输入用户名' },
-  classes: { required: true, message: '请输入班级' },
+  department: { required: true, message: '请输入班级' },
   password1: { required: true, message: '请输入密码' },
   password2: { required: true, message: '请再次输入密码' }
 };
 
 /*
-  提交注册 localStorage.user{userid, password}
+  提交注册 localStorage.user{id, password}
 */
 const handleSubmit = () => {
-  if (formInline.value.userid === '') {
-    return message.error('请填写您的学号!');
-  } else if (formInline.value.userid.length > 20) {
-    formInline.value.userid = '';
-    return message.error('学号过长，请重新输入！');
+  if (formInline.value.id === '') {
+    return message.error('请填写您的学号');
+  } else if (formInline.value.id.length > 20) {
+    formInline.value.id = '';
+    return message.error('学号过长，请重新输入');
   }
 
   if (formInline.value.username === '') {
     return message.error('请填写您的姓名!');
   } else if (formInline.value.username.length > 30) {
     formInline.value.username = '';
-    return message.error('姓名过长，请重新输入！');
+    return message.error('姓名过长，请重新输入');
   }
 
-  if (formInline.value.classes === '') {
+  if (formInline.value.department === '') {
     return message.error('请填写您的班级!');
-  } else if (formInline.value.classes.length > 30) {
-    formInline.value.classes = '';
-    return message.error('班级名过长，请重新输入！');
+  } else if (formInline.value.department.length > 30) {
+    formInline.value.department = '';
+    return message.error('班级名过长，请重新输入');
   }
 
   if (formInline.value.password1 === '') {
     return message.error('密码不能为空!');
-  } else if (formInline.value.password1.length < 6) {
-    return message.error('密码过短，长度小于 6 字符！');
-  } else if (formInline.value.password1.length > 50) {
-    formInline.value.password1 = '';
-    formInline.value.password2 = '';
-    return message.error('密码过长！');
   }
 
   if (formInline.value.password1 !== formInline.value.password2) {
@@ -80,12 +75,18 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/student/insert', formInline.value)
+    .post('/api/v1/user/register', {
+      id: formInline.value.id,
+      username: formInline.value.username,
+      password: formInline.value.password,
+      department: formInline.value.department,
+      role: USER.STUDENT
+    })
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         const userJson = {
-          userid: formInline.value.userid,
+          id: formInline.value.id,
           password: formInline.value.password
         };
         localStorage.user = JSON.stringify(userJson);
@@ -116,8 +117,8 @@ const handleSubmit = () => {
           :rules="rules"
         >
           <!-- input ID -->
-          <n-form-item label="学号" class="inputtext" path="userid">
-            <n-input v-model:value="formInline.userid" placeholder="请输入学号">
+          <n-form-item label="学号" class="inputtext" path="id">
+            <n-input v-model:value="formInline.id" placeholder="请输入学号">
               <template #prefix>
                 <n-icon size="18" color="#808695">
                   <AccessibilityOutline />
@@ -141,9 +142,9 @@ const handleSubmit = () => {
           </n-form-item>
 
           <!-- input class -->
-          <n-form-item label="班级" class="inputtext" path="classes">
+          <n-form-item label="班级" class="inputtext" path="department">
             <n-input
-              v-model:value="formInline.classes"
+              v-model:value="formInline.department"
               placeholder="请输入班级"
             >
               <template #prefix>

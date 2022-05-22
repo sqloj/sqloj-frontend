@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { h, onMounted, ref } from 'vue';
 import { NButton, useMessage } from 'naive-ui';
-import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { Add } from '@vicons/ionicons5';
 
 const router = useRouter();
 
@@ -23,18 +23,19 @@ const actions = [
     title: '删除',
     act: (id: any) => {
       axios
-        .post('/api/testcase/delete', { id: id })
+        .post(`/api/v1/testcase/delete`, null, { params: { id: id } })
         .then(res => res.data)
         .then(data => {
-          if (data.success) {
+          if (data.code === 0) {
             message.success('删除成功');
+            router.replace('/main/test-case');
           } else {
             message.error(data.message);
           }
         })
         .catch(error => {
+          message.error('错误');
           console.error(error);
-          message.error('ERROR!');
         })
         .finally(() => {
           query();
@@ -43,9 +44,6 @@ const actions = [
   }
 ];
 
-/*
-  展示学生管理信息 {userid, username, classes, acnum}
-*/
 const columns = [
   {
     title: '编号',
@@ -53,11 +51,12 @@ const columns = [
   },
   {
     title: '描述',
-    key: 'describe'
+    key: 'label',
+    width: '50%'
   },
   {
     title: '数据库类型',
-    key: 'sql'
+    key: 'typeName'
   },
   {
     title: '操作',
@@ -86,31 +85,45 @@ const loadingRef = ref(true);
 const message = useMessage();
 
 /*
-  查询数据集
+  查询数据集{"id" ,"label" ,"abstract" ,"content" ,"typeName"},
 */
 const query = () => {
   axios
-    .post('/api/testcase/list')
+    .get('/api/v1/testcase/list')
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.testcase;
+      dataRef.value = data.data;
       loadingRef.value = false;
     });
 };
 
 onMounted(query);
+
+const addTestCase = () => {
+  router.push('test-case-add');
+};
 </script>
 
 <template>
   <n-layout id="manage-container">
     <n-space vertical>
       <n-h1>测试集</n-h1>
+      <n-space style="margin-bottom: 8px">
+        <n-button type="primary" size="medium" @click="addTestCase">
+          <template #icon>
+            <n-icon size="18">
+              <Add />
+            </n-icon>
+          </template>
+          添加测试集
+        </n-button>
+      </n-space>
       <n-data-table
         :bordered="false"
         :columns="columns"
         :data="dataRef"
         :pagination="{ pageSize: 10 }"
-        :row-key="(row: any) => row.userid"
+        :row-key="(row: any) => row.id"
         :loading="loadingRef"
       />
 

@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount } from 'vue';
-import axios from 'axios';
-
-const props = defineProps<{
-  api: string;
-  pagination?: number;
-}>();
+import { ref, onBeforeMount, onMounted, watch } from 'vue';
 
 class Listform {
   title: string;
@@ -16,52 +10,69 @@ class Listform {
   }
 }
 
-const dataRef = ref([]);
-let dataArr: Array<Listform> = [];
+// const dataRef = ref([]);
+let dataArr: Array<Array<Listform>> = new Array<Array<Listform>>();
+let set: Array<number> = new Array<number>();
+let count = 0;
 const isready = ref(false);
 
-onBeforeMount(() => {
-  console.log(dataArr);
-  axios
-    .post(props.api)
-    .then(res => res.data)
-    .then(data => {
-      var usermsg = data.user;
-      dataRef.value = data.user;
-      if (usermsg.length > 0) {
-        for (let i in usermsg[0]) {
-          let value = new Listform(i, i);
-          dataArr.push(value);
-        }
-        isready.value = true;
+const props = defineProps<{
+  dataRef: {}[][];
+}>();
+
+watch(
+  () => props.dataRef,
+  () => {
+    listRender();
+  }
+);
+
+const listRender = () => {
+  dataArr.length = 0;
+  set.length = 0;
+  count = 0;
+
+  if (props.dataRef.length === 0) {
+    dataArr.push(new Array<Listform>());
+    set.push(count);
+  }
+  for (let i of props.dataRef) {
+    let array: Array<Listform> = new Array<Listform>();
+    if (i.length > 0) {
+      for (let col in i[0]) {
+        let value = new Listform(col, col);
+        array.push(value);
       }
-    });
+    }
+    dataArr.push(array);
+    set.push(count);
+    count++;
+  }
+  isready.value = true;
+};
+
+onMounted(() => {
+  listRender();
 });
 </script>
 
 <template>
-  <div
-    v-if="isready"
-    style="text-align: center; padding-left: 5%; padding-right: 5%"
-  >
-    <n-h1>Child Page</n-h1>
-    <n-layout id="manage-container">
-      <n-space vertical :size="12">
-        <n-data-table
-          :bordered="false"
-          :columns="dataArr"
-          :data="dataRef"
-          :pagination="{ pagesize: 10 }"
-          :row-key="(row: any) => row.id"
-          :loading="false"
-        />
-      </n-space>
-    </n-layout>
+  <div :v-if="isready">
+    <div v-for="idx in set" id="manage-container" :key="idx">
+      <n-data-table
+        :bordered="false"
+        :columns="dataArr[idx]"
+        :data="dataRef[idx]"
+        :pagination="{ pagesize: 10 }"
+        :row-key="(row: any) => row.key"
+        :loading="false"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
 #manage-container {
-  padding: 20px;
+  padding-top: 15px;
 }
 </style>

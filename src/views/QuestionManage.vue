@@ -4,23 +4,22 @@ import { NA, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import { Add } from '@vicons/ionicons5';
 import axios from 'axios';
+import { USER } from '../setting/const';
 
-const admin = JSON.parse(localStorage.account).admin;
+const role = JSON.parse(localStorage.account).role;
 /*
   展示题目信息 {id, content<a>, passnum, testcase_id}
 */
 const columns = [
   {
     title: '编号',
-    key: 'id',
-    width: 100
+    key: 'id'
   },
   {
     title: '题目描述',
     key: 'content',
-    width: 400,
     ellipsis: true,
-
+    width: '60%',
     render(row: any) {
       return h(
         NA,
@@ -29,7 +28,7 @@ const columns = [
             const question = row;
             localStorage.question = JSON.stringify(question);
             // 页面跳转
-            if (admin) {
+            if (role === USER.TEACHER) {
               router.push({
                 name: 'question-editor',
                 params: {
@@ -54,13 +53,11 @@ const columns = [
   },
   {
     title: '通过人数',
-    key: 'passnum',
-    width: 100
+    key: 'passnum'
   },
   {
-    title: '依赖数据库',
-    key: 'testcase_id',
-    width: 100
+    title: '依赖数据集',
+    key: 'label'
   }
 ];
 
@@ -77,10 +74,10 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .post(`/api/question/manage/list`)
+    .get(`api/v1/question/listWithTestcase`)
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.question;
+      dataRef.value = data.data;
       loadingRef.value = false;
     });
 };
@@ -89,20 +86,24 @@ onMounted(query);
 const findQuestionById = () => {
   const id = Number(formValue.value.queid);
   axios
-    .post(`/api/question/find/{id}`, { id })
+    .get(`/api/v1/question/info/${id}`)
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         // 页面跳转
         router.push({
           name: 'question',
           params: {
-            QuestionId: data.question.id
+            QuestionId: data.data.id
           }
         });
       } else {
         message.error(data.message);
       }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('错误！');
     });
 };
 

@@ -66,9 +66,19 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/TestCase.vue')
       },
       {
+        path: 'test-case-add',
+        name: 'test-case-add',
+        component: () => import('../views/TestCaseAdd.vue')
+      },
+      {
         path: 'test-case-editor/:testcaseId',
         name: 'test-case-editor',
         component: () => import('../views/TestCaseEditor.vue')
+      },
+      {
+        path: 'judge-server',
+        name: 'judge-server',
+        component: () => import('../views/JudgeServer.vue')
       }
     ]
   },

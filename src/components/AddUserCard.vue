@@ -57,10 +57,10 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/student/insert', formInline.value)
+    .post('/api/v1/user/register', formInline.value)
     .then(res => res.data)
     .then(data => {
-      if (data.success) {
+      if (data.code === 0) {
         message.success('添加成功！');
       } else {
         message.error(data.message);

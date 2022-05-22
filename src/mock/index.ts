@@ -1,6 +1,13 @@
 // 引入mockjs
 import Mock from 'mockjs';
-import { userGen, questionGen, submitsGen, TestCaseGen } from './array';
+import { encrypt } from '../setting/const';
+import {
+  userGen,
+  questionGen,
+  submitsGen,
+  TestCaseGen,
+  ServerGen
+} from './array';
 // 引入模板函数类
 
 // Mock函数
@@ -9,34 +16,54 @@ let user = userGen();
 let question = questionGen();
 let submits = submitsGen();
 let TestCase = TestCaseGen();
+let server = ServerGen();
 // 设置延时
 Mock.setup({
   timeout: 200
 });
 
+function parseQueryString(url: String, key: String) {
+  let arr;
+  url = url.split('#')[0];
+  arr = url.split('?');
+  arr.shift();
+  let queryStr = arr.join('?');
+
+  //获取参数
+  arr = queryStr.split('&');
+  for (let i = 0; i < arr.length; i++) {
+    let itemArr = arr[i].split('=');
+    let name = itemArr.shift();
+    let value = itemArr.join('=');
+    if (name === key) return value;
+  }
+}
+
 // 使用拦截规则拦截命中的请求，mock(url, post/get, 返回的数据);
 // 登录
-mock(`/api/user/login`, 'post', (option: any) => {
-  const { userid, password } = JSON.parse(option.body);
+mock(/\/api\/v1\/user\/login/, 'post', (option: any) => {
+  let id = parseQueryString(option.url, 'id');
+  let password = parseQueryString(option.url, 'password');
+  console.log(id, password);
   for (let u of user) {
-    if (u.userid === userid && u.password === password) {
+    if (u.id === id && u.password === password) {
       return {
-        ...u,
+        data: u,
         message: '请求成功',
-        success: true
+        code: 0
       };
     }
   }
   return {
     message: '请求失败',
-    success: false
+    code: 1
   };
 });
 // 学生注册
-mock(`/api/student/insert`, 'post', (option: any) => {
+mock(`/api/v1/user/register`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
-    if (u.userid === userInfo.userid) {
+    if (u.id === userInfo.id) {
       return {
         message: '用户ID已存在',
         success: false
@@ -51,10 +78,10 @@ mock(`/api/student/insert`, 'post', (option: any) => {
   };
 });
 // 用户信息更新
-mock(`/api/user/update/info`, 'post', (option: any) => {
+mock(`/api/v1/user/update`, 'post', (option: any) => {
   const userInfo = JSON.parse(option.body);
   for (let u of user) {
-    if (u.userid === userInfo.userid) {
+    if (u.id === userInfo.id) {
       u.username = userInfo.username;
       u.password = userInfo.password;
       u.classes = userInfo.classes;
@@ -67,13 +94,13 @@ mock(`/api/user/update/info`, 'post', (option: any) => {
   }
 });
 // 学生列表
-mock(`/api/student/manage/list`, 'post', () => {
+mock(`/mapi/v1/user/list`, 'post', () => {
   return {
-    user: user
+    data: user
   };
 });
 // 题目列表
-mock(`/api/question/manage/list`, 'post', () => {
+mock(`/api/v1/question/list`, 'get', () => {
   return {
     question: question
   };
@@ -85,7 +112,7 @@ mock(`/api/submission/list`, 'post', () => {
   };
 });
 // 依赖数据库表
-mock(`/api/testcase/list`, 'post', () => {
+mock(`/api/v1/testcase/list`, 'get', () => {
   return {
     testcase: TestCase
   };
@@ -101,14 +128,20 @@ mock(`/api/admin/manage/list`, 'post', () => {
   };
 });
 
+mock(`/api/server/list`, 'post', () => {
+  return {
+    server: server
+  };
+});
+
 // 删除学生
-mock(`/api/student/delete`, 'post', (option: any) => {
-  const { userid } = JSON.parse(option.body);
+mock(`/api/v1/user/delete`, 'post', (option: any) => {
+  const { id } = JSON.parse(option.body);
   let newUser = [];
   let flag = false;
 
   for (let u of user) {
-    if (u.userid !== userid) {
+    if (u.id !== id) {
       newUser.push(u);
     } else {
       flag = true;
@@ -130,7 +163,7 @@ mock(`/api/student/delete`, 'post', (option: any) => {
 });
 
 // 更新题目
-mock(`/api/question/update`, 'post', (option: any) => {
+mock(`/api/v1/question/update`, 'post', (option: any) => {
   const { id, content, answer, testcase_id } = JSON.parse(option.body);
   for (let t of question) {
     if (t.id === id) {
@@ -150,7 +183,7 @@ mock(`/api/question/update`, 'post', (option: any) => {
   };
 });
 // 通过题目id查找题目 （不需要passnum）
-mock(`/api/question/find/{id}`, 'post', (option: any) => {
+mock(`/api/v1/question/info/{id}`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
   for (let t of question) {
     if (t.id === id) {
@@ -166,16 +199,16 @@ mock(`/api/question/find/{id}`, 'post', (option: any) => {
     message: '未找到题目'
   };
 });
-// questionid 和 userid 查找
+// questionid 和 id 查找
 mock(`/api/submit`, 'post', (option: any) => {
-  const { questionid, userid } = JSON.parse(option.body);
+  const { questionid, id } = JSON.parse(option.body);
   let ret = [];
   if (questionid !== '') {
     let queid = Number(questionid);
     for (let t of submits) {
       if (t.questionId == queid) {
-        if (userid !== '') {
-          if (t.userid == userid) ret.push(t);
+        if (id !== '') {
+          if (t.id == id) ret.push(t);
         } else {
           ret.push(t);
         }
@@ -184,9 +217,9 @@ mock(`/api/submit`, 'post', (option: any) => {
     return {
       submits: ret
     };
-  } else if (userid !== '') {
+  } else if (id !== '') {
     for (let t of submits) {
-      if (t.userid == userid) ret.push(t);
+      if (t.id == id) ret.push(t);
     }
     return {
       submits: ret
@@ -198,9 +231,8 @@ mock(`/api/submit`, 'post', (option: any) => {
   }
 });
 // 删除题目
-mock(`/api/question/delete`, 'post', (option: any) => {
+mock(`/api/v1/question/delete`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
-  console.log(id);
   let newquestion = [];
   let flag = false;
   for (let i of question) {
@@ -225,7 +257,7 @@ mock(`/api/question/delete`, 'post', (option: any) => {
 });
 
 // 添加题目
-mock(`/api/question/insert`, 'post', (option: any) => {
+mock(`/api/v1/question/insert`, 'post', (option: any) => {
   const que = JSON.parse(option.body);
   let id = question.length + 1;
   question.push({
@@ -243,7 +275,6 @@ mock(`/api/question/insert`, 'post', (option: any) => {
 // 删除测试集
 mock(`/api/testcase/delete`, 'post', (option: any) => {
   const { id } = JSON.parse(option.body);
-  console.log(id);
   let newTestCase = [];
   let flag = false;
   for (let i of TestCase) {
