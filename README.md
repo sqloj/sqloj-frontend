@@ -7,6 +7,7 @@ sqloj 的前端部分，由 [Vue 3](https://v3.cn.vuejs.org/) 、[Typescript](ht
 ## Vscode 插件推荐 
 
 全能 Vue 插件：[Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+
 格式化工具：[Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 ## yarn 安装依赖
@@ -22,12 +23,15 @@ $ yarn
 在运行前，请确保依赖已经安装完成
 
 ```shell
-$ yarn dev
+$ yarn dev 
 ```
 
 ## build 构建
 
 ```shell
+# mock 模拟
+$ yarn build --mode mock
+# 生产版本
 $ yarn build
 ```
 
