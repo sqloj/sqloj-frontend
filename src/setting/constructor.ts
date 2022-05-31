@@ -3,10 +3,13 @@ import Mock from 'mockjs';
 const Random = Mock.Random;
 
 function autoIncrement(msg: any, count: Number) {
-  return msg.initnum + count + 1;
+  return msg.initnum + count;
 }
 function cname() {
   return Random.cname();
+}
+function name() {
+  return Random.name();
 }
 
 function boolean(msg: any) {
@@ -21,11 +24,50 @@ function float(msg: any) {
   return Random.float(msg.min, msg.max, msg.dmin, msg.dmin);
 }
 
+function date(msg: any) {
+  return Random.date(msg.date);
+}
+function time(msg: any) {
+  return Random.time(msg.time);
+}
+function datetime(msg: any) {
+  return Random.datetime(msg.date + ' ' + msg.time);
+}
+function pick(msg: any) {
+  return Random.pick(msg.model.tags);
+}
+function sentence(msg: any) {
+  return Random.sentence(msg.min, msg.max);
+}
+function paragraph(msg: any) {
+  return Random.paragraph(msg.min, msg.max);
+}
+function url() {
+  return Random.url();
+}
+function ip() {
+  return Random.ip();
+}
+function email() {
+  return Random.email();
+}
+function domain() {
+  return Random.domain();
+}
+function province() {
+  return Random.province();
+}
+function region() {
+  return Random.region();
+}
+function id() {
+  return Random.id();
+}
+
 const constructor = (body: any) => {
   const tablename = body.tablename;
   const num = body.num;
   const need = body.need;
-  console.log(tablename, need);
   let funList: Array<Function> = [];
   let res = 'INSERT INTO `' + tablename + '` (';
   const len = need.length;
@@ -42,6 +84,9 @@ const constructor = (body: any) => {
       case 'cname':
         funList.push(cname);
         break;
+      case 'name':
+        funList.push(name);
+        break;
       case 'integer':
         funList.push((msg: any) => integer.call(null, msg));
         break;
@@ -51,6 +96,46 @@ const constructor = (body: any) => {
       case 'float':
         funList.push((msg: any) => float.call(null, msg));
         break;
+      case 'date':
+        funList.push((msg: any) => date.call(null, msg));
+        break;
+      case 'time':
+        funList.push((msg: any) => time.call(null, msg));
+        break;
+      case 'datetime':
+        funList.push((msg: any) => datetime.call(null, msg));
+        break;
+      case 'pick':
+        funList.push((msg: any) => pick.call(null, msg));
+        break;
+      case 'sentence':
+        funList.push((msg: any) => sentence.call(null, msg));
+        break;
+      case 'paragraph':
+        funList.push((msg: any) => paragraph.call(null, msg));
+        break;
+      case 'url':
+        funList.push(url);
+        break;
+      case 'ip':
+        funList.push(ip);
+        break;
+      case 'email':
+        funList.push(email);
+        break;
+      case 'domain':
+        funList.push(domain);
+        break;
+      case 'province':
+        funList.push(province);
+        break;
+      case 'region':
+        funList.push(region);
+        break;
+      case 'id':
+        funList.push(id);
+        break;
+    
     }
   }
   res += ') \r\nVALUES \r\n';
