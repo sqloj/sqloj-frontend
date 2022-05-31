@@ -4,7 +4,6 @@ import { NTooltip, SelectOption } from 'naive-ui';
 import { constructor } from '../setting/constructor';
 import MarkdownIt from 'markdown-it';
 
-
 let md = new MarkdownIt();
 // 可供选择的类型
 const option = {
@@ -157,7 +156,6 @@ const formValue = ref({
   num: 10
 });
 
-
 const showModel = ref('');
 const show = () => {
   let need = [];
@@ -190,36 +188,70 @@ const handleGen = () => {
 </script>
 
 <template>
-  <n-card style="width: 1000px" title="数据生成器" size="huge" role="dialog" aria-modal="true"
-    header-style="text-align: center" footer-style="text-align: center">
+  <n-card
+    style="width: 1000px"
+    title="数据生成器"
+    size="huge"
+    role="dialog"
+    aria-modal="true"
+    header-style="text-align: center"
+    footer-style="text-align: center"
+  >
     <n-space>
       <n-form ref="formRef" label-placement="left" inline :model="formValue">
         <n-form-item label="表名" path="tablename">
           <n-input v-model:value="formValue.tablename" placeholder="" />
         </n-form-item>
-        <n-form-item label="数量" path="num">
-          <n-input v-model:value="formValue.num" placeholder="" />
+        <n-form-item label="行数" path="num">
+          <n-input v-model:value="formValue.num" placeholder="最好不要过大" />
         </n-form-item>
       </n-form>
     </n-space>
 
-    <n-dynamic-input v-model:value="customValue" show-sort-button :on-create="onCreate">
+    <n-dynamic-input
+      v-model:value="customValue"
+      show-sort-button
+      :on-create="onCreate"
+    >
       <template #default="{ value }">
         <n-space style="display: flex; align-items: center; width: 100%">
-          <n-input v-model:value="value.colname" type="text" placeholder="列名" />
-          <n-select v-model:value="value.choose" :options="option.options.value" :render-option="option.renderOption"
-            style="width: 100px" :reset-menu-on-options-change="false" />
+          <n-input
+            v-model:value="value.colname"
+            type="text"
+            placeholder="列名"
+          />
+          <n-select
+            v-model:value="value.choose"
+            :options="option.options.value"
+            :render-option="option.renderOption"
+            style="width: 100px"
+            :reset-menu-on-options-change="false"
+          />
 
           <div v-if="value.choose === 'auto increment'">
-            <n-input v-model:value="value.message.initnum" type="text" placeholder="起始数" />
+            <n-input
+              v-model:value="value.message.initnum"
+              type="text"
+              placeholder="起始数"
+            />
           </div>
           <div v-else-if="value.choose === 'cname'">
-            <n-input type="text" :disabled="true" placeholder="会自动生成简单的中文名字" />
+            <n-input
+              type="text"
+              :disabled="true"
+              placeholder="会自动生成简单的中文名字"
+            />
           </div>
           <div v-else-if="value.choose === 'integer'">
             <n-space>
-              <n-input-number v-model:value="value.message.min" placeholder="最小值" />
-              <n-input-number v-model:value="value.message.max" placeholder="最大值" />
+              <n-input-number
+                v-model:value="value.message.min"
+                placeholder="最小值"
+              />
+              <n-input-number
+                v-model:value="value.message.max"
+                placeholder="最大值"
+              />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'boolean'">
@@ -232,20 +264,42 @@ const handleGen = () => {
             <n-space>
               <n-input v-model:value="value.message.min" placeholder="最小值" />
               <n-input v-model:value="value.message.max" placeholder="最大值" />
-              <n-input v-model:value="value.message.dmin" placeholder="最小位数" />
-              <n-input v-model:value="value.message.dmax" placeholder="最大位数" />
+              <n-input
+                v-model:value="value.message.dmin"
+                placeholder="最小位数"
+              />
+              <n-input
+                v-model:value="value.message.dmax"
+                placeholder="最大位数"
+              />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'date'">
-            <n-input type="text" v-model:value="value.message.date" placeholder="日期格式(用 - 连接)" />
+            <n-input
+              v-model:value="value.message.date"
+              type="text"
+              placeholder="日期格式(用 - 连接)"
+            />
           </div>
           <div v-else-if="value.choose === 'time'">
-            <n-input type="text" v-model:value="value.message.time" placeholder="时间格式(用 : 连接)" />
+            <n-input
+              v-model:value="value.message.time"
+              type="text"
+              placeholder="时间格式(用 : 连接)"
+            />
           </div>
           <div v-else-if="value.choose === 'datetime'">
             <n-space>
-              <n-input type="text" v-model:value="value.message.date" placeholder="日期格式(用 - 连接)" />
-              <n-input type="text" v-model:value="value.message.time" placeholder="时间格式(用 : 连接)" />
+              <n-input
+                v-model:value="value.message.date"
+                type="text"
+                placeholder="日期格式(用 - 连接)"
+              />
+              <n-input
+                v-model:value="value.message.time"
+                type="text"
+                placeholder="时间格式(用 : 连接)"
+              />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'pick'">
@@ -256,18 +310,38 @@ const handleGen = () => {
             </n-form>
           </div>
           <div v-else-if="value.choose === 'name'">
-            <n-input type="text" :disabled="true" placeholder="A simple English name will be randomly generated" />
+            <n-input
+              type="text"
+              :disabled="true"
+              placeholder="A simple English name will be randomly generated"
+            />
           </div>
           <div v-else-if="value.choose === 'sentence'">
             <n-space>
-              <n-input type="text" v-model:value="value.message.min" placeholder="最少单词个数" />
-              <n-input type="text" v-model:value="value.message.max" placeholder="最大单词个数" />
+              <n-input
+                v-model:value="value.message.min"
+                type="text"
+                placeholder="最少单词个数"
+              />
+              <n-input
+                v-model:value="value.message.max"
+                type="text"
+                placeholder="最大单词个数"
+              />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'paragraph'">
             <n-space>
-              <n-input type="text" v-model:value="value.message.min" placeholder="最少句子个数" />
-              <n-input type="text" v-model:value="value.message.max" placeholder="最大句子个数" />
+              <n-input
+                v-model:value="value.message.min"
+                type="text"
+                placeholder="最少句子个数"
+              />
+              <n-input
+                v-model:value="value.message.max"
+                type="text"
+                placeholder="最大句子个数"
+              />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'url'">
@@ -283,13 +357,25 @@ const handleGen = () => {
             <n-input type="text" :disabled="true" placeholder="生成一个域名" />
           </div>
           <div v-else-if="value.choose === 'region'">
-            <n-input type="text" :disabled="true" placeholder="生成一个中国大区" />
+            <n-input
+              type="text"
+              :disabled="true"
+              placeholder="生成一个中国大区"
+            />
           </div>
           <div v-else-if="value.choose === 'province'">
-            <n-input type="text" :disabled="true" placeholder="生成一个省（或直辖市、自治区、特别行政区）" />
+            <n-input
+              type="text"
+              :disabled="true"
+              placeholder="生成一个省（或直辖市、自治区、特别行政区）"
+            />
           </div>
           <div v-else-if="value.choose === 'id'">
-            <n-input type="text" :disabled="true" placeholder="随机生成一个 18 位身份证" />
+            <n-input
+              type="text"
+              :disabled="true"
+              placeholder="随机生成一个 18 位身份证"
+            />
           </div>
           <div v-else>
             <n-input type="text" placeholder="可能需要输入一些信息" />
@@ -305,9 +391,19 @@ const handleGen = () => {
           <template #trigger>
             <n-button type="success" strong secondary>预览</n-button>
           </template>
-          <span v-dompurify-html="md.render(showModel)" v-highlight v-katex></span>
+          <span
+            v-dompurify-html="md.render(showModel)"
+            v-highlight
+            v-katex
+          ></span>
         </n-popover>
-        <n-button strong secondary type="primary" size="medium" @click="handleGen">
+        <n-button
+          strong
+          secondary
+          type="primary"
+          size="medium"
+          @click="handleGen"
+        >
           生成
         </n-button>
       </n-space>

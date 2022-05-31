@@ -4,7 +4,10 @@ import { editor } from 'monaco-editor';
 import { useMessage } from 'naive-ui';
 import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { ReceiptOutline } from '@vicons/ionicons5';
 import SqlEditor from '../components/SqlEditor.vue';
+import { constructor } from '../setting/constructor';
+import GenerateDataCard from '../components/GenerateDataCard.vue';
 
 const router = useRouter();
 const message = useMessage();
@@ -97,11 +100,28 @@ const handleDelete = () => {
       console.error(error);
     });
 };
+// 构造器部分
+const showModal = ref(false);
+const GenButton = () => {
+  showModal.value = true;
+};
+
+const getData = (body: any) => {
+  let res = constructor(body);
+  console.log(res);
+  testcase.value.content =
+    testcase.value.content + '\r\n-- 数据生成器 \r\n' + res;
+  valueChange.value = !valueChange.value;
+  console.log(testcase.value.content);
+};
 </script>
 
 <template>
   <div class="manage-container">
     <n-h1>测试集</n-h1>
+    <n-modal v-model:show="showModal">
+      <generate-data-card @get-data="getData" />
+    </n-modal>
     <n-form :model="testcase">
       <n-form-item label="标签" class="inputtext" path="label">
         <n-input
@@ -119,6 +139,21 @@ const handleDelete = () => {
           :value-change="valueChange"
         />
       </n-form-item>
+      <n-button
+        type="primary"
+        size="small"
+        strong
+        secondary
+        style="margin-bottom: 20px"
+        @click="GenButton"
+      >
+        <template #icon>
+          <n-icon size="18">
+            <ReceiptOutline />
+          </n-icon>
+        </template>
+        数据生成器
+      </n-button>
       <n-form-item label="插入语句" class="inputtext" path="content">
         <sql-editor
           v-model:value="testcase.content"

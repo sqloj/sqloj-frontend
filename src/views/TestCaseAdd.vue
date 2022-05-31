@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useMessage } from 'naive-ui';
 import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Add } from '@vicons/ionicons5';
+import { ReceiptOutline } from '@vicons/ionicons5';
 import SqlEditor from '../components/SqlEditor.vue';
 import GenerateDataCard from '../components/GenerateDataCard.vue';
 import { constructor } from '../setting/constructor';
@@ -64,7 +64,7 @@ const handleSubmit = () => {
     });
 };
 
-//
+// 构造器部分
 const showModal = ref(false);
 const valueChange = ref(false);
 const GenButton = () => {
@@ -99,24 +99,27 @@ const getData = (body: any) => {
       <n-form-item label="数据库" class="inputtext" path="typeID">
         <n-select v-model:value="testcase.typeID" :options="db_options" />
       </n-form-item>
-      <!-- <n-form-item > -->
+
+      <!-- </n-form-item> -->
+      <n-form-item label="建表语句" class="inputtext" path="abstract">
+        <sql-editor v-model:value="testcase.abstract" />
+      </n-form-item>
+      <!-- 构造器-->
       <n-button
         type="primary"
-        size="medium"
+        size="small"
+        strong
+        secondary
         style="margin-bottom: 20px"
         @click="GenButton"
       >
         <template #icon>
           <n-icon size="18">
-            <Add />
+            <ReceiptOutline />
           </n-icon>
         </template>
         数据生成器
       </n-button>
-      <!-- </n-form-item> -->
-      <n-form-item label="建表语句" class="inputtext" path="abstract">
-        <sql-editor v-model:value="testcase.abstract" />
-      </n-form-item>
       <n-form-item label="插入语句" class="inputtext" path="content">
         <sql-editor
           v-model:value="testcase.content"

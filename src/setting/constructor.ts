@@ -135,7 +135,6 @@ const constructor = (body: any) => {
       case 'id':
         funList.push(id);
         break;
-    
     }
   }
   res += ') \r\nVALUES \r\n';

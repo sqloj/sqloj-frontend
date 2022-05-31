@@ -1,8 +1,14 @@
 <script lang="ts" setup>
-import { NH4, useMessage } from 'naive-ui';
-import { h, onMounted, Ref, ref } from 'vue';
+import { useMessage } from 'naive-ui';
+import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Pencil, BugOutline, Body } from '@vicons/ionicons5';
+import {
+  Pencil,
+  BugOutline,
+  Body,
+  TerminalOutline,
+  CodeSlashSharp
+} from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
 import { RESULT, USER } from '../setting/const';
@@ -170,7 +176,7 @@ const handleEdit = () => {
       >
         <template #icon>
           <n-icon size="18">
-            <BugOutline />
+            <TerminalOutline />
           </n-icon>
         </template>
         测试
@@ -185,7 +191,7 @@ const handleEdit = () => {
       >
         <template #icon>
           <n-icon size="18">
-            <BugOutline />
+            <CodeSlashSharp />
           </n-icon>
         </template>
         提交
