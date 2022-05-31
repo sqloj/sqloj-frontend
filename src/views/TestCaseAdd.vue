@@ -3,7 +3,10 @@ import axios from 'axios';
 import { useMessage } from 'naive-ui';
 import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { Add } from '@vicons/ionicons5';
 import SqlEditor from '../components/SqlEditor.vue';
+import GenerateDataCard from '../components/GenerateDataCard.vue';
+import { constructor } from '../setting/constructor';
 
 const router = useRouter();
 const message = useMessage();
@@ -33,15 +36,19 @@ let testcase = ref({
   label: '',
   abstract: '',
   content: '',
-  lang: null
+  typeID: null
 });
 
 const handleSubmit = () => {
-  if (testcase.value.lang === null) {
+  console.log(testcase.value);
+  if (testcase.value.typeID === null) {
     return message.error('请选择数据库');
   }
   axios
-    .post(`api/v1/testcase/insert`, testcase.value)
+    .post(`api/v1/testcase/insert`, {
+      ...testcase.value,
+      typeName: ''
+    })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -56,11 +63,31 @@ const handleSubmit = () => {
       console.error(error);
     });
 };
+
+//
+const showModal = ref(false);
+const valueChange = ref(false);
+const GenButton = () => {
+  showModal.value = true;
+};
+
+const getData = (body: any) => {
+  let res = constructor(body);
+  console.log(res);
+  testcase.value.content =
+    testcase.value.content + '\r\n-- 数据生成器 \r\n' + res;
+  valueChange.value = !valueChange.value;
+  console.log(testcase.value.content);
+};
 </script>
 
 <template>
   <div class="manage-container">
     <n-h1>测试集</n-h1>
+
+    <n-modal v-model:show="showModal">
+      <generate-data-card @get-data="getData" />
+    </n-modal>
     <n-form :model="testcase">
       <n-form-item label="标签" class="inputtext" path="label">
         <n-input
@@ -69,14 +96,32 @@ const handleSubmit = () => {
           :autofocus="true"
         />
       </n-form-item>
-      <n-form-item label="数据库" class="inputtext" path="lang">
-        <n-select v-model:value="testcase.lang" :options="db_options" />
+      <n-form-item label="数据库" class="inputtext" path="typeID">
+        <n-select v-model:value="testcase.typeID" :options="db_options" />
       </n-form-item>
+      <!-- <n-form-item > -->
+      <n-button
+        type="primary"
+        size="medium"
+        style="margin-bottom: 20px"
+        @click="GenButton"
+      >
+        <template #icon>
+          <n-icon size="18">
+            <Add />
+          </n-icon>
+        </template>
+        数据生成器
+      </n-button>
+      <!-- </n-form-item> -->
       <n-form-item label="建表语句" class="inputtext" path="abstract">
         <sql-editor v-model:value="testcase.abstract" />
       </n-form-item>
       <n-form-item label="插入语句" class="inputtext" path="content">
-        <sql-editor v-model:value="testcase.content" />
+        <sql-editor
+          v-model:value="testcase.content"
+          :value-change="valueChange"
+        />
       </n-form-item>
     </n-form>
     <n-space>
