@@ -1,27 +1,48 @@
 <script lang="ts" setup>
-import axios from 'axios';
-import { SelectOption } from 'naive-ui';
-import { ref } from 'vue';
+import { ref, h, VNode } from 'vue';
+import { NTooltip, SelectOption } from 'naive-ui';
 
 // 可供选择的类型
-const optionsRef = ref([
-  {
-    label: '自增',
-    value: 'auto increment'
-  },
-  {
-    label: '中文名字',
-    value: 'cname'
-  },
-  {
-    label: '整数',
-    value: 'integer'
-  },
-  {
-    label: '日期',
-    value: 'date'
-  }
-]);
+
+const option = {
+  renderOption: ({ node, option }: { node: VNode; option: SelectOption }) =>
+    h(NTooltip, null, {
+      trigger: () => node,
+      default: () => option.tip
+    }),
+  options: ref([
+    {
+      label: '自增',
+      value: 'auto increment',
+      tip: '起始数字 + 1'
+    },
+    {
+      label: '中文名字',
+      value: 'cname',
+      tip: '生成简单的中文名'
+    },
+    {
+      label: '整数',
+      value: 'integer',
+      tip: '生成 min ~ max 之间的数'
+    },
+    {
+      label: '布尔值',
+      value: 'boolean',
+      tip: '概率计算公式为 min / (min + max)'
+    },
+    {
+      label: '浮点数',
+      value: 'float',
+      tip: 'min(整数最小) ~ max ; dmin(小数最小位数) ~ dmax'
+    },
+    {
+      label: '日期',
+      value: 'date',
+      tip: '生成一个日期，格式可以自定义'
+    }
+  ])
+};
 
 // 选择下拉框的滚动
 const handleScroll = (e: Event) => {
@@ -30,14 +51,16 @@ const handleScroll = (e: Event) => {
     currentTarget.scrollTop + currentTarget.offsetHeight >=
     currentTarget.scrollHeight
   ) {
-    optionsRef.value.push(
+    option.options.value.push(
       {
-        label: `v1-${optionsRef.value.length}`,
-        value: `v1-${optionsRef.value.length}`
+        label: `v1-${option.options.value.length}`,
+        value: `v1-${option.options.value.length}`,
+        tip: `v1-${option.options.value.length}`
       },
       {
-        label: `v2-${optionsRef.value.length}`,
-        value: `v2-${optionsRef.value.length}`
+        label: `v2-${option.options.value.length}`,
+        value: `v2-${option.options.value.length}`,
+        tip: `v2-${option.options.value.length}`
       }
     );
   }
@@ -49,16 +72,12 @@ const customValue = ref([
     choose: '',
     colname: '',
     message: {
+      initnum: 1,
       min: null,
-      max: null
-    }
-  },
-  {
-    choose: '',
-    colname: '',
-    message: {
-      min: null,
-      max: null
+      max: null,
+      dmin: 0,
+      dmax: 17,
+      data: 'yyy-MM-dd'
     }
   }
 ]);
@@ -69,8 +88,12 @@ const onCreate = () => {
     choose: '',
     colname: '',
     message: {
-      min: null,
-      max: null
+      initnum: 1,
+      min: 0,
+      max: 100,
+      dmin: 0,
+      dmax: 17,
+      data: 'yyy-MM-dd'
     }
   };
 };
@@ -135,48 +158,65 @@ const handleGen = () => {
           />
           <n-select
             v-model:value="value.choose"
-            :options="optionsRef"
+            :options="option.options.value"
+            :render-option="option.renderOption"
             style="width: 100px"
             :reset-menu-on-options-change="false"
             @scroll="handleScroll"
           />
 
-          <div v-if="value.choose === 'cname'">
+          <div v-if="value.choose === 'auto increment'">
+            <n-input
+              v-model:value="value.message.initNum"
+              type="text"
+              placeholder="起始数"
+            />
+          </div>
+          <div v-else-if="value.choose === 'cname'">
             <n-input
               type="text"
               :disabled="true"
               placeholder="会自动生成简单的中文名字"
             />
           </div>
-          <div v-else-if="value.choose === 'auto increment'">
-            <n-input
-              type="text"
-              :disabled="true"
-              placeholder="从 1 开始自动增加"
-            />
+          <div v-else-if="value.choose === 'integer'">
+            <n-space>
+              <n-input-number
+                v-model:value="value.message.min"
+                placeholder="最小值"
+              />
+              <n-input-number
+                v-model:value="value.message.max"
+                placeholder="最大值"
+              />
+            </n-space>
+          </div>
+          <div v-else-if="value.choose === 'boolean'">
+            <n-space>
+              <n-input v-model:value="value.message.min" placeholder="最小值" />
+              <n-input v-model:value="value.message.max" placeholder="最大值" />
+            </n-space>
+          </div>
+          <div v-else-if="value.choose === 'float'">
+            <n-space>
+              <n-input v-model:value="value.message.min" placeholder="最小值" />
+              <n-input v-model:value="value.message.max" placeholder="最大值" />
+              <n-input
+                v-model:value="value.message.dmin"
+                placeholder="最小位数"
+              />
+              <n-input
+                v-model:value="value.message.dmax"
+                placeholder="最大位数"
+              />
+            </n-space>
           </div>
           <div v-else-if="value.choose === 'date'">
             <n-input
               type="text"
               :disabled="true"
-              placeholder="随机生成一个 yyyy-mm-dd 格式的日期"
+              placeholder="生成 yyyy-mm-dd 日期"
             />
-          </div>
-          <div v-else-if="value.choose === 'integer'">
-            <n-space start>
-              <n-input-number
-                v-model:value="value.message.min"
-                placeholder="最小值"
-                :min="-100000000"
-                :max="100000000"
-              />
-              <n-input-number
-                v-model:value="value.message.max"
-                placeholder="最大值"
-                :min="-100000000"
-                :max="100000000"
-              />
-            </n-space>
           </div>
           <div v-else>
             <n-input type="text" placeholder="可能需要输入一些信息" />
