@@ -15,7 +15,12 @@ const renderOption = {
 export default {
   install: (app: App) => {
     app.directive('katex', {
-      updated(el) {
+      updated(el: HTMLElement) {
+        console.log(el);
+        renderMathInElement(el, renderOption);
+      },
+      mounted(el: HTMLElement) {
+        console.log(el);
         renderMathInElement(el, renderOption);
       }
     });
