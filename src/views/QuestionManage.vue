@@ -129,14 +129,16 @@ const addQuestion = () => {
             </n-button>
           </n-form-item>
           <n-form-item>
-            <n-button type="primary" size="medium" @click="addQuestion">
-              <template #icon>
-                <n-icon size="18">
-                  <Add />
-                </n-icon>
-              </template>
-              新增题目
-            </n-button>
+            <div v-if="role === USER.TEACHER">
+              <n-button type="primary" size="medium" @click="addQuestion">
+                <template #icon>
+                  <n-icon size="18">
+                    <Add />
+                  </n-icon>
+                </template>
+                新增题目
+              </n-button>
+            </div>
           </n-form-item>
         </n-form>
       </n-space>

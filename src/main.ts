@@ -7,6 +7,7 @@ import App from './App.vue';
 import router from './router';
 import katex from './setting/katex';
 import hljs from './setting/highlight';
+import './setting/constructor';
 
 if (process.env.NODE_ENV === 'mock') {
   import('./mock');

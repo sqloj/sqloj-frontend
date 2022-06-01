@@ -60,6 +60,7 @@ onMounted(() => {
             }
           })
           .catch(error => {
+            loadingRef.value = false;
             console.error(error);
             message.error('错误！');
           })

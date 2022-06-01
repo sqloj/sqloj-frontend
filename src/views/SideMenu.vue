@@ -11,7 +11,8 @@ import {
   GitCommitOutline as CommitIcon,
   ArrowBackCircleOutline as ArrowBack,
   ServerOutline as DataBase,
-  CloudDoneOutline as CloudIcon
+  CloudDoneOutline as CloudIcon,
+  SchoolOutline as SchoolIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -67,7 +68,7 @@ const menuOptions: MenuOption[] = [
       {
         label: '权限管理',
         key: 'admin-accoun-manage',
-        icon: renderIcon(BugIcon)
+        icon: renderIcon(SchoolIcon)
       },
       {
         label: '测评机管理',
