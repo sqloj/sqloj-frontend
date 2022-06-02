@@ -56,44 +56,47 @@ onMounted(query);
 
 const handleEditor = () => {
   router.push({
-        name: 'article-editor',
-        params: {
-          ArticleId: Number(formValue.value.id)
-        }
-  }
-  )
-}
-
+    name: 'article-editor',
+    params: {
+      ArticleId: Number(formValue.value.id)
+    }
+  });
+};
 </script>
 
 <template>
   <div class="view-info">
     <div class="view-info-container">
       <n-card :title="formValue.title" style="margin-bottom: 16px">
-      <n-space :size="30">
-        <n-h4>{{formValue.authorName}}</n-h4>
-        <n-h4>
-          <n-icon :component="CalendarOutline" size="18" />
-          {{formValue.date}}</n-h4>
-        <n-button
-          v-if="showbutton"
-          secondary
-          strong
-          type="default"
-          size="small"
-          @click="handleEditor"
-        >
-          <template #icon>
-            <n-icon size="18">
-              <Pencil />
-            </n-icon>
-          </template>
-          编辑
-        </n-button>
-      </n-space>
-      <n-divider />
+        <n-space :size="30">
+          <n-h4>{{ formValue.authorName }}</n-h4>
+          <n-h4>
+            <n-icon :component="CalendarOutline" size="18" />
+            {{ formValue.date }}</n-h4
+          >
+          <n-button
+            v-if="showbutton"
+            secondary
+            strong
+            type="default"
+            size="small"
+            @click="handleEditor"
+          >
+            <template #icon>
+              <n-icon size="18">
+                <Pencil />
+              </n-icon>
+            </template>
+            编辑
+          </n-button>
+        </n-space>
+        <n-divider />
         <n-scrollbar x-scrollable>
-          <div v-dompurify-html="md.render(formValue.content)" v-katex v-highlight></div>
+          <div
+            v-dompurify-html="md.render(formValue.content)"
+            v-katex
+            v-highlight
+          ></div>
         </n-scrollbar>
       </n-card>
     </div>

@@ -27,11 +27,11 @@ const handleAdd = () => {
         formValue.value.id = data.id;
         message.success('提交成功');
         router.push({
-        name: 'article-page',
-        params: {
-          ArticleId: Number(formValue.value.id)
-        }
-      });
+          name: 'article-page',
+          params: {
+            ArticleId: Number(formValue.value.id)
+          }
+        });
       } else {
         message.error(data.message);
       }

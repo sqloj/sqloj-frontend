@@ -17,15 +17,18 @@ const total = ref({
   TOTAL: 14
 });
 
-
 const queryInfo = () => {
   axios
     .get(`api/v1/submit{id}`)
     .then(res => res.data)
     .then(data => {
-      if(data.code === 0) {
+      if (data.code === 0) {
         total.value = data.data;
-        total.value.TOTAL = total.value.ACCEPT + total.value['COMPLETE ERROR'] + total.value['WRONG ANSWER'] + total.value.UNKNOWN;
+        total.value.TOTAL =
+          total.value.ACCEPT +
+          total.value['COMPLETE ERROR'] +
+          total.value['WRONG ANSWER'] +
+          total.value.UNKNOWN;
       } else {
         message.error(data.message);
       }
@@ -35,7 +38,6 @@ const queryInfo = () => {
       console.log(error);
     });
 };
-
 
 const ArticleCol = [
   {
@@ -123,19 +125,19 @@ const queryRecord = () => {
       }
       RecordRef.value = data.data;
       loadingRecordRef.value = false;
-    }).catch((error) => {
+    })
+    .catch(error => {
       loadingRecordRef.value = false;
       message.error(error);
-      console.log(error)
-    })
+      console.log(error);
+    });
 };
 
-onMounted(() =>{
+onMounted(() => {
   queryInfo();
   queryArticle();
   queryRecord();
-})
-
+});
 </script>
 
 <template>
