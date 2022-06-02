@@ -12,7 +12,9 @@ import {
   ArrowBackCircleOutline as ArrowBack,
   ServerOutline as DataBase,
   CloudDoneOutline as CloudIcon,
-  SchoolOutline as SchoolIcon
+  SchoolOutline as SchoolIcon,
+  ShareOutline as ShareIcon,
+  BarChartOutline as BarIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -32,6 +34,11 @@ const menuOptions: MenuOption[] = [
         label: '个人信息',
         key: 'self-info',
         icon: renderIcon(InfoIcon)
+      },
+      {
+        label: '答题情况',
+        key: 'self-page',
+        icon: renderIcon(BarIcon)
       },
       {
         label: '退出登录',
@@ -66,6 +73,11 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(CommitIcon)
       },
       {
+        label: '知识分享',
+        key: 'knowledge-share',
+        icon: renderIcon(ShareIcon)
+      },
+      {
         label: '权限管理',
         key: 'admin-accoun-manage',
         icon: renderIcon(SchoolIcon)
@@ -96,6 +108,11 @@ const menuOptionsForStu: MenuOption[] = [
         icon: renderIcon(InfoIcon)
       },
       {
+        label: '答题情况',
+        key: 'self-page',
+        icon: renderIcon(BarIcon)
+      },
+      {
         label: '退出登录',
         key: 'logout',
         icon: renderIcon(ArrowBack)
@@ -116,6 +133,11 @@ const menuOptionsForStu: MenuOption[] = [
         label: '提交记录',
         key: 'submit-record',
         icon: renderIcon(CommitIcon)
+      },
+      {
+        label: '知识分享',
+        key: 'knowledge-share',
+        icon: renderIcon(ShareIcon)
       },
       {
         label: '联系我们',
