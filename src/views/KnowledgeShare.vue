@@ -1,0 +1,129 @@
+<script lang="ts" setup>
+import { h, onMounted, ref } from 'vue';
+import { NA, useMessage } from 'naive-ui';
+import { useRouter } from 'vue-router';
+import { CreateOutline } from '@vicons/ionicons5';
+import axios from 'axios';
+import { USER } from '../setting/const';
+
+const columns = [
+  {
+    title: '编号',
+    key: 'id'
+  },
+  {
+    title: '标题',
+    key: 'title',
+    ellipsis: true,
+    width: '60%',
+    render(row: any) {
+      return h(
+        NA,
+        {
+          onClick() {
+            router.push({
+              name: 'article-page',
+              params: {
+                ArticleId: row.id
+              }
+            });
+          }
+        },
+        {
+          default: () => row.title
+        }
+      );
+    }
+  },
+  {
+    title: '作者',
+    key: 'author'
+  },
+  {
+    title: '时间',
+    key: 'time'
+  }
+];
+
+const dataRef = ref([]);
+const loadingRef = ref(true);
+const message = useMessage();
+const router = useRouter();
+
+const query = () => {
+  axios
+    .get(`api/v1/share/list`)
+    .then(res => res.data)
+    .then(data => {
+      dataRef.value = data.data;
+      loadingRef.value = false;
+    })
+    .catch(error => {
+      loadingRef.value = false;
+      message.error(error);
+      console.log(error);
+    });
+};
+onMounted(query);
+
+const addArticle = () => {
+  router.push('article-add');
+};
+</script>
+
+<template>
+  <n-layout id="manage-container">
+    <n-space vertical>
+      <n-h1>题目列表</n-h1>
+      <!-- form -->
+      <n-space>
+        <n-form ref="formRef" label-placement="left" inline>
+          <!-- <n-form-item label="题目ID" path="queid">
+            <n-input v-model:value="formValue.queid" placeholder="" />
+          </n-form-item> -->
+
+          <!-- <n-form-item>
+            <n-button type="primary" size="medium" @click="findQuestionById">
+              跳转
+            </n-button>
+          </n-form-item> -->
+          <n-form-item>
+            <n-button type="primary" size="medium" @click="addArticle">
+              <template #icon>
+                <n-icon size="18">
+                  <CreateOutline />
+                </n-icon>
+              </template>
+              发帖
+            </n-button>
+          </n-form-item>
+        </n-form>
+      </n-space>
+      <n-data-table
+        :bordered="false"
+        :columns="columns"
+        :data="dataRef"
+        :pagination="{ pageSize: 15 }"
+        :row-key="(row: any) => row.id"
+        :loading="loadingRef"
+      />
+    </n-space>
+  </n-layout>
+</template>
+
+<style scoped>
+#manage-container {
+  padding: 20px;
+  padding-top: 80px;
+  overflow: auto;
+  text-align: center;
+  padding-left: 5%;
+  padding-right: 5%;
+  overflow: hidden;
+}
+
+.space {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+</style>
