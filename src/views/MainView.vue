@@ -20,8 +20,7 @@ const getRoute = (e: string) => {
       }
     });
   } else {
-    const subRounte = '/main/' + e;
-    router.push(subRounte);
+    router.push(e);
   }
 };
 
