@@ -4,7 +4,6 @@ import { NA, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import { CreateOutline } from '@vicons/ionicons5';
 import axios from 'axios';
-import { USER } from '../setting/const';
 
 const columns = [
   {
@@ -52,7 +51,7 @@ const router = useRouter();
 
 const query = () => {
   axios
-    .get(`api/v1/share/list`)
+    .get(`api/v1/article/list`)
     .then(res => res.data)
     .then(data => {
       dataRef.value = data.data;
@@ -78,15 +77,6 @@ const addArticle = () => {
       <!-- form -->
       <n-space>
         <n-form ref="formRef" label-placement="left" inline>
-          <!-- <n-form-item label="题目ID" path="queid">
-            <n-input v-model:value="formValue.queid" placeholder="" />
-          </n-form-item> -->
-
-          <!-- <n-form-item>
-            <n-button type="primary" size="medium" @click="findQuestionById">
-              跳转
-            </n-button>
-          </n-form-item> -->
           <n-form-item>
             <n-button type="primary" size="medium" @click="addArticle">
               <template #icon>
@@ -103,7 +93,7 @@ const addArticle = () => {
         :bordered="false"
         :columns="columns"
         :data="dataRef"
-        :pagination="{ pageSize: 15 }"
+        :pagination="{ pageSize: 20 }"
         :row-key="(row: any) => row.id"
         :loading="loadingRef"
       />

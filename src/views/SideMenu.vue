@@ -32,13 +32,13 @@ const menuOptions: MenuOption[] = [
     children: [
       {
         label: '个人信息',
-        key: 'self-info',
-        icon: renderIcon(InfoIcon)
-      },
-      {
-        label: '答题情况',
         key: 'self-page',
         icon: renderIcon(BarIcon)
+      },
+      {
+        label: '修改信息',
+        key: 'self-info',
+        icon: renderIcon(InfoIcon)
       },
       {
         label: '退出登录',
@@ -99,18 +99,18 @@ const menuOptions: MenuOption[] = [
 const menuOptionsForStu: MenuOption[] = [
   {
     type: 'group',
-    label: '个人信息',
+    label: accout.username,
     key: 'info',
     children: [
       {
-        label: accout.username,
-        key: 'self-info',
-        icon: renderIcon(InfoIcon)
-      },
-      {
-        label: '答题情况',
+        label: '个人信息',
         key: 'self-page',
         icon: renderIcon(BarIcon)
+      },
+      {
+        label: '修改信息',
+        key: 'self-info',
+        icon: renderIcon(InfoIcon)
       },
       {
         label: '退出登录',

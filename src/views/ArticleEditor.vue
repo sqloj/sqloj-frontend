@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { Pencil } from '@vicons/ionicons5';
+import { Pencil, CloseOutline } from '@vicons/ionicons5';
 import MarkdownIt from 'markdown-it';
 import axios from 'axios';
 import { useMessage } from 'naive-ui';
@@ -46,7 +46,31 @@ onMounted(query);
 
 const handleModify = () => {
   axios
-    .post(`api/share/update`, formValue.value)
+    .post(`api/v1/article/update`, formValue.value)
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        formValue.value.id = data.id;
+        message.success('提交成功');
+        router.push({
+          name: 'article-page',
+          params: {
+            ArticleId: Number(formValue.value.id)
+          }
+        });
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('错误！');
+    });
+};
+
+const handleDelete = () => {
+  axios
+    .post(`api/v1/article/update`, formValue.value)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -104,20 +128,36 @@ const handleModify = () => {
             </n-scrollbar>
           </n-tab-pane>
         </n-tabs>
-        <n-button
-          secondary
-          strong
-          type="primary"
-          size="large"
-          @click="handleModify"
-        >
-          <template #icon>
-            <n-icon size="18">
-              <Pencil />
-            </n-icon>
-          </template>
-          提交
-        </n-button>
+        <n-space justify="space-between">
+          <n-button
+            secondary
+            strong
+            type="primary"
+            size="large"
+            @click="handleModify"
+          >
+            <template #icon>
+              <n-icon size="18">
+                <Pencil />
+              </n-icon>
+            </template>
+            提交
+          </n-button>
+          <n-button
+            secondary
+            strong
+            type="error"
+            size="large"
+            @click="handleDelete"
+          >
+            <template #icon>
+              <n-icon size="18">
+                <CloseOutline />
+              </n-icon>
+            </template>
+            删除
+          </n-button>
+        </n-space>
       </n-card>
     </div>
   </div>

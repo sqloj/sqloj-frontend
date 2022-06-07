@@ -12,6 +12,7 @@ const router = useRouter();
 const rules = {
   title: { required: true, trigger: ['blur'], message: '请起一个标题吧' }
 };
+const userid = JSON.parse(localStorage.account).id;
 const formValue = ref({
   id: '',
   title: '',
@@ -20,7 +21,10 @@ const formValue = ref({
 
 const handleAdd = () => {
   axios
-    .post(`api/share`, formValue.value)
+    .post(`api/v1/artcle/insert`, {
+      ...formValue.value,
+      userid: userid
+    })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {

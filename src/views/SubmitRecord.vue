@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import axios from 'axios';
-import { useMessage } from 'naive-ui';
-import { onMounted, ref } from 'vue';
+import { NA, useMessage } from 'naive-ui';
+import { h, onMounted, ref } from 'vue';
 import { RESULT } from '../setting/const';
 /*
 "id": 1,
@@ -26,7 +26,18 @@ const columns = [
   },
   {
     title: '结果',
-    key: 'result'
+    key: 'result',
+    render(row: any) {
+      return h(
+        NA,
+        {
+          trigger: 'hover'
+        },
+        {
+          default: () => row.result
+        }
+      );
+    }
   },
   {
     title: '提交时间',

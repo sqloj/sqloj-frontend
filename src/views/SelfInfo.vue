@@ -121,7 +121,7 @@ const goback = () => {
   <n-layout>
     <div class="view-info">
       <div class="view-info-container">
-        <n-h1 style="margin-bottom: 3rem"> 个人信息 </n-h1>
+        <n-h1 style="margin-bottom: 3rem"> 个人资料 </n-h1>
         <n-form ref="formRef" size="large" :model="formInline">
           <!-- input ID 老师和学生分开显示-->
           <div v-if="formInline.role === USER.STUDENT">
