@@ -79,7 +79,6 @@ onMounted(() => {
 });
 
 const dataRef: Ref<{}[][]> = ref([[]]);
-const showResult = ref(true);
 const run = () => {
   const handleAnswer = useranswer.value;
 
@@ -93,7 +92,6 @@ const run = () => {
       if (data.code === 0) {
         message.success('运行成功');
         dataRef.value = data.data;
-        showResult.value = true;
       } else {
         if (data.message !== null) message.error(data.message);
         else message.error('代码有误');
@@ -197,7 +195,7 @@ const handleEdit = () => {
         提交
       </n-button>
     </n-space>
-    <div v-if="showResult">
+    <div>
       <smart-table :data-ref="dataRef" />
     </div>
   </div>
