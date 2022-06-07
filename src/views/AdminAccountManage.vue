@@ -36,6 +36,7 @@ const handleCheck = (rowKeys: any) => {
   查询学生列表的api （应当只有学生）
 */
 const query = () => {
+  loadingRef.value = true;
   axios
     .post(`api/v1/user/filter`, null, {
       params: {
@@ -46,9 +47,15 @@ const query = () => {
     .then(data => {
       if (data.code === 0) {
         dataRef.value = data.data;
+        loadingRef.value = false;
       } else {
         message.error('请求失败');
       }
+    })
+    .catch(error => {
+      loadingRef.value = false;
+      message.error(error);
+      console.log(error);
     })
     .finally(() => {
       loadingRef.value = false;

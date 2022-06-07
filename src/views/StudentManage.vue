@@ -35,6 +35,9 @@ const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
+/*
+  查询输入框
+*/
 const formValue = ref({
   id: '',
   username: '',
@@ -46,14 +49,22 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .get('mapi/v1/user/list')
+    .post(`api/v1/user/filter`, null, {
+      params: {
+        role: 1
+      }
+    })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
         dataRef.value = data.data;
       } else {
-        message.error('请求失败');
+        message.error(data.message);
       }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('ERROR!');
     })
     .finally(() => {
       loadingRef.value = false;
