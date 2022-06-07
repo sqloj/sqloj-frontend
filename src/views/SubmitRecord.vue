@@ -1,16 +1,37 @@
 <script lang="ts" setup>
 import axios from 'axios';
+import MarkdownIt from 'markdown-it';
 import { NA, useMessage } from 'naive-ui';
 import { h, onMounted, ref } from 'vue';
 import { RESULT } from '../setting/const';
-/*
-"id": 1,
-      "userID": "1",
-      "questionID": 3,
-      "code": "SELECT 1;",
-      "result": 4,
-      time
-*/
+
+const options = ref([
+  {
+    label: 'ACCEPT',
+    value: RESULT.ACCEPT
+  },
+  {
+    label: 'WRONG ANSWER',
+    value: RESULT['WRONG ANSWER']
+  },
+  {
+    label: 'COMPLETE ERROR',
+    value: RESULT['COMPLETE ERROR']
+  },
+  {
+    label: 'WAITING',
+    value: RESULT.WAITING
+  },
+  {
+    label: 'SERVER ERROR',
+    value: RESULT['SERVER ERROR']
+  },
+  {
+    label: 'UNKNOWN',
+    value: RESULT.UNKNOWN
+  }
+]);
+
 const columns = [
   {
     title: '编号',
@@ -31,7 +52,10 @@ const columns = [
       return h(
         NA,
         {
-          trigger: 'hover'
+          onClick() {
+            showModal.value = true;
+            text.value = '```sql\n' + row.code + '\n```';
+          }
         },
         {
           default: () => row.result
@@ -45,12 +69,16 @@ const columns = [
   }
 ];
 
+let md = new MarkdownIt();
 const dataRef = ref([]);
 const loadingRef = ref(true);
+const showModal = ref(false);
+const text = ref('');
 const message = useMessage();
 const formValue = ref({
   questionID: '',
-  userID: ''
+  userID: '',
+  result: ''
 });
 
 const query = () => {
@@ -58,11 +86,20 @@ const query = () => {
     .get(`/api/v1/submit/list`)
     .then(res => res.data)
     .then(data => {
-      for (let i of data.data) {
-        i.result = RESULT[i.result];
+      if (data.code === 0) {
+        for (let i of data.data) {
+          i.result = RESULT[i.result];
+        }
+        dataRef.value = data.data;
+        loadingRef.value = false;
+      } else {
+        message.error(data.message);
       }
-      dataRef.value = data.data;
+    })
+    .catch(error => {
       loadingRef.value = false;
+      message.error(error);
+      console.log(error);
     });
 };
 
@@ -71,15 +108,27 @@ onMounted(query);
 const findSubmit = () => {
   loadingRef.value = true;
   axios
-    .post(`/api/submit`, null, {
+    .post(`/api/v1/submit/filter`, null, {
       params: {
         ...formValue
       }
     })
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.submits;
+      if (data.code === 0) {
+        for (let i of data.data) {
+          i.result = RESULT[i.result];
+        }
+        dataRef.value = data.data;
+        loadingRef.value = false;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
       loadingRef.value = false;
+      message.error(error);
+      console.log(error);
     });
 };
 </script>
@@ -95,11 +144,16 @@ const findSubmit = () => {
         <n-form-item label="用户ID" path="userID">
           <n-input v-model:value="formValue.userID" placeholder="" />
         </n-form-item>
-        <n-form-item>
-          <n-button type="primary" size="medium" @click="findSubmit">
-            查找
-          </n-button>
+        <n-form-item label="状态" path="result">
+          <n-select
+            v-model:value="formValue.result"
+            style="width: 100px"
+            :options="options"
+          />
         </n-form-item>
+        <n-button type="primary" size="medium" @click="findSubmit">
+          查找
+        </n-button>
       </n-form>
     </n-space>
     <n-data-table
@@ -110,6 +164,11 @@ const findSubmit = () => {
       :row-key="(row: any) => row.id"
       :loading="loadingRef"
     />
+    <n-modal v-model:show="showModal">
+      <n-card style="width: 600px">
+        <span v-dompurify-html="md.render(text)" v-highlight v-katex></span>
+      </n-card>
+    </n-modal>
   </n-layout>
 </template>
 
