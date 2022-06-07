@@ -28,7 +28,7 @@ const rules = {
 };
 
 /*
-  加载前，读取上次保存的密码
+  读取上次保存的密码
 */
 onMounted(() => {
   if (localStorage.hasOwnProperty('user')) {
@@ -102,7 +102,7 @@ const logon = () => {
 <template>
   <div class="view-account">
     <div class="view-account-container" style="text-align: center">
-      <n-h1>DML 语句评判系统</n-h1>
+      <n-h1>SQL OJ</n-h1>
       <div class="view-account-form">
         <!-- FORM 表单-->
         <n-form
