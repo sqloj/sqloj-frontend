@@ -152,7 +152,16 @@ const handleDelete = () => {
         style="font-family: monospace"
       />
       <n-h2>题目答案</n-h2>
-      <sql-editor v-model:value="question.answer" :value-change="valueChange" />
+      <n-popover trigger="hover" duration="10">
+        <template #trigger>
+          <sql-editor
+            v-model:value="question.answer"
+            :value-change="valueChange"
+          />
+        </template>
+        <span>注意：答案不能为空表</span>
+      </n-popover>
+
       <n-h2>依赖数据集</n-h2>
       <n-select
         v-model:value="question.testcaseID"
