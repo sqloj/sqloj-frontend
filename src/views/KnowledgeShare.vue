@@ -14,7 +14,6 @@ const columns = [
     title: '标题',
     key: 'title',
     ellipsis: true,
-    width: '60%',
     render(row: any) {
       return h(
         NA,
@@ -36,11 +35,11 @@ const columns = [
   },
   {
     title: '作者',
-    key: 'author'
+    key: 'username'
   },
   {
     title: '时间',
-    key: 'time'
+    key: 'updateTime'
   }
 ];
 
@@ -51,7 +50,7 @@ const router = useRouter();
 
 const query = () => {
   axios
-    .get(`api/v1/article/list`)
+    .post(`api/v1/article/filter`, {})
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -77,7 +76,7 @@ const addArticle = () => {
 <template>
   <n-layout id="manage-container">
     <n-space vertical>
-      <n-h1>题目列表</n-h1>
+      <n-h1>分享</n-h1>
       <!-- form -->
       <n-space>
         <n-form ref="formRef" label-placement="left" inline>
@@ -93,14 +92,8 @@ const addArticle = () => {
           </n-form-item>
         </n-form>
       </n-space>
-      <n-data-table
-        :bordered="false"
-        :columns="columns"
-        :data="dataRef"
-        :pagination="{ pageSize: 20 }"
-        :row-key="(row: any) => row.id"
-        :loading="loadingRef"
-      />
+      <n-data-table :bordered="false" :columns="columns" :data="dataRef" :pagination="{ pageSize: 20 }"
+        :row-key="(row: any) => row.id" :loading="loadingRef" />
     </n-space>
   </n-layout>
 </template>

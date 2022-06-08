@@ -23,17 +23,16 @@ const handleAdd = () => {
   axios
     .post(`api/v1/article/insert`, {
       ...formValue.value,
-      userid: userid
+      userID: userid
     })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        formValue.value.id = data.id;
         message.success('提交成功');
         router.push({
           name: 'article-page',
           params: {
-            ArticleId: Number(formValue.value.id)
+            ArticleId: data.data.id
           }
         });
       } else {

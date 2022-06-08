@@ -46,18 +46,15 @@ onMounted(query);
 
 const handleModify = () => {
   axios
-    .post(`api/v1/article/update`, formValue.value)
+    .post(`api/v1/article/update`, {
+      ...formValue.value,
+      userID: JSON.parse(localStorage.account).id
+})
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        formValue.value.id = data.id;
         message.success('提交成功');
-        router.push({
-          name: 'article-page',
-          params: {
-            ArticleId: Number(formValue.value.id)
-          }
-        });
+        router.back();
       } else {
         message.error(data.message);
       }

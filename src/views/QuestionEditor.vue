@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { Pencil, ArrowBack, CloseOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
+import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 
 /*
   读取当前的题目信息，"id", "content", "answer", "testcaseID" ,"label" ,"abstract" ,"lang"
@@ -25,7 +26,7 @@ let question = ref({
 });
 
 // 依赖数据库选择
-let optionsRef: Ref<{}[]> = ref([]);
+let optionsRef: Ref<SelectMixedOption[]> = ref([]);
 const questionid = router.currentRoute.value.params.QuestionId;
 
 onMounted(() => {
@@ -152,7 +153,7 @@ const handleDelete = () => {
         style="font-family: monospace"
       />
       <n-h2>题目答案</n-h2>
-      <n-popover trigger="hover" duration="10">
+      <n-popover trigger="hover" :duration="10">
         <template #trigger>
           <sql-editor
             v-model:value="question.answer"

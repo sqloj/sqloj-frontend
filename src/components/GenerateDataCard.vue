@@ -153,7 +153,7 @@ const onCreate = () => {
 // 组件变化后的回调
 const formValue = ref({
   tablename: '',
-  num: 10
+  num: '',
 });
 
 const showModel = ref('');
@@ -166,7 +166,7 @@ const show = () => {
   }
   let res = constructor({
     tablename: formValue.value.tablename,
-    num: Math.min(formValue.value.num, 10),
+    num: Math.min(Number(formValue.value.num), 10),
     need: need
   });
   showModel.value = '\n### 部分结果\n\n```sql\n' + res + '\n```';

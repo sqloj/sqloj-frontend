@@ -8,17 +8,18 @@ import { ReceiptOutline } from '@vicons/ionicons5';
 import SqlEditor from '../components/SqlEditor.vue';
 import { constructor } from '../setting/constructor';
 import GenerateDataCard from '../components/GenerateDataCard.vue';
+import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 
 const router = useRouter();
 const message = useMessage();
 const valueChange = ref(false);
 const testcaseid = router.currentRoute.value.params.testcaseId;
-const db_options: Ref<{}[]> = ref([]);
+const db_options: Ref<SelectMixedOption[]> = ref([]);
 let testcase = ref({
   label: '',
   abstract: '',
   content: '',
-  typeID: null
+  judgeTypeID: null
 });
 
 onMounted(() => {
@@ -28,7 +29,7 @@ onMounted(() => {
     .then(data => {
       if (data.code === 0) {
         for (let i of data.data) {
-          db_options.value.push({ value: i.typeID, label: i.typeName });
+          db_options.value.push({ value: i.judgeTypeID, label: i.typeName });
         }
       } else {
         message.error(data.message);
@@ -40,21 +41,22 @@ onMounted(() => {
       console.error(error);
     })
     .finally(() => {
-      axios
-        .get(`/api/v1/testcase/info/${testcaseid}`)
-        .then(res => res.data)
-        .then(data => {
-          if (data.code === 0) {
-            testcase.value = data.data;
-            valueChange.value = !valueChange.value;
-          } else {
-            message.error(data.message);
-          }
-        })
-        .catch(error => {
-          message.error('错误');
-          console.error(error);
-        });
+    });
+
+  axios
+    .get(`/api/v1/testcase/info/${testcaseid}`)
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        testcase.value = data.data;
+        valueChange.value = !valueChange.value;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.error(error);
     });
 });
 
@@ -65,8 +67,8 @@ const handleSubmit = () => {
       label: testcase.value.label,
       content: testcase.value.content,
       abstract: testcase.value.abstract,
-      typeID: testcase.value.typeID,
-      typeName: testcase.value.typeID
+      judgeTypeID: testcase.value.judgeTypeID,
+      typeName: testcase.value.judgeTypeID
     })
     .then(res => res.data)
     .then(data => {
@@ -124,29 +126,15 @@ const getData = (body: any) => {
     </n-modal>
     <n-form :model="testcase">
       <n-form-item label="标签" class="inputtext" path="label">
-        <n-input
-          v-model:value="testcase.label"
-          placeholder="请填写标签内容"
-          :autofocus="true"
-        />
+        <n-input v-model:value="testcase.label" placeholder="请填写标签内容" :autofocus="true" />
       </n-form-item>
       <n-form-item label="数据库" class="inputtext" path="lang">
-        <n-select v-model:value="testcase.typeID" :options="db_options" />
+        <n-select v-model:value="testcase.judgeTypeID" :options="db_options" />
       </n-form-item>
       <n-form-item label="申明语句" class="inputtext" path="abstract">
-        <sql-editor
-          v-model:value="testcase.abstract"
-          :value-change="valueChange"
-        />
+        <sql-editor v-model:value="testcase.abstract" :value-change="valueChange" />
       </n-form-item>
-      <n-button
-        type="primary"
-        size="small"
-        strong
-        secondary
-        style="margin-bottom: 20px"
-        @click="GenButton"
-      >
+      <n-button type="primary" size="small" strong secondary style="margin-bottom: 20px" @click="GenButton">
         <template #icon>
           <n-icon size="18">
             <ReceiptOutline />
@@ -155,10 +143,7 @@ const getData = (body: any) => {
         数据生成器
       </n-button>
       <n-form-item label="插入语句" class="inputtext" path="content">
-        <sql-editor
-          v-model:value="testcase.content"
-          :value-change="valueChange"
-        />
+        <sql-editor v-model:value="testcase.content" :value-change="valueChange" />
       </n-form-item>
     </n-form>
     <n-space>

@@ -7,10 +7,11 @@ import { ReceiptOutline } from '@vicons/ionicons5';
 import SqlEditor from '../components/SqlEditor.vue';
 import GenerateDataCard from '../components/GenerateDataCard.vue';
 import { constructor } from '../setting/constructor';
+import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 
 const router = useRouter();
 const message = useMessage();
-const db_options: Ref<{}[]> = ref([]);
+const db_options: Ref<SelectMixedOption[]> = ref([]);
 
 onMounted(() => {
   axios
@@ -19,7 +20,7 @@ onMounted(() => {
     .then(data => {
       if (data.code === 0) {
         for (let i of data.data) {
-          db_options.value.push({ value: i.typeID, label: i.typeName });
+          db_options.value.push({ value: i.judgeTypeID, label: i.typeName });
         }
       } else {
         message.error(data.message);
@@ -36,12 +37,12 @@ let testcase = ref({
   label: '',
   abstract: '',
   content: '',
-  typeID: null
+  judgeTypeID: null
 });
 
 const handleSubmit = () => {
   console.log(testcase.value);
-  if (testcase.value.typeID === null) {
+  if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
   }
   axios
@@ -65,7 +66,7 @@ const handleSubmit = () => {
 };
 const handleTest = () => {
   console.log(testcase.value);
-  if (testcase.value.typeID === null) {
+  if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
   }
   axios
@@ -122,9 +123,9 @@ const getData = (body: any) => {
           :autofocus="true"
         />
       </n-form-item>
-      <n-form-item label="数据库" class="inputtext" path="typeID">
+      <n-form-item label="数据库" class="inputtext" path="judgeTypeID">
         <n-select
-          v-model:value="testcase.typeID"
+          v-model:value="testcase.judgeTypeID"
           :options="db_options"
           placeholder="请选择数据库类型"
         />

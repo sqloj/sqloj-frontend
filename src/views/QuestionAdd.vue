@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { Pencil } from '@vicons/ionicons5';
 import SqlEditor from '../components/SqlEditor.vue';
 import axios from 'axios';
+import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 
 /*
   读取当前的题目信息，{"id", "content", "answer", "testcaseID"}
@@ -13,10 +14,10 @@ import axios from 'axios';
 const router = useRouter();
 const message = useMessage();
 const loadingRef = ref(true);
-let question = ref({ id: '', content: '', answer: '', testcaseID: '' });
+let question = ref({ id: '', label: '', content: '', answer: '', testcaseID: '' });
 
 // 依赖数据库选择
-let optionsRef: Ref<{}[]> = ref([]);
+let optionsRef: Ref<SelectMixedOption[]> = ref([]);
 
 onMounted(() => {
   axios
@@ -71,6 +72,9 @@ const handleAdd = () => {
   <div class="manage-container">
     <n-h1 style="text-align: center">#{{ question.id }} 自动编号</n-h1>
     <div>
+      <n-h2>题目标签</n-h2>
+      <n-input v-model:value="question.label" placeholder="">
+            </n-input>
       <n-h2>题目描述</n-h2>
       <n-input
         v-model:value="question.content"
@@ -82,7 +86,7 @@ const handleAdd = () => {
       />
 
       <n-h2>题目答案</n-h2>
-      <n-popover trigger="hover" duration="10">
+      <n-popover trigger="hover" :duration="10">
         <template #trigger>
           <sql-editor v-model:value="question.answer" />
         </template>

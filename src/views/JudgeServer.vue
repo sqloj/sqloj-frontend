@@ -16,7 +16,7 @@ const formInline = ref({
   url: '',
   password: '',
   typeName: '',
-  typeID: ''
+  judgeTypeID: ''
 });
 
 const actions = [
@@ -144,7 +144,7 @@ const handlePing = (url: String, password: String) => {
   axios
     .post('/api/v1/judge/ping', {
       id: 0,
-      typeID: 0,
+      judgeTypeID: 0,
       typeName: '',
       url: url,
       password: password

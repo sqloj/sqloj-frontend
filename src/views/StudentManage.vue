@@ -4,11 +4,12 @@ import { useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import { USER } from '../setting/const';
+import { TableColumns } from 'naive-ui/es/data-table/src/interface';
 
 /*
   展示学生管理信息 {id, username, department, acnum}
 */
-const columns = [
+const columns:TableColumns<any> = [
   {
     type: 'selection'
   },

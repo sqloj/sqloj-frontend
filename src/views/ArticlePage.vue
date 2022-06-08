@@ -15,11 +15,11 @@ const role = JSON.parse(localStorage.account).role;
 const userid = JSON.parse(localStorage.account).id;
 const formValue = ref({
   id: '',
-  authorName: '',
+  username: '',
   authorId: '',
   title: '',
   content: '',
-  date: ''
+  updateTime: ''
 });
 
 const showbutton = ref(false);
@@ -69,10 +69,10 @@ const handleEditor = () => {
     <div class="view-info-container">
       <n-card :title="formValue.title" style="margin-bottom: 16px">
         <n-space :size="30">
-          <n-h4>{{ formValue.authorName }}</n-h4>
+          <n-h4>{{ formValue.username }}</n-h4>
           <n-h4>
             <n-icon :component="CalendarOutline" size="18" />
-            {{ formValue.date }}</n-h4
+            {{ formValue.updateTime }}</n-h4
           >
           <n-button
             v-if="showbutton"
