@@ -4,10 +4,10 @@ import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
   PersonOutline as PersonIcon,
-  AddCircleOutline as AddIcon,
+  RibbonOutline as RibbonIcon,
   CallOutline as CallIcon,
   InformationCircleOutline as InfoIcon,
-  BugOutline as BugIcon,
+  CodeSlashOutline as CodeIcon,
   GitCommitOutline as CommitIcon,
   ArrowBackCircleOutline as ArrowBack,
   ServerOutline as DataBase,
@@ -60,7 +60,7 @@ const menuOptions: MenuOption[] = [
       {
         label: '题目管理',
         key: 'question-manage',
-        icon: renderIcon(AddIcon)
+        icon: renderIcon(CodeIcon)
       },
       {
         label: '测试数据集',
@@ -75,12 +75,12 @@ const menuOptions: MenuOption[] = [
       {
         label: '知识分享',
         key: 'knowledge-share',
-        icon: renderIcon(ShareIcon)
+        icon: renderIcon(SchoolIcon)
       },
       {
         label: '权限管理',
         key: 'admin-accoun-manage',
-        icon: renderIcon(SchoolIcon)
+        icon: renderIcon(RibbonIcon)
       },
       {
         label: '测评机管理',
@@ -127,7 +127,7 @@ const menuOptionsForStu: MenuOption[] = [
       {
         label: '题目列表',
         key: 'question-manage',
-        icon: renderIcon(AddIcon)
+        icon: renderIcon(CodeIcon)
       },
       {
         label: '提交记录',
@@ -137,7 +137,7 @@ const menuOptionsForStu: MenuOption[] = [
       {
         label: '知识分享',
         key: 'knowledge-share',
-        icon: renderIcon(ShareIcon)
+        icon: renderIcon(SchoolIcon)
       },
       {
         label: '联系我们',
