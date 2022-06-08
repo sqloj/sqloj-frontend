@@ -53,8 +53,10 @@ const columns = [
         NA,
         {
           onClick() {
-            showModal.value = true;
-            text.value = '```sql\n' + row.code + '\n```';
+            if (JSON.parse(localStorage.account).role !== 1) {
+              showModal.value = true;
+              text.value = '```sql\n' + row.code + '\n```';
+            }
           }
         },
         {
