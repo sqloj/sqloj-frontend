@@ -63,10 +63,36 @@ const handleSubmit = () => {
       console.error(error);
     });
 };
+const handleTest = () => {
+  console.log(testcase.value);
+  if (testcase.value.typeID === null) {
+    return message.error('请选择数据库');
+  }
+  axios
+    .post(`api/v1/testcase/insert`, {
+      ...testcase.value,
+      typeName: ''
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.success('添加成功');
+        router.replace('/main/test-case');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.error(error);
+    });
+};
 
 // 构造器部分
 const showModal = ref(false);
 const valueChange = ref(false);
+const dataRef: Ref<{}[][]> = ref([[]]);
+const showResult = ref(false);
 const GenButton = () => {
   showModal.value = true;
 };
@@ -97,7 +123,11 @@ const getData = (body: any) => {
         />
       </n-form-item>
       <n-form-item label="数据库" class="inputtext" path="typeID">
-        <n-select v-model:value="testcase.typeID" :options="db_options" />
+        <n-select
+          v-model:value="testcase.typeID"
+          :options="db_options"
+          placeholder="请选择数据库类型"
+        />
       </n-form-item>
 
       <!-- </n-form-item> -->
@@ -128,8 +158,18 @@ const getData = (body: any) => {
       </n-form-item>
     </n-form>
     <n-space>
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-button type="primary" @click="handleTest"> 测试 </n-button>
+        </template>
+        <span>若需要查看表的详细内容，请在插入语句内写对应的 SELECT 语句</span>
+      </n-popover>
+
       <n-button type="primary" @click="handleSubmit"> 添加 </n-button>
     </n-space>
+    <div v-if="showResult">
+      <smart-table :data-ref="dataRef" />
+    </div>
   </div>
 </template>
 

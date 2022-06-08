@@ -1,11 +1,29 @@
 <script lang="ts" setup>
 import { h, onMounted, ref } from 'vue';
-import { NButton, useMessage } from 'naive-ui';
+import { NButton, useDialog, useMessage } from 'naive-ui';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { Add } from '@vicons/ionicons5';
 
 const router = useRouter();
+const dataQueRef = ref([]);
+const dialog = useDialog();
+const queryQue = (testcase_id: Number) => {
+  axios
+    .get(`/api/v1/question/info/${testcase_id}`)
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        dataQueRef.value = data.data;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error(error);
+      console.log(error);
+    });
+};
 
 const actions = [
   {
@@ -22,13 +40,48 @@ const actions = [
   {
     title: '删除',
     act: (id: any) => {
+      queryQue(id);
+      console.log(dataQueRef.value);
+      if (dataQueRef.value.length > 0) {
+        dialog.warning({
+          title: '警告',
+          content: '存在依赖此数据库的题目，是否删除对应的题目？',
+          positiveText: '确定',
+          negativeText: '取消',
+          onPositiveClick: () => {
+            let promises = [];
+            for (let questionid of dataQueRef.value) {
+              promises.push(
+                axios
+                  .post('/api/v1/question/delete', null, {
+                    params: { id: questionid }
+                  })
+                  .then(res => res.data)
+                  .then(data => {
+                    if (data.code === 0) {
+                      message.success('删除成功');
+                    } else {
+                      message.error(data.message);
+                    }
+                  })
+                  .catch(error => {
+                    console.error(error);
+                    message.error('ERROR!');
+                  })
+              );
+            }
+          },
+          onNegativeClick: () => {
+            return;
+          }
+        });
+      }
       axios
         .post(`/api/v1/testcase/delete`, null, { params: { id: id } })
         .then(res => res.data)
         .then(data => {
           if (data.code === 0) {
             message.success('删除成功');
-            router.replace('/main/test-case');
           } else {
             message.error(data.message);
           }
@@ -92,8 +145,18 @@ const query = () => {
     .get('/api/v1/testcase/list')
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.data;
+      if (data.code === 0) {
+        dataRef.value = data.data;
+        loadingRef.value = false;
+      } else {
+        message.error(data.message);
+        loadingRef.value = false;
+      }
+    })
+    .catch(error => {
       loadingRef.value = false;
+      message.error(error);
+      console.log(error);
     });
 };
 

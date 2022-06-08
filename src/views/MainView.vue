@@ -60,7 +60,9 @@ onBeforeMount(() => {
       :native-scrollbar="false"
       style="height: 100vh"
     >
-      <router-view />
+      <n-dialog-provider>
+        <router-view />
+      </n-dialog-provider>
     </n-layout>
   </n-layout>
 </template>
