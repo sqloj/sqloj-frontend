@@ -14,12 +14,12 @@ const articleid = router.currentRoute.value.params.ArticleId;
 const role = JSON.parse(localStorage.account).role;
 const userid = JSON.parse(localStorage.account).id;
 const formValue = ref({
-  id: '12',
-  authorName: '21',
-  authorId: 'sadsadd',
-  title: '极角排序',
-  content: '# asd \n ## 2312321 \n ### test',
-  date: '2020-6-1'
+  id: '',
+  authorName: '',
+  authorId: '',
+  title: '',
+  content: '',
+  date: ''
 });
 
 const showbutton = ref(false);

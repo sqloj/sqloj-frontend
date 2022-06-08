@@ -54,8 +54,12 @@ const query = () => {
     .get(`api/v1/article/list`)
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.data;
-      loadingRef.value = false;
+      if (data.code === 0) {
+        dataRef.value = data.data;
+        loadingRef.value = false;
+      } else {
+        message.error(data.message);
+      }
     })
     .catch(error => {
       loadingRef.value = false;

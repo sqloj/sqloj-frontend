@@ -21,7 +21,7 @@ const formValue = ref({
 
 const handleAdd = () => {
   axios
-    .post(`api/v1/artcle/insert`, {
+    .post(`api/v1/article/insert`, {
       ...formValue.value,
       userid: userid
     })
@@ -67,7 +67,7 @@ const handleAdd = () => {
                   v-model:value="formValue.content"
                   placeholder=""
                   type="textarea"
-                  :autosize="{ minRows: 15 }"
+                  :autosize="{ minRows: 15 }" 
                 />
               </n-form-item>
             </n-form>
