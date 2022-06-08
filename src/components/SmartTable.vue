@@ -63,7 +63,7 @@ onMounted(() => {
         :bordered="false"
         :columns="dataArr[idx]"
         :data="dataRef[idx]"
-        :pagination="{ pagesize: 10 }"
+        :pagination="{ pageSize: 10 }"
         :row-key="(row: any) => row.key"
         :loading="false"
       />

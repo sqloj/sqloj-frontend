@@ -162,7 +162,7 @@ const findSubmit = () => {
       :bordered="false"
       :columns="columns"
       :data="dataRef"
-      :pagination="{ pagesize: 15 }"
+      :pagination="{ pageSize: 15 }"
       :row-key="(row: any) => row.id"
       :loading="loadingRef"
     />
