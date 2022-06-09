@@ -161,10 +161,15 @@ const getData = (body: any) => {
         <n-select v-model:value="testcase.judgeTypeID" :options="db_options" />
       </n-form-item>
       <n-form-item label="申明语句" class="inputtext" path="abstract">
-        <sql-editor
-          v-model:value="testcase.abstract"
-          :value-change="valueChange"
-        />
+        <n-popover trigger="hover" :duration="10">
+          <template #trigger>
+            <sql-editor
+              v-model:value="testcase.abstract"
+              :value-change="valueChange"
+            />
+          </template>
+          <span>暂不支持注解</span>
+        </n-popover>
       </n-form-item>
       <n-button
         type="primary"

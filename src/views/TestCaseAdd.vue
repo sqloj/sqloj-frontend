@@ -132,9 +132,13 @@ const getData = (body: any) => {
         />
       </n-form-item>
 
-      <!-- </n-form-item> -->
       <n-form-item label="建表语句" class="inputtext" path="abstract">
-        <sql-editor v-model:value="testcase.abstract" />
+        <n-popover trigger="hover" :duration="10">
+          <template #trigger>
+            <sql-editor v-model:value="testcase.abstract" />
+          </template>
+          <span>暂不支持注解</span>
+        </n-popover>
       </n-form-item>
       <!-- 构造器-->
       <n-button
