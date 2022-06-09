@@ -103,9 +103,7 @@ const GenButton = () => {
 
 const getData = (body: any) => {
   let res = constructor(body);
-  console.log(res);
-  testcase.value.content =
-    testcase.value.content + '\r\n-- 数据生成器 \r\n' + res;
+  testcase.value.content = testcase.value.content + '\r\n' + res;
   valueChange.value = !valueChange.value;
   console.log(testcase.value.content);
 };
@@ -166,7 +164,10 @@ const getData = (body: any) => {
         <template #trigger>
           <n-button type="primary" @click="handleTest"> 测试 </n-button>
         </template>
-        <span>若需要查看表的内容，请在插入语句内写对应的 SELECT 语句,否则只会知道是否允许成功</span>
+        <span
+          >若需要查看表的内容，请在插入语句内写对应的 SELECT
+          语句,否则只会知道是否允许成功</span
+        >
       </n-popover>
 
       <n-button type="primary" @click="handleSubmit"> 添加 </n-button>

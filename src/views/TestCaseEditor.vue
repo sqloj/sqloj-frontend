@@ -112,7 +112,6 @@ const handleTest = () => {
     });
 };
 
-
 const handleDelete = () => {
   axios
     .post(`/api/v1/testcase/delete`, null, { params: { id: testcaseid } })
@@ -138,9 +137,7 @@ const GenButton = () => {
 
 const getData = (body: any) => {
   let res = constructor(body);
-  console.log(res);
-  testcase.value.content =
-    testcase.value.content + '\r\n-- 数据生成器 \r\n' + res;
+  testcase.value.content = testcase.value.content + '\r\n' + res;
   valueChange.value = !valueChange.value;
   console.log(testcase.value.content);
 };
@@ -193,21 +190,23 @@ const getData = (body: any) => {
     </n-form>
     <n-space>
       <n-space>
-      <n-popover trigger="hover">
-        <template #trigger>
-          <n-button type="primary" @click="handleTest"> 测试 </n-button>
-        </template>
-        <span>若需要查看表的内容，请在插入语句内写对应的 SELECT 语句,否则只会知道是否允许成功</span>
-      </n-popover>
+        <n-popover trigger="hover">
+          <template #trigger>
+            <n-button type="primary" @click="handleTest"> 测试 </n-button>
+          </template>
+          <span
+            >若需要查看表的内容，请在插入语句内写对应的 SELECT
+            语句,否则只会知道是否允许成功</span
+          >
+        </n-popover>
 
-      <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
-      
-      <n-button type="error" @click="handleDelete"> 删除 </n-button>
-    </n-space>
-        <div v-if="showResult">
-          <smart-table :data-ref="dataRef" />
-        </div>
+        <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
 
+        <n-button type="error" @click="handleDelete"> 删除 </n-button>
+      </n-space>
+      <div v-if="showResult">
+        <smart-table :data-ref="dataRef" />
+      </div>
     </n-space>
   </div>
 </template>
