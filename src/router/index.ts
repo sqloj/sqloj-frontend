@@ -36,7 +36,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/SelfInfo.vue')
       },
       {
-        path: 'self-page/:UserId',
+        path: 'self-page/:userID',
         name: 'self-page',
         component: () => import('../views/SelfPage.vue')
       },

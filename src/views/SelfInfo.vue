@@ -34,7 +34,7 @@ const formInline = ref({
   加载区分老师和学生，{role, username, id, department , passwoed}
 */
 onMounted(() => {
-  oldPassword = JSON.parse(localStorage.account).Password;
+  
   axios
     .post(`api/v1/user/filter`, null, {
       params: {
@@ -45,7 +45,7 @@ onMounted(() => {
     .then(data => {
       if (data.code === 0) {
         formInline.value = data.data[0];
-        console.log(data.data);
+        oldPassword = JSON.parse(localStorage.account).password;
       } else {
         message.error('请求失败');
         message.error(data.message);
@@ -78,8 +78,7 @@ const handleSubmit = () => {
     formInline.value.department = '';
     return message.error('班级名过长，请重新输入！');
   }
-
-  if (formInline.value.password !== '') {
+  if (formInline.value.password !== undefined) {
     if (formInline.value.password !== oldPassword) {
       return message.error('密码错误!');
     } else if (
@@ -100,7 +99,7 @@ const handleSubmit = () => {
         },
         {
           params: {
-            oldPassword: formInline.value.password
+            oldPassword: oldPassword
           }
         }
       )
@@ -110,6 +109,7 @@ const handleSubmit = () => {
           localStorage.account = JSON.stringify({
             id: formInline.value.id,
             username: formInline.value.username,
+            password: oldPassword,
             department: formInline.value.department,
             signature: formInline.value.signature,
             role: formInline.value.role
@@ -148,6 +148,7 @@ const handleSubmit = () => {
           localStorage.account = JSON.stringify({
             id: formInline.value.id,
             username: formInline.value.username,
+            password: oldPassword,
             department: formInline.value.department,
             signature: formInline.value.signature,
             role: formInline.value.role

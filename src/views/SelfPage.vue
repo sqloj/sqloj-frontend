@@ -9,12 +9,18 @@ const router = useRouter();
 const message = useMessage();
 const ArticleRef = ref([]);
 const loadingArticleRef = ref(true);
+const userID = router.currentRoute.value.params.userID;
 const total = ref({
-  UNKNOWN: 1,
-  ACCEPT: 4,
-  'WRONG ANSWER': 5,
-  'COMPLETE ERROR': 4,
-  TOTAL: 14
+  id: '',
+  username: '',
+  department: '',
+  signature: '',
+  role: null,
+  'UNKNOWN' : 0,
+  'ACCEPT' : 0,
+  'WRONG ANSWER' : 0,
+  'COMPLETE ERROR' : 0,
+  TOTAL: 0
 });
 
 const queryInfo = () => {
@@ -48,7 +54,7 @@ const ArticleCol = [
     title: '标题',
     key: 'title',
     ellipsis: true,
-    width: '60%',
+    width: '50%',
     render(row: any) {
       return h(
         NA,
@@ -70,13 +76,16 @@ const ArticleCol = [
   },
   {
     title: '时间',
-    key: 'time'
+    key: 'updateTime'
   }
 ];
 
 const queryArticle = () => {
+  console.log(userID);
   axios
-    .get(`api/v1/share/list{id}`)
+    .post(`api/v1/article/filter`, {
+        userID: userID
+    })
     .then(res => res.data)
     .then(data => {
       ArticleRef.value = data.data;
@@ -115,9 +124,39 @@ const RecordCol = [
 const RecordRef = ref([]);
 const loadingRecordRef = ref(true);
 
+const queryUser = () => {
+  axios
+    .post(`api/v1/user/filter`, null, {
+      params: {
+        id: userID
+      }
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        if(data.data.length === 0) {
+          message.error('用户不存在');
+          router.back();
+          return ;
+        }
+        total.value = data.data[0];
+        console.log(total.value);
+      } else {
+        message.error('请求失败');
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error(error);
+      console.log(error);
+    });
+}
+
 const queryRecord = () => {
   axios
-    .get(`/api/v1/submit/list{id}`)
+    .post(`api/v1/submit/filter`,{
+        userID: userID
+      })
     .then(res => res.data)
     .then(data => {
       for (let i of data.data) {
@@ -133,7 +172,49 @@ const queryRecord = () => {
     });
 };
 
+const queryScore = () => {
+   let promises = [];
+   let count = 0;
+  for (let i = 0; i < 5 ; i ++) {
+    promises.push(
+      axios
+        .post('api/v1/submit/count', {
+            userID: userID,
+            result: i
+          })
+        .then(res => res.data)
+        .then(data => {
+          if (data.code === 0) {
+            count += data.data;
+             switch (i) {
+                case 0: total.value.UNKNOWN = data.data;
+                  break;
+                case 1: total.value.ACCEPT = data.data;
+                  break;
+                case 3: total.value['WRONG ANSWER'] = data.data;
+                  break;
+                case 4: total.value['COMPLETE ERROR'] = data.data;
+                  break;
+             }
+          } else {
+            message.error(data.message);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          message.error('ERROR!');
+        })
+    );
+  }
+  // 重新加载列表
+  Promise.all(promises).finally(() => {
+    total.value.TOTAL = count;
+  });
+};
+
 onMounted(() => {
+  queryUser();
+  queryScore();
   queryInfo();
   queryArticle();
   queryRecord();
@@ -187,7 +268,11 @@ onMounted(() => {
             </n-space>
           </n-tab-pane>
 
-          <n-tab-pane name="info" tab="信息"> </n-tab-pane>
+          <n-tab-pane name="info" tab="信息">
+            <n-h4>姓名：{{userID}}</n-h4>
+            <n-h4>个性签名：</n-h4>
+            <n-h3>{{total.signature}}</n-h3>
+          </n-tab-pane>
         </n-tabs>
       </n-card>
       <!-- list -->

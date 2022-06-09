@@ -26,7 +26,7 @@ const columns: TableColumns<any> = [
             router.push({
               name: 'self-page',
               params: {
-                UserId: row.id
+                userID: row.id
               }
             });
           }
@@ -48,7 +48,7 @@ const columns: TableColumns<any> = [
             router.push({
               name: 'self-page',
               params: {
-                UserId: row.id
+                userID: row.id
               }
             });
           },

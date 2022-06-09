@@ -16,7 +16,7 @@ const getRoute = (e: string) => {
     router.push({
       name: 'self-page',
       params: {
-        UserId: JSON.parse(localStorage.account).id
+        userID: JSON.parse(localStorage.account).id
       }
     });
   } else {
