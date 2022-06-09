@@ -13,13 +13,7 @@ const role = JSON.parse(localStorage.account).role;
 const columns = [
   {
     title: '编号',
-    key: 'id'
-  },
-  {
-    title: '题目描述',
-    key: 'content',
-    ellipsis: true,
-    width: '60%',
+    key: 'id',
     render(row: any) {
       return h(
         NA,
@@ -46,18 +40,56 @@ const columns = [
           }
         },
         {
-          default: () => row.content
+          default: () => row.id
         }
       );
     }
   },
   {
-    title: '通过人数',
-    key: 'passnum'
+    title: '题目标题',
+    key: 'label',
+    ellipsis: true,
+    width: '50%',
+    render(row: any) {
+      return h(
+        NA,
+        {
+          onClick() {
+            const question = row;
+            localStorage.question = JSON.stringify(question);
+            // 页面跳转
+            if (role === USER.TEACHER) {
+              router.push({
+                name: 'question-editor',
+                params: {
+                  QuestionId: question.id
+                }
+              });
+            } else {
+              router.push({
+                name: 'question',
+                params: {
+                  QuestionId: question.id
+                }
+              });
+            }
+          }
+        },
+        {
+          default: () => row.label
+        }
+      );
+    }
+  },
+  {
+    title: '题目描述',
+    key: 'content',
+    ellipsis: true,
+    width: '30%'
   },
   {
     title: '依赖数据集',
-    key: 'label'
+    key: 'testcaseLabel'
   }
 ];
 
@@ -77,7 +109,17 @@ const query = () => {
     .get(`api/v1/question/listWithTestcase`)
     .then(res => res.data)
     .then(data => {
-      dataRef.value = data.data;
+      if (data.code === 0) {
+        dataRef.value = data.data;
+        loadingRef.value = false;
+      } else {
+        message.error(data.message);
+        loadingRef.value = false;
+      }
+    })
+    .catch(error => {
+      message.error(error);
+      console.log(error);
       loadingRef.value = false;
     });
 };

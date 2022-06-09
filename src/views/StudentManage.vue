@@ -9,7 +9,7 @@ import { TableColumns } from 'naive-ui/es/data-table/src/interface';
 /*
   展示学生管理信息 {id, username, department, acnum}
 */
-const columns:TableColumns<any> = [
+const columns: TableColumns<any> = [
   {
     type: 'selection'
   },
@@ -27,7 +27,7 @@ const columns:TableColumns<any> = [
   },
   {
     title: '过题数',
-    key: 'acnum'
+    key: 'passNum'
   }
 ];
 
@@ -50,11 +50,7 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .post(`api/v1/user/filter`, null, {
-      params: {
-        role: 1
-      }
-    })
+    .get(`api/v1/student/list`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -170,6 +166,7 @@ const handleSubmit = () => {
       username: formInline.value.username,
       password: formInline.value.password,
       department: formInline.value.department,
+      signature: '',
       role: USER.STUDENT
     })
     .then(res => res.data)

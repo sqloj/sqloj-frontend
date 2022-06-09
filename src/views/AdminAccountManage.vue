@@ -32,9 +32,7 @@ const handleCheck = (rowKeys: any) => {
   checkedRowKeysRef.value = rowKeys;
 };
 
-/*
-  查询学生列表的api （应当只有学生）
-*/
+
 const query = () => {
   loadingRef.value = true;
   axios
@@ -98,6 +96,7 @@ const handleSubmit = () => {
       username: formInline.value.username,
       password: formInline.value.password,
       department: formInline.value.department,
+      signature: '',
       role: USER.TEACHER
     })
     .then(res => res.data)

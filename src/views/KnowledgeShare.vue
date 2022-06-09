@@ -92,8 +92,14 @@ const addArticle = () => {
           </n-form-item>
         </n-form>
       </n-space>
-      <n-data-table :bordered="false" :columns="columns" :data="dataRef" :pagination="{ pageSize: 20 }"
-        :row-key="(row: any) => row.id" :loading="loadingRef" />
+      <n-data-table
+        :bordered="false"
+        :columns="columns"
+        :data="dataRef"
+        :pagination="{ pageSize: 20 }"
+        :row-key="(row: any) => row.id"
+        :loading="loadingRef"
+      />
     </n-space>
   </n-layout>
 </template>
