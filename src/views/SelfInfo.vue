@@ -34,7 +34,6 @@ const formInline = ref({
   加载区分老师和学生，{role, username, id, department , passwoed}
 */
 onMounted(() => {
-  
   axios
     .post(`api/v1/user/filter`, null, {
       params: {

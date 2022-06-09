@@ -52,7 +52,7 @@ const columns: TableColumns<any> = [
               }
             });
           },
-          style: "color: black"
+          style: 'color: black'
         },
         {
           default: () => row.username

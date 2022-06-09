@@ -16,10 +16,10 @@ const total = ref({
   department: '',
   signature: '',
   role: null,
-  'UNKNOWN' : 0,
-  'ACCEPT' : 0,
-  'WRONG ANSWER' : 0,
-  'COMPLETE ERROR' : 0,
+  UNKNOWN: 0,
+  ACCEPT: 0,
+  'WRONG ANSWER': 0,
+  'COMPLETE ERROR': 0,
   TOTAL: 0
 });
 
@@ -84,7 +84,7 @@ const queryArticle = () => {
   console.log(userID);
   axios
     .post(`api/v1/article/filter`, {
-        userID: userID
+      userID: userID
     })
     .then(res => res.data)
     .then(data => {
@@ -134,10 +134,10 @@ const queryUser = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        if(data.data.length === 0) {
+        if (data.data.length === 0) {
           message.error('用户不存在');
           router.back();
-          return ;
+          return;
         }
         total.value = data.data[0];
         console.log(total.value);
@@ -150,13 +150,13 @@ const queryUser = () => {
       message.error(error);
       console.log(error);
     });
-}
+};
 
 const queryRecord = () => {
   axios
-    .post(`api/v1/submit/filter`,{
-        userID: userID
-      })
+    .post(`api/v1/submit/filter`, {
+      userID: userID
+    })
     .then(res => res.data)
     .then(data => {
       for (let i of data.data) {
@@ -173,29 +173,33 @@ const queryRecord = () => {
 };
 
 const queryScore = () => {
-   let promises = [];
-   let count = 0;
-  for (let i = 0; i < 5 ; i ++) {
+  let promises = [];
+  let count = 0;
+  for (let i = 0; i < 5; i++) {
     promises.push(
       axios
         .post('api/v1/submit/count', {
-            userID: userID,
-            result: i
-          })
+          userID: userID,
+          result: i
+        })
         .then(res => res.data)
         .then(data => {
           if (data.code === 0) {
             count += data.data;
-             switch (i) {
-                case 0: total.value.UNKNOWN = data.data;
-                  break;
-                case 1: total.value.ACCEPT = data.data;
-                  break;
-                case 3: total.value['WRONG ANSWER'] = data.data;
-                  break;
-                case 4: total.value['COMPLETE ERROR'] = data.data;
-                  break;
-             }
+            switch (i) {
+              case 0:
+                total.value.UNKNOWN = data.data;
+                break;
+              case 1:
+                total.value.ACCEPT = data.data;
+                break;
+              case 3:
+                total.value['WRONG ANSWER'] = data.data;
+                break;
+              case 4:
+                total.value['COMPLETE ERROR'] = data.data;
+                break;
+            }
           } else {
             message.error(data.message);
           }
@@ -269,9 +273,9 @@ onMounted(() => {
           </n-tab-pane>
 
           <n-tab-pane name="info" tab="信息">
-            <n-h4>姓名：{{userID}}</n-h4>
+            <n-h4>姓名：{{ userID }}</n-h4>
             <n-h4>个性签名：</n-h4>
-            <n-h3>{{total.signature}}</n-h3>
+            <n-h3>{{ total.signature }}</n-h3>
           </n-tab-pane>
         </n-tabs>
       </n-card>

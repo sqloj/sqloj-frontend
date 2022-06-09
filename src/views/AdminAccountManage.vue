@@ -52,7 +52,6 @@ const handleCheck = (rowKeys: any) => {
   checkedRowKeysRef.value = rowKeys;
 };
 
-
 const query = () => {
   loadingRef.value = true;
   axios

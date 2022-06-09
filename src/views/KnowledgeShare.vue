@@ -26,7 +26,7 @@ const columns = [
               }
             });
           },
-          style: "color: #6699ff"
+          style: 'color: #6699ff'
         },
         {
           default: () => row.title
@@ -49,7 +49,7 @@ const columns = [
               }
             });
           },
-          style: "color: black"
+          style: 'color: black'
         },
         {
           default: () => row.username
