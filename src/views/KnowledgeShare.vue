@@ -25,7 +25,8 @@ const columns = [
                 ArticleId: row.id
               }
             });
-          }
+          },
+          style: "color: #6699ff"
         },
         {
           default: () => row.title
@@ -35,7 +36,26 @@ const columns = [
   },
   {
     title: '作者',
-    key: 'username'
+    key: 'username',
+    render(row: any) {
+      return h(
+        NA,
+        {
+          onClick() {
+            router.push({
+              name: 'self-page',
+              params: {
+                UserId: row.userID
+              }
+            });
+          },
+          style: "color: black"
+        },
+        {
+          default: () => row.username
+        }
+      );
+    }
   },
   {
     title: '时间',
