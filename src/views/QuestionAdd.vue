@@ -14,7 +14,13 @@ import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 const router = useRouter();
 const message = useMessage();
 const loadingRef = ref(true);
-let question = ref({ id: '', label: '', content: '', answer: '', testcaseID: '' });
+let question = ref({
+  id: '',
+  label: '',
+  content: '',
+  answer: '',
+  testcaseID: ''
+});
 
 // 依赖数据库选择
 let optionsRef: Ref<SelectMixedOption[]> = ref([]);
@@ -73,8 +79,7 @@ const handleAdd = () => {
     <n-h1 style="text-align: center">#{{ question.id }} 自动编号</n-h1>
     <div>
       <n-h2>题目标签</n-h2>
-      <n-input v-model:value="question.label" placeholder="">
-            </n-input>
+      <n-input v-model:value="question.label" placeholder=""> </n-input>
       <n-h2>题目描述</n-h2>
       <n-input
         v-model:value="question.content"

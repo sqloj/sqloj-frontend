@@ -66,7 +66,7 @@ const handleAdd = () => {
                   v-model:value="formValue.content"
                   placeholder=""
                   type="textarea"
-                  :autosize="{ minRows: 15 }" 
+                  :autosize="{ minRows: 15 }"
                 />
               </n-form-item>
             </n-form>

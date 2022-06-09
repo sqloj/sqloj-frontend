@@ -49,7 +49,7 @@ const handleModify = () => {
     .post(`api/v1/article/update`, {
       ...formValue.value,
       userID: JSON.parse(localStorage.account).id
-})
+    })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {

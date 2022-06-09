@@ -40,8 +40,7 @@ onMounted(() => {
       message.error('错误');
       console.error(error);
     })
-    .finally(() => {
-    });
+    .finally(() => {});
 
   axios
     .get(`/api/v1/testcase/info/${testcaseid}`)
@@ -126,15 +125,29 @@ const getData = (body: any) => {
     </n-modal>
     <n-form :model="testcase">
       <n-form-item label="标签" class="inputtext" path="label">
-        <n-input v-model:value="testcase.label" placeholder="请填写标签内容" :autofocus="true" />
+        <n-input
+          v-model:value="testcase.label"
+          placeholder="请填写标签内容"
+          :autofocus="true"
+        />
       </n-form-item>
       <n-form-item label="数据库" class="inputtext" path="lang">
         <n-select v-model:value="testcase.judgeTypeID" :options="db_options" />
       </n-form-item>
       <n-form-item label="申明语句" class="inputtext" path="abstract">
-        <sql-editor v-model:value="testcase.abstract" :value-change="valueChange" />
+        <sql-editor
+          v-model:value="testcase.abstract"
+          :value-change="valueChange"
+        />
       </n-form-item>
-      <n-button type="primary" size="small" strong secondary style="margin-bottom: 20px" @click="GenButton">
+      <n-button
+        type="primary"
+        size="small"
+        strong
+        secondary
+        style="margin-bottom: 20px"
+        @click="GenButton"
+      >
         <template #icon>
           <n-icon size="18">
             <ReceiptOutline />
@@ -143,7 +156,10 @@ const getData = (body: any) => {
         数据生成器
       </n-button>
       <n-form-item label="插入语句" class="inputtext" path="content">
-        <sql-editor v-model:value="testcase.content" :value-change="valueChange" />
+        <sql-editor
+          v-model:value="testcase.content"
+          :value-change="valueChange"
+        />
       </n-form-item>
     </n-form>
     <n-space>

@@ -22,6 +22,7 @@ let question = ref({
   testcaseID: '',
   label: '',
   abstract: '',
+  testcaseLabel: '',
   lang: ''
 });
 
@@ -143,6 +144,8 @@ const handleDelete = () => {
   <div class="manage-container">
     <n-h1 style="text-align: center">#{{ question.id }}</n-h1>
     <div>
+      <n-h2>题目标签</n-h2>
+      <n-input v-model:value="question.label" placeholder=""> </n-input>
       <n-h2>题目描述</n-h2>
       <n-input
         v-model:value="question.content"
