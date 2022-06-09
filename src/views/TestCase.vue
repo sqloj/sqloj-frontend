@@ -1,27 +1,31 @@
 <script lang="ts" setup>
-import { h, onMounted, ref } from 'vue';
+import { h, onMounted, Ref, ref } from 'vue';
 import { NButton, useDialog, useMessage } from 'naive-ui';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { Add } from '@vicons/ionicons5';
 
 const router = useRouter();
-const dataQueRef = ref([]);
+const dataQueRef: Ref<any> = ref([]);
 const dialog = useDialog();
-const queryQue = (testcase_id: Number) => {
+
+const deleteTestcase = (id: any) => {
   axios
-    .get(`/api/v1/question/info/${testcase_id}`)
+    .post(`/api/v1/testcase/delete`, null, { params: { id: id } })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        dataQueRef.value = data.data;
+        message.success('删除成功');
       } else {
         message.error(data.message);
       }
     })
     .catch(error => {
-      message.error(error);
-      console.log(error);
+      message.error('错误');
+      console.error(error);
+    })
+    .finally(() => {
+      query();
     });
 };
 
@@ -40,58 +44,62 @@ const actions = [
   {
     title: '删除',
     act: (id: any) => {
-      queryQue(id);
-      console.log(dataQueRef.value);
-      if (dataQueRef.value.length > 0) {
-        dialog.warning({
-          title: '警告',
-          content: '存在依赖此数据库的题目，是否删除对应的题目？',
-          positiveText: '确定',
-          negativeText: '取消',
-          onPositiveClick: () => {
-            let promises = [];
-            for (let questionid of dataQueRef.value) {
-              promises.push(
-                axios
-                  .post('/api/v1/question/delete', null, {
-                    params: { id: questionid }
-                  })
-                  .then(res => res.data)
-                  .then(data => {
-                    if (data.code === 0) {
-                      message.success('删除成功');
-                    } else {
-                      message.error(data.message);
-                    }
-                  })
-                  .catch(error => {
-                    console.error(error);
-                    message.error('ERROR!');
-                  })
-              );
-            }
-          },
-          onNegativeClick: () => {
-            return;
-          }
-        });
-      }
       axios
-        .post(`/api/v1/testcase/delete`, null, { params: { id: id } })
+        .post(`api/v1/question/filter`, {
+          testcaseID: id
+        })
         .then(res => res.data)
         .then(data => {
           if (data.code === 0) {
-            message.success('删除成功');
+            dataQueRef.value = data.data;
           } else {
             message.error(data.message);
           }
         })
         .catch(error => {
-          message.error('错误');
-          console.error(error);
+          message.error(error);
+          console.log(error);
         })
         .finally(() => {
-          query();
+          if (dataQueRef.value.length > 0) {
+            dialog.warning({
+              title: '警告',
+              content: '存在依赖此数据库的题目，是否删除对应的题目？',
+              positiveText: '确定',
+              negativeText: '取消',
+              onPositiveClick: () => {
+                let promises = [];
+                for (let que of dataQueRef.value) {
+                  promises.push(
+                    axios
+                      .post('/api/v1/question/delete', null, {
+                        params: { id: que.id }
+                      })
+                      .then(res => res.data)
+                      .then(data => {
+                        if (data.code === 0) {
+                          message.success('删除成功');
+                        } else {
+                          message.error(data.message);
+                        }
+                      })
+                      .catch(error => {
+                        console.error(error);
+                        message.error('ERROR!');
+                      })
+                  );
+                }
+                Promise.all(promises).finally(() => {
+                  deleteTestcase(id);
+                });
+              },
+              onNegativeClick: () => {
+                return;
+              }
+            });
+          } else {
+            deleteTestcase(id);
+          }
         });
     }
   }
