@@ -7,7 +7,8 @@ import {
   AccessibilityOutline,
   Pencil,
   PeopleOutline,
-  ArrowBack
+  ArrowBack,
+  StarOutline
 } from '@vicons/ionicons5';
 import axios from 'axios';
 import { useMessage } from 'naive-ui';
@@ -16,11 +17,12 @@ import { USER } from '../setting/const';
 const formRef = ref();
 const router = useRouter();
 const message = useMessage();
-let oldpassword = '';
+let oldPassword = '';
 
 const formInline = ref({
   id: '',
   username: '',
+  signature: '',
   department: '',
   password: '',
   newpassword: '',
@@ -32,12 +34,27 @@ const formInline = ref({
   加载区分老师和学生，{role, username, id, department , passwoed}
 */
 onMounted(() => {
-  let account = JSON.parse(localStorage.account);
-  formInline.value.role = account.role;
-  formInline.value.username = account.username;
-  formInline.value.id = account.id;
-  formInline.value.department = account.department;
-  oldpassword = account.password;
+  oldPassword = JSON.parse(localStorage.account).Password;
+  axios
+    .post(`api/v1/user/filter`, null, {
+      params: {
+        id: JSON.parse(localStorage.account).id
+      }
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        formInline.value = data.data[0];
+        console.log(data.data);
+      } else {
+        message.error('请求失败');
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error(error);
+      console.log(error);
+    });
 });
 
 /*
@@ -63,53 +80,89 @@ const handleSubmit = () => {
   }
 
   if (formInline.value.password !== '') {
-    if (formInline.value.password !== oldpassword) {
+    if (formInline.value.password !== oldPassword) {
       return message.error('密码错误!');
     } else if (
       formInline.value.newpassword !== formInline.value.newpassword_again
     ) {
       return message.error('两次密码不一致！');
     }
-  } else {
-    formInline.value.password = oldpassword;
-  }
-
-  axios
-    .post(
-      `/api/v1/user/update`,
-      {
-        id: formInline.value.id,
-        username: formInline.value.username,
-        password: formInline.value.newpassword,
-        department: formInline.value.department,
-        role: formInline.value.role
-      },
-      {
-        params: {
-          oldpassword: oldpassword
+    axios
+      .post(
+        `/api/v1/user/update`,
+        {
+          id: formInline.value.id,
+          username: formInline.value.username,
+          password: formInline.value.newpassword,
+          department: formInline.value.department,
+          signature: formInline.value.signature,
+          role: formInline.value.role
+        },
+        {
+          params: {
+            oldPassword: formInline.value.password
+          }
         }
-      }
-    )
-    .then(res => res.data)
-    .then(data => {
-      if (data.code === 0) {
-        localStorage.account = JSON.stringify({
-          id: data.id,
-          password: data.password,
-          username: data.username,
-          department: data.department,
-          role: data.role
-        });
-        message.success('信息更新成功！');
-        location.reload();
-      } else {
-        message.error(data.message);
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      message.error('错误！');
-    });
+      )
+      .then(res => res.data)
+      .then(data => {
+        if (data.code === 0) {
+          localStorage.account = JSON.stringify({
+            id: formInline.value.id,
+            username: formInline.value.username,
+            department: formInline.value.department,
+            signature: formInline.value.signature,
+            role: formInline.value.role
+          });
+          message.success('信息更新成功！');
+          location.reload();
+        } else {
+          message.error(data.message);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        message.error('错误！');
+      });
+  } else {
+    axios
+      .post(
+        `/api/v1/user/update`,
+        {
+          id: formInline.value.id,
+          username: formInline.value.username,
+          password: oldPassword,
+          department: formInline.value.department,
+          signature: formInline.value.signature,
+          role: formInline.value.role
+        },
+        {
+          params: {
+            oldPassword: oldPassword
+          }
+        }
+      )
+      .then(res => res.data)
+      .then(data => {
+        if (data.code === 0) {
+          localStorage.account = JSON.stringify({
+            id: formInline.value.id,
+            username: formInline.value.username,
+            department: formInline.value.department,
+            signature: formInline.value.signature,
+            role: formInline.value.role
+          });
+          message.success('信息更新成功！');
+          location.reload();
+        } else {
+          message.error(data.message);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        message.error('错误！');
+      });
+  }
 };
 
 const goback = () => {
@@ -185,6 +238,15 @@ const goback = () => {
               </n-input>
             </n-form-item>
           </div>
+          <n-form-item label="个性签名" class="inputtext" path="signature">
+            <n-input v-model:value="formInline.signature" placeholder="">
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <StarOutline />
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
           <!-- input password 旧密码正确后才生效-->
           <n-form-item label="密码" class="inputtext" path="password">
             <n-input

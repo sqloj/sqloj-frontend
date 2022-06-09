@@ -38,8 +38,7 @@ onMounted(() => {
 });
 
 /*
-  发生登录请求， account{id, password, username, department, role}
-  localStorage.user{id, password}
+  登录请求
 */
 const handleSubmit = () => {
   // 是否保存账号密码
@@ -71,9 +70,11 @@ const handleSubmit = () => {
       if (data.code === 0) {
         // 存储信息
         localStorage.account = JSON.stringify({
-          ...formInline.value,
+          id: formInline.value.id,
+          password: formInline.value.password,
           username: data.data.username,
           department: data.data.department,
+          signature: data.data.signature,
           role: data.data.role
         });
         message.success(`欢迎回来！${data.data.username}`);

@@ -80,6 +80,7 @@ const handleSubmit = () => {
       username: formInline.value.username,
       password: formInline.value.password,
       department: formInline.value.department,
+      signature: '',
       role: USER.STUDENT
     })
     .then(res => res.data)
