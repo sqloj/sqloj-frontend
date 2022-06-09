@@ -9,6 +9,7 @@ import SqlEditor from '../components/SqlEditor.vue';
 import { constructor } from '../setting/constructor';
 import GenerateDataCard from '../components/GenerateDataCard.vue';
 import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
+import SmartTable from '../components/SmartTable.vue';
 
 const router = useRouter();
 const message = useMessage();
@@ -83,6 +84,34 @@ const handleSubmit = () => {
       console.error(error);
     });
 };
+const showResult = ref(false);
+const dataRef: Ref<{}[][]> = ref([[]]);
+const handleTest = () => {
+  console.log(testcase.value);
+  if (testcase.value.judgeTypeID === null) {
+    return message.error('请选择数据库');
+  }
+  axios
+    .post(`api/v1/submit/testcase`, {
+      abstract: testcase.value.abstract,
+      content: testcase.value.content,
+      judgeTypeID: testcase.value.judgeTypeID
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.success('运行成功');
+        showModal.value = true;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.error(error);
+    });
+};
+
 
 const handleDelete = () => {
   axios
@@ -163,9 +192,22 @@ const getData = (body: any) => {
       </n-form-item>
     </n-form>
     <n-space>
-      <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
+      <n-space>
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-button type="primary" @click="handleTest"> 测试 </n-button>
+        </template>
+        <span>若需要查看表的内容，请在插入语句内写对应的 SELECT 语句,否则只会知道是否允许成功</span>
+      </n-popover>
 
+      <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
+      
       <n-button type="error" @click="handleDelete"> 删除 </n-button>
+    </n-space>
+        <div v-if="showResult">
+          <smart-table :data-ref="dataRef" />
+        </div>
+
     </n-space>
   </div>
 </template>

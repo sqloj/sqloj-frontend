@@ -8,6 +8,7 @@ import SqlEditor from '../components/SqlEditor.vue';
 import GenerateDataCard from '../components/GenerateDataCard.vue';
 import { constructor } from '../setting/constructor';
 import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
+import SmartTable from '../components/SmartTable.vue';
 
 const router = useRouter();
 const message = useMessage();
@@ -64,21 +65,25 @@ const handleSubmit = () => {
       console.error(error);
     });
 };
+
+const showResult = ref(false);
+const dataRef: Ref<{}[][]> = ref([[]]);
 const handleTest = () => {
   console.log(testcase.value);
   if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
   }
   axios
-    .post(`api/v1/testcase/insert`, {
-      ...testcase.value,
-      typeName: ''
+    .post(`api/v1/submit/testcase`, {
+      abstract: testcase.value.abstract,
+      content: testcase.value.content,
+      judgeTypeID: testcase.value.judgeTypeID
     })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        message.success('添加成功');
-        router.replace('/main/test-case');
+        message.success('运行成功');
+        showResult.value = true;
       } else {
         message.error(data.message);
       }
@@ -92,8 +97,6 @@ const handleTest = () => {
 // 构造器部分
 const showModal = ref(false);
 const valueChange = ref(false);
-const dataRef: Ref<{}[][]> = ref([[]]);
-const showResult = ref(false);
 const GenButton = () => {
   showModal.value = true;
 };
@@ -163,7 +166,7 @@ const getData = (body: any) => {
         <template #trigger>
           <n-button type="primary" @click="handleTest"> 测试 </n-button>
         </template>
-        <span>若需要查看表的详细内容，请在插入语句内写对应的 SELECT 语句</span>
+        <span>若需要查看表的内容，请在插入语句内写对应的 SELECT 语句,否则只会知道是否允许成功</span>
       </n-popover>
 
       <n-button type="primary" @click="handleSubmit"> 添加 </n-button>
