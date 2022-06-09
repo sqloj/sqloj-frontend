@@ -38,7 +38,7 @@ const columns = [
     key: 'username'
   },
   {
-    title: '学院',
+    title: '部门',
     key: 'department'
   }
 ];
@@ -194,10 +194,10 @@ const handleSubmit = () => {
                 </n-input>
               </n-form-item>
               <!-- input class -->
-              <n-form-item label="学院" class="inputtext" path="department">
+              <n-form-item label="部门" class="inputtext" path="department">
                 <n-input
                   v-model:value="formInline.department"
-                  placeholder="学院"
+                  placeholder="部门"
                 >
                 </n-input>
               </n-form-item>
