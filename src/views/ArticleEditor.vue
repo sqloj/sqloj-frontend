@@ -71,7 +71,7 @@ const handleDelete = () => {
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        formValue.value.id = data.id;
+        formValue.value.id = data.data.id;
         message.success('提交成功');
         router.push({
           name: 'article-page',

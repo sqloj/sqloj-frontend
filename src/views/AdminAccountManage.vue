@@ -22,7 +22,7 @@ const columns = [
             router.push({
               name: 'self-page',
               params: {
-                UserId: row.id
+                userID: row.id
               }
             });
           }
