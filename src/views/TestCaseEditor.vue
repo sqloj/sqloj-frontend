@@ -44,7 +44,7 @@ onMounted(() => {
     .finally(() => {});
 
   axios
-    .get(`/api/v1/testcase/info/${testcaseid}`)
+    .get(`api/v1/testcase/info/${testcaseid}`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -62,7 +62,7 @@ onMounted(() => {
 
 const handleSubmit = () => {
   axios
-    .post(`/api/v1/testcase/update`, {
+    .post(`api/v1/testcase/update`, {
       id: testcaseid,
       label: testcase.value.label,
       content: testcase.value.content,
@@ -87,7 +87,6 @@ const handleSubmit = () => {
 const showResult = ref(false);
 const dataRef: Ref<{}[][]> = ref([[]]);
 const handleTest = () => {
-  console.log(testcase.value);
   if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
   }
@@ -101,7 +100,8 @@ const handleTest = () => {
     .then(data => {
       if (data.code === 0) {
         message.success('运行成功');
-        showModal.value = true;
+        showResult.value = true;
+        dataRef.value = data.data;
       } else {
         message.error(data.message);
       }
@@ -114,7 +114,7 @@ const handleTest = () => {
 
 const handleDelete = () => {
   axios
-    .post(`/api/v1/testcase/delete`, null, { params: { id: testcaseid } })
+    .post(`api/v1/testcase/delete`, null, { params: { id: testcaseid } })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -139,7 +139,6 @@ const getData = (body: any) => {
   let res = constructor(body);
   testcase.value.content = testcase.value.content + '\r\n' + res;
   valueChange.value = !valueChange.value;
-  console.log(testcase.value.content);
 };
 </script>
 
@@ -194,25 +193,23 @@ const getData = (body: any) => {
       </n-form-item>
     </n-form>
     <n-space>
-      <n-space>
-        <n-popover trigger="hover">
-          <template #trigger>
-            <n-button type="primary" @click="handleTest"> 测试 </n-button>
-          </template>
-          <span
-            >若需要查看表的内容，请在插入语句内写对应的 SELECT
-            语句,否则只会知道是否允许成功</span
-          >
-        </n-popover>
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-button type="primary" @click="handleTest"> 测试 </n-button>
+        </template>
+        <span
+          >若需要查看表的内容，请在插入语句内写对应的 SELECT
+          语句,否则只会知道是否允许成功</span
+        >
+      </n-popover>
 
-        <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
+      <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
 
-        <n-button type="error" @click="handleDelete"> 删除 </n-button>
-      </n-space>
-      <div v-if="showResult">
-        <smart-table :data-ref="dataRef" />
-      </div>
+      <n-button type="error" @click="handleDelete"> 删除 </n-button>
     </n-space>
+    <div v-if="showResult">
+      <smart-table :data-ref="dataRef" />
+    </div>
   </div>
 </template>
 

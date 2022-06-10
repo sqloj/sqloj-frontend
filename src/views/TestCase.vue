@@ -11,7 +11,7 @@ const dialog = useDialog();
 
 const deleteTestcase = (id: any) => {
   axios
-    .post(`/api/v1/testcase/delete`, null, { params: { id: id } })
+    .post(`api/v1/testcase/delete`, null, { params: { id: id } })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -58,7 +58,7 @@ const actions = [
         })
         .catch(error => {
           message.error(error);
-          console.log(error);
+          console.error(error);
         })
         .finally(() => {
           if (dataQueRef.value.length > 0) {
@@ -72,7 +72,7 @@ const actions = [
                 for (let que of dataQueRef.value) {
                   promises.push(
                     axios
-                      .post('/api/v1/question/delete', null, {
+                      .post('api/v1/question/delete', null, {
                         params: { id: que.id }
                       })
                       .then(res => res.data)
@@ -150,7 +150,7 @@ const message = useMessage();
 */
 const query = () => {
   axios
-    .get('/api/v1/testcase/list')
+    .get('api/v1/testcase/list')
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -164,7 +164,7 @@ const query = () => {
     .catch(error => {
       loadingRef.value = false;
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 };
 

@@ -85,7 +85,7 @@ const formValue = ref({
 
 const query = () => {
   axios
-    .get(`/api/v1/submit/list`)
+    .get(`api/v1/submit/list`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -101,23 +101,21 @@ const query = () => {
     .catch(error => {
       loadingRef.value = false;
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 };
 
 onMounted(query);
 
 const findSubmit = () => {
+  console.log(formValue.value);
   loadingRef.value = true;
   axios
-    .post(`/api/v1/submit/filter`, null, {
-      params: {
-        ...formValue
-      }
-    })
+    .post(`api/v1/submit/filter`, formValue.value)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
+        console.log(data.data);
         for (let i of data.data) {
           i.result = RESULT[i.result];
         }
@@ -130,7 +128,7 @@ const findSubmit = () => {
     .catch(error => {
       loadingRef.value = false;
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 };
 </script>

@@ -27,7 +27,7 @@ let optionsRef: Ref<SelectMixedOption[]> = ref([]);
 
 onMounted(() => {
   axios
-    .get(`/api/v1/testcase/list`)
+    .get(`api/v1/testcase/list`)
     .then(res => res.data)
     .then(data => {
       for (let t of data.data) {
@@ -48,7 +48,7 @@ const handleAdd = () => {
     return message.error('请选择数据集');
   }
   axios
-    .post(`/api/v1/question/insert`, question.value)
+    .post(`api/v1/question/insert`, question.value)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {

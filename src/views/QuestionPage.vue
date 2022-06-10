@@ -44,7 +44,7 @@ const role = JSON.parse(localStorage.account).role;
 onMounted(() => {
   if (Number.isFinite(Number(questionid))) {
     axios
-      .get(`/api/v1/question/info/${Number(questionid)}`)
+      .get(`api/v1/question/info/${Number(questionid)}`)
       .then(res => res.data)
       .then(data => {
         if (data.code === 0) {
@@ -138,7 +138,9 @@ const handleEdit = () => {
 
 <template>
   <div class="manage-container">
-    <n-h1 style="text-align: center">#{{ question.id }}</n-h1>
+    <n-h1 style="text-align: center"
+      >#{{ question.id }}. {{ question.label }}</n-h1
+    >
     <n-button
       v-if="role !== USER.STUDENT"
       secondary

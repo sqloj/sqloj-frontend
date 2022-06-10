@@ -119,7 +119,7 @@ const query = () => {
     })
     .catch(error => {
       message.error(error);
-      console.log(error);
+      console.error(error);
       loadingRef.value = false;
     });
 };
@@ -128,7 +128,7 @@ onMounted(query);
 const findQuestionById = () => {
   const id = Number(formValue.value.queid);
   axios
-    .get(`/api/v1/question/info/${id}`)
+    .get(`api/v1/question/info/${id}`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {

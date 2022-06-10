@@ -59,7 +59,7 @@ const handleSubmit = () => {
   // 加载
   loadingRef.value = true;
   axios
-    .post('/api/v1/user/login', null, {
+    .post('api/v1/user/login', null, {
       params: {
         id: formInline.value.id,
         password: formInline.value.password

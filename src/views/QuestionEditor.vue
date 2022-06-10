@@ -32,7 +32,7 @@ const questionid = router.currentRoute.value.params.QuestionId;
 
 onMounted(() => {
   axios
-    .get(`/api/v1/testcase/list`)
+    .get(`api/v1/testcase/list`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -50,7 +50,7 @@ onMounted(() => {
     .finally(() => {
       if (Number.isFinite(Number(questionid))) {
         axios
-          .get(`/api/v1/question/info/${Number(questionid)}`)
+          .get(`api/v1/question/info/${Number(questionid)}`)
           .then(res => res.data)
           .then(data => {
             if (data.code === 0) {
@@ -81,8 +81,9 @@ onMounted(() => {
 */
 const handleSubmit = () => {
   axios
-    .post(`/api/v1/question/update`, {
+    .post(`api/v1/question/update`, {
       id: question.value.id,
+      label: question.value.label,
       content: question.value.content,
       answer: question.value.answer,
       testcaseID: question.value.testcaseID
@@ -121,7 +122,7 @@ const handleRun = () => {
 
 const handleDelete = () => {
   axios
-    .post(`/api/v1/question/delete`, null, {
+    .post(`api/v1/question/delete`, null, {
       params: { id: Number(questionid) }
     })
     .then(res => res.data)

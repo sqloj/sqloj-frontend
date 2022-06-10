@@ -83,7 +83,7 @@ const query = () => {
     .catch(error => {
       loadingRef.value = false;
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 };
 onMounted(query);

@@ -72,7 +72,7 @@ const query = () => {
     .catch(error => {
       loadingRef.value = false;
       message.error(error);
-      console.log(error);
+      console.error(error);
     })
     .finally(() => {
       loadingRef.value = false;
@@ -110,7 +110,7 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/v1/user/register', {
+    .post('api/v1/user/register', {
       id: formInline.value.id,
       username: formInline.value.username,
       password: formInline.value.password,

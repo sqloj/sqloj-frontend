@@ -21,7 +21,7 @@ function integer(msg: any) {
 }
 
 function float(msg: any) {
-  return Random.float(msg.min, msg.max, msg.dmin, msg.dmin);
+  return Random.float(msg.min, msg.max, msg.dmin, msg.dmax);
 }
 
 function date(msg: any) {

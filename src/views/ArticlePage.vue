@@ -27,7 +27,7 @@ const showbutton = ref(false);
 const query = () => {
   if (Number.isFinite(Number(articleid))) {
     axios
-      .get(`/api/v1/article/info/${Number(articleid)}`)
+      .get(`api/v1/article/info/${Number(articleid)}`)
       .then(res => res.data)
       .then(data => {
         if (data.code === 0) {

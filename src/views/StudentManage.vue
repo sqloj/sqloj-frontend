@@ -118,7 +118,7 @@ const handleDelete = () => {
     // 依据 id 一个个发起删除请求
     promises.push(
       axios
-        .post('/api/v1/user/delete', null, { params: { id: id } })
+        .post('api/v1/user/delete', null, { params: { id: id } })
         .then(res => {
           return res.data;
         })
@@ -160,6 +160,11 @@ const findSubmit = () => {
         message.error(data.message);
       }
     })
+    .catch(error => {
+      loadingRef.value = false;
+      message.error(error);
+      console.error(error);
+    })
     .finally(() => {
       loadingRef.value = false;
     });
@@ -200,7 +205,7 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/v1/user/register', {
+    .post('api/v1/user/register', {
       id: formInline.value.id,
       username: formInline.value.username,
       password: formInline.value.password,

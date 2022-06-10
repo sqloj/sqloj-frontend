@@ -42,7 +42,6 @@ let testcase = ref({
 });
 
 const handleSubmit = () => {
-  console.log(testcase.value);
   if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
   }
@@ -69,7 +68,6 @@ const handleSubmit = () => {
 const showResult = ref(false);
 const dataRef: Ref<{}[][]> = ref([[]]);
 const handleTest = () => {
-  console.log(testcase.value);
   if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
   }
@@ -84,6 +82,7 @@ const handleTest = () => {
       if (data.code === 0) {
         message.success('运行成功');
         showResult.value = true;
+        dataRef.value = data.data;
       } else {
         message.error(data.message);
       }
@@ -105,7 +104,6 @@ const getData = (body: any) => {
   let res = constructor(body);
   testcase.value.content = testcase.value.content + '\r\n' + res;
   valueChange.value = !valueChange.value;
-  console.log(testcase.value.content);
 };
 </script>
 

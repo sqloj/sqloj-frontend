@@ -121,7 +121,7 @@ const addJudge = () => {
 };
 const handleAdd = () => {
   axios
-    .post('/api/v1/judge/insert', formInline.value)
+    .post('api/v1/judge/insert', formInline.value)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -142,7 +142,7 @@ const handleAdd = () => {
 
 const handlePing = (url: String, password: String) => {
   axios
-    .post('/api/v1/judge/ping', {
+    .post('api/v1/judge/ping', {
       id: 0,
       judgeTypeID: 0,
       typeName: '',
@@ -166,7 +166,7 @@ const handlePing = (url: String, password: String) => {
 const handleUpdate = () => {
   showModal.value = false;
   axios
-    .post('/api/v1/judge/update', formInline.value)
+    .post('api/v1/judge/update', formInline.value)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {

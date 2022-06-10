@@ -174,10 +174,10 @@ const onCreate = () => {
     colname: '',
     message: {
       initnum: 1,
-      min: 0,
-      max: 100,
-      dmin: 0,
-      dmax: 17,
+      min: null,
+      max: null,
+      dmin: null,
+      dmax: null,
       date: 'yyyy-MM-dd',
       time: 'HH:mm:ss',
       model: {
@@ -189,15 +189,12 @@ const onCreate = () => {
 // 组件变化后的回调
 const formValue = ref({
   tablename: '',
-  num: '',
+  num: null,
   quotation: '`'
 });
 
 const showModel = ref('');
 const show = () => {
-  if (!Number.isFinite(formValue.value.num)) {
-    return message.error('行数不是数字');
-  }
   let need = [];
   for (let i of customValue.value) {
     if (i.choose !== '') {
@@ -215,9 +212,6 @@ const show = () => {
 
 const emit = defineEmits(['getData']);
 const handleGen = () => {
-  if (!Number.isFinite(formValue.value.num)) {
-    return message.error('行数不是数字');
-  }
   let need = [];
   for (let i of customValue.value) {
     if (i.choose !== '') {
@@ -247,7 +241,12 @@ const handleGen = () => {
           <n-input v-model:value="formValue.tablename" placeholder="" />
         </n-form-item>
         <n-form-item label="行数" path="num">
-          <n-input v-model:value="formValue.num" placeholder="最好不要过大" />
+          <n-input-number
+            v-model:value="formValue.num"
+            :show-button="false"
+            clearable
+            placeholder="最好不要过大"
+          />
         </n-form-item>
         <n-form-item label="引号" path="num">
           <n-select
@@ -280,9 +279,9 @@ const handleGen = () => {
           />
 
           <div v-if="value.choose === 'auto increment'">
-            <n-input
+            <n-input-number
               v-model:value="value.message.initnum"
-              type="text"
+              :show-button="false"
               placeholder="起始数"
             />
           </div>
@@ -307,20 +306,38 @@ const handleGen = () => {
           </div>
           <div v-else-if="value.choose === 'boolean'">
             <n-space>
-              <n-input v-model:value="value.message.min" placeholder="最小值" />
-              <n-input v-model:value="value.message.max" placeholder="最大值" />
+              <n-input-number
+                v-model:value="value.message.min"
+                :show-button="false"
+                placeholder="最小值"
+              />
+              <n-input-number
+                v-model:value="value.message.max"
+                :show-button="false"
+                placeholder="最大值"
+              />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'float'">
             <n-space>
-              <n-input v-model:value="value.message.min" placeholder="最小值" />
-              <n-input v-model:value="value.message.max" placeholder="最大值" />
-              <n-input
+              <n-input-number
+                v-model:value="value.message.min"
+                :show-button="false"
+                placeholder="最小值"
+              />
+              <n-input-number
+                v-model:value="value.message.max"
+                :show-button="false"
+                placeholder="最大值"
+              />
+              <n-input-number
                 v-model:value="value.message.dmin"
+                :show-button="false"
                 placeholder="最小位数"
               />
-              <n-input
+              <n-input-number
                 v-model:value="value.message.dmax"
+                :show-button="false"
                 placeholder="最大位数"
               />
             </n-space>
@@ -369,28 +386,28 @@ const handleGen = () => {
           </div>
           <div v-else-if="value.choose === 'sentence'">
             <n-space>
-              <n-input
+              <n-input-number
                 v-model:value="value.message.min"
-                type="text"
+                :show-button="false"
                 placeholder="最少单词个数"
               />
-              <n-input
+              <n-input-number
                 v-model:value="value.message.max"
-                type="text"
+                :show-button="false"
                 placeholder="最大单词个数"
               />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'paragraph'">
             <n-space>
-              <n-input
+              <n-input-number
                 v-model:value="value.message.min"
-                type="text"
+                :show-button="false"
                 placeholder="最少句子个数"
               />
-              <n-input
+              <n-input-number
                 v-model:value="value.message.max"
-                type="text"
+                :show-button="false"
                 placeholder="最大句子个数"
               />
             </n-space>

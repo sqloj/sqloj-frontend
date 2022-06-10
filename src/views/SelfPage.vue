@@ -16,34 +16,12 @@ const total = ref({
   department: '',
   signature: '',
   role: null,
-  UNKNOWN: 0,
+  OTHER: 0,
   ACCEPT: 0,
   'WRONG ANSWER': 0,
   'COMPLETE ERROR': 0,
   TOTAL: 0
 });
-
-const queryInfo = () => {
-  axios
-    .get(`api/v1/submit{id}`)
-    .then(res => res.data)
-    .then(data => {
-      if (data.code === 0) {
-        total.value = data.data;
-        total.value.TOTAL =
-          total.value.ACCEPT +
-          total.value['COMPLETE ERROR'] +
-          total.value['WRONG ANSWER'] +
-          total.value.UNKNOWN;
-      } else {
-        message.error(data.message);
-      }
-    })
-    .catch(error => {
-      message.error(error);
-      console.log(error);
-    });
-};
 
 const ArticleCol = [
   {
@@ -81,7 +59,6 @@ const ArticleCol = [
 ];
 
 const queryArticle = () => {
-  console.log(userID);
   axios
     .post(`api/v1/article/filter`, {
       userID: userID
@@ -94,7 +71,7 @@ const queryArticle = () => {
     .catch(error => {
       loadingArticleRef.value = false;
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 };
 
@@ -140,7 +117,6 @@ const queryUser = () => {
           return;
         }
         total.value = data.data[0];
-        console.log(total.value);
       } else {
         message.error('请求失败');
         message.error(data.message);
@@ -148,7 +124,7 @@ const queryUser = () => {
     })
     .catch(error => {
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 };
 
@@ -168,7 +144,7 @@ const queryRecord = () => {
     .catch(error => {
       loadingRecordRef.value = false;
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 };
 
@@ -188,10 +164,13 @@ const queryScore = () => {
             count += data.data;
             switch (i) {
               case 0:
-                total.value.UNKNOWN = data.data;
+                total.value.OTHER = data.data;
                 break;
               case 1:
                 total.value.ACCEPT = data.data;
+                break;
+              case 2:
+                total.value.OTHER += data.data;
                 break;
               case 3:
                 total.value['WRONG ANSWER'] = data.data;
@@ -219,7 +198,7 @@ const queryScore = () => {
 onMounted(() => {
   queryUser();
   queryScore();
-  queryInfo();
+  // queryInfo();
   queryArticle();
   queryRecord();
 });
@@ -245,7 +224,7 @@ onMounted(() => {
                     (total.ACCEPT / total.TOTAL) * 100,
                     (total['WRONG ANSWER'] / total.TOTAL) * 100,
                     (total['COMPLETE ERROR'] / total.TOTAL) * 100,
-                    (total.UNKNOWN / total.TOTAL) * 100
+                    (total.OTHER / total.TOTAL) * 100
                   ]"
                   :color="['#00ff00', '#ff6666', '#33ccff', '#D3D3D3']"
                   :rail-style="[
@@ -266,14 +245,14 @@ onMounted(() => {
                 <n-tag type="info">
                   Complete Error : {{ total['COMPLETE ERROR'] }}
                 </n-tag>
-                <n-tag> Unkonwn : {{ total.UNKNOWN }}</n-tag>
+                <n-tag> OTHER : {{ total.OTHER }}</n-tag>
                 <n-tag type="warning"> Totle : {{ total.TOTAL }} </n-tag>
               </n-space>
             </n-space>
           </n-tab-pane>
 
           <n-tab-pane name="info" tab="信息">
-            <n-h4>姓名：{{ userID }}</n-h4>
+            <n-h4>姓名：{{ total.username }}</n-h4>
             <n-h4>个性签名：</n-h4>
             <n-h3>{{ total.signature }}</n-h3>
           </n-tab-pane>

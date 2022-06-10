@@ -52,7 +52,7 @@ onMounted(() => {
     })
     .catch(error => {
       message.error(error);
-      console.log(error);
+      console.error(error);
     });
 });
 
@@ -87,7 +87,7 @@ const handleSubmit = () => {
     }
     axios
       .post(
-        `/api/v1/user/update`,
+        `api/v1/user/update`,
         {
           id: formInline.value.id,
           username: formInline.value.username,
@@ -126,7 +126,7 @@ const handleSubmit = () => {
   } else {
     axios
       .post(
-        `/api/v1/user/update`,
+        `api/v1/user/update`,
         {
           id: formInline.value.id,
           username: formInline.value.username,
