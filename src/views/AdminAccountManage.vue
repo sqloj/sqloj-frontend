@@ -1,24 +1,44 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
-import { useMessage } from 'naive-ui';
+import { h, onMounted, ref } from 'vue';
+import { NA, useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import { USER } from '../setting/const';
+import { useRouter } from 'vue-router';
 
 /*
   展示学生管理信息 {id, username, department, acnum}
 */
+const router = useRouter();
 const columns = [
   {
     title: '工号',
-    key: 'id'
+    key: 'id',
+    render(row: any) {
+      return h(
+        NA,
+        {
+          onClick() {
+            router.push({
+              name: 'self-page',
+              params: {
+                userID: row.id
+              }
+            });
+          }
+        },
+        {
+          default: () => row.id
+        }
+      );
+    }
   },
   {
     title: '姓名',
     key: 'username'
   },
   {
-    title: '学院',
+    title: '部门',
     key: 'department'
   }
 ];
@@ -32,10 +52,8 @@ const handleCheck = (rowKeys: any) => {
   checkedRowKeysRef.value = rowKeys;
 };
 
-/*
-  查询学生列表的api （应当只有学生）
-*/
 const query = () => {
+  loadingRef.value = true;
   axios
     .post(`api/v1/user/filter`, null, {
       params: {
@@ -46,9 +64,15 @@ const query = () => {
     .then(data => {
       if (data.code === 0) {
         dataRef.value = data.data;
+        loadingRef.value = false;
       } else {
         message.error('请求失败');
       }
+    })
+    .catch(error => {
+      loadingRef.value = false;
+      message.error(error);
+      console.error(error);
     })
     .finally(() => {
       loadingRef.value = false;
@@ -86,11 +110,12 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/v1/user/register', {
+    .post('api/v1/user/register', {
       id: formInline.value.id,
       username: formInline.value.username,
       password: formInline.value.password,
       department: formInline.value.department,
+      signature: '',
       role: USER.TEACHER
     })
     .then(res => res.data)
@@ -169,10 +194,10 @@ const handleSubmit = () => {
                 </n-input>
               </n-form-item>
               <!-- input class -->
-              <n-form-item label="学院" class="inputtext" path="department">
+              <n-form-item label="部门" class="inputtext" path="department">
                 <n-input
                   v-model:value="formInline.department"
-                  placeholder="学院"
+                  placeholder="部门"
                 >
                 </n-input>
               </n-form-item>

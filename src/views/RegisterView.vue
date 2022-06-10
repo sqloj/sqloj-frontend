@@ -75,11 +75,12 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/v1/user/register', {
+    .post('api/v1/user/register', {
       id: formInline.value.id,
       username: formInline.value.username,
       password: formInline.value.password,
       department: formInline.value.department,
+      signature: '',
       role: USER.STUDENT
     })
     .then(res => res.data)

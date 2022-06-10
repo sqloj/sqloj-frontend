@@ -1,24 +1,64 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
-import { useMessage } from 'naive-ui';
+import { h, onMounted, ref } from 'vue';
+import { NA, useMessage } from 'naive-ui';
 import { Pencil, PersonAddOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import { USER } from '../setting/const';
+import { TableColumns } from 'naive-ui/es/data-table/src/interface';
+import { useRouter } from 'vue-router';
 
 /*
-  展示学生管理信息 {id, username, department, acnum}
+  展示学生管理信息 {id, username, department, passNum}
 */
-const columns = [
+const router = useRouter();
+const columns: TableColumns<any> = [
   {
     type: 'selection'
   },
   {
     title: '学号',
-    key: 'id'
+    key: 'id',
+    render(row: any) {
+      return h(
+        NA,
+        {
+          onClick() {
+            router.push({
+              name: 'self-page',
+              params: {
+                userID: row.id
+              }
+            });
+          }
+        },
+        {
+          default: () => row.id
+        }
+      );
+    }
   },
   {
     title: '姓名',
-    key: 'username'
+    key: 'username',
+    render(row: any) {
+      return h(
+        NA,
+        {
+          onClick() {
+            router.push({
+              name: 'self-page',
+              params: {
+                userID: row.id
+              }
+            });
+          },
+          style: 'color: black'
+        },
+        {
+          default: () => row.username
+        }
+      );
+    }
   },
   {
     title: '班级',
@@ -26,7 +66,7 @@ const columns = [
   },
   {
     title: '过题数',
-    key: 'acnum'
+    key: 'passNum'
   }
 ];
 
@@ -35,6 +75,9 @@ const loadingRef = ref(true);
 const message = useMessage();
 const checkedRowKeysRef = ref([]);
 const showModal = ref(false);
+/*
+  查询输入框
+*/
 const formValue = ref({
   id: '',
   username: '',
@@ -46,14 +89,18 @@ const formValue = ref({
 */
 const query = () => {
   axios
-    .get('mapi/v1/user/list')
+    .get(`api/v1/student/list`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
         dataRef.value = data.data;
       } else {
-        message.error('请求失败');
+        message.error(data.message);
       }
+    })
+    .catch(error => {
+      console.error(error);
+      message.error('ERROR!');
     })
     .finally(() => {
       loadingRef.value = false;
@@ -71,7 +118,7 @@ const handleDelete = () => {
     // 依据 id 一个个发起删除请求
     promises.push(
       axios
-        .post('/api/v1/user/delete', null, { params: { id: id } })
+        .post('api/v1/user/delete', null, { params: { id: id } })
         .then(res => {
           return res.data;
         })
@@ -113,6 +160,11 @@ const findSubmit = () => {
         message.error(data.message);
       }
     })
+    .catch(error => {
+      loadingRef.value = false;
+      message.error(error);
+      console.error(error);
+    })
     .finally(() => {
       loadingRef.value = false;
     });
@@ -153,11 +205,12 @@ const handleSubmit = () => {
   }
 
   axios
-    .post('/api/v1/user/register', {
+    .post('api/v1/user/register', {
       id: formInline.value.id,
       username: formInline.value.username,
       password: formInline.value.password,
       department: formInline.value.department,
+      signature: '',
       role: USER.STUDENT
     })
     .then(res => res.data)

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ref, h, VNode } from 'vue';
-import { NTooltip, SelectOption } from 'naive-ui';
+import { useMessage, NTooltip, SelectOption } from 'naive-ui';
 import { constructor } from '../setting/constructor';
 import MarkdownIt from 'markdown-it';
 
+const message = useMessage();
 let md = new MarkdownIt();
 // 可供选择的类型
 const option = {
@@ -111,8 +112,43 @@ const option = {
   ])
 };
 
+const optionOfQuotation = [
+  {
+    label: '反引号',
+    value: '`'
+  },
+  {
+    label: '单引号',
+    value: "'"
+  },
+  {
+    label: '双引号',
+    value: '"'
+  },
+  {
+    label: '括号',
+    value: '?'
+  }
+];
+
 // 主内容
 const customValue = ref([
+  {
+    choose: '',
+    colname: '',
+    message: {
+      initnum: 1,
+      min: 0,
+      max: 100,
+      dmin: 0,
+      dmax: 17,
+      date: 'yyyy-MM-dd',
+      time: 'HH:mm:ss',
+      model: {
+        tags: []
+      }
+    }
+  },
   {
     choose: '',
     colname: '',
@@ -138,10 +174,10 @@ const onCreate = () => {
     colname: '',
     message: {
       initnum: 1,
-      min: 0,
-      max: 100,
-      dmin: 0,
-      dmax: 17,
+      min: null,
+      max: null,
+      dmin: null,
+      dmax: null,
       date: 'yyyy-MM-dd',
       time: 'HH:mm:ss',
       model: {
@@ -153,7 +189,8 @@ const onCreate = () => {
 // 组件变化后的回调
 const formValue = ref({
   tablename: '',
-  num: 10
+  num: null,
+  quotation: '`'
 });
 
 const showModel = ref('');
@@ -166,7 +203,8 @@ const show = () => {
   }
   let res = constructor({
     tablename: formValue.value.tablename,
-    num: Math.min(formValue.value.num, 10),
+    num: Math.min(Number(formValue.value.num), 10),
+    quotation: formValue.value.quotation,
     need: need
   });
   showModel.value = '\n### 部分结果\n\n```sql\n' + res + '\n```';
@@ -203,7 +241,19 @@ const handleGen = () => {
           <n-input v-model:value="formValue.tablename" placeholder="" />
         </n-form-item>
         <n-form-item label="行数" path="num">
-          <n-input v-model:value="formValue.num" placeholder="最好不要过大" />
+          <n-input-number
+            v-model:value="formValue.num"
+            :show-button="false"
+            clearable
+            placeholder="最好不要过大"
+          />
+        </n-form-item>
+        <n-form-item label="引号" path="num">
+          <n-select
+            v-model:value="formValue.quotation"
+            style="width: 80px"
+            :options="optionOfQuotation"
+          />
         </n-form-item>
       </n-form>
     </n-space>
@@ -229,9 +279,9 @@ const handleGen = () => {
           />
 
           <div v-if="value.choose === 'auto increment'">
-            <n-input
+            <n-input-number
               v-model:value="value.message.initnum"
-              type="text"
+              :show-button="false"
               placeholder="起始数"
             />
           </div>
@@ -256,20 +306,38 @@ const handleGen = () => {
           </div>
           <div v-else-if="value.choose === 'boolean'">
             <n-space>
-              <n-input v-model:value="value.message.min" placeholder="最小值" />
-              <n-input v-model:value="value.message.max" placeholder="最大值" />
+              <n-input-number
+                v-model:value="value.message.min"
+                :show-button="false"
+                placeholder="最小值"
+              />
+              <n-input-number
+                v-model:value="value.message.max"
+                :show-button="false"
+                placeholder="最大值"
+              />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'float'">
             <n-space>
-              <n-input v-model:value="value.message.min" placeholder="最小值" />
-              <n-input v-model:value="value.message.max" placeholder="最大值" />
-              <n-input
+              <n-input-number
+                v-model:value="value.message.min"
+                :show-button="false"
+                placeholder="最小值"
+              />
+              <n-input-number
+                v-model:value="value.message.max"
+                :show-button="false"
+                placeholder="最大值"
+              />
+              <n-input-number
                 v-model:value="value.message.dmin"
+                :show-button="false"
                 placeholder="最小位数"
               />
-              <n-input
+              <n-input-number
                 v-model:value="value.message.dmax"
+                :show-button="false"
                 placeholder="最大位数"
               />
             </n-space>
@@ -318,28 +386,28 @@ const handleGen = () => {
           </div>
           <div v-else-if="value.choose === 'sentence'">
             <n-space>
-              <n-input
+              <n-input-number
                 v-model:value="value.message.min"
-                type="text"
+                :show-button="false"
                 placeholder="最少单词个数"
               />
-              <n-input
+              <n-input-number
                 v-model:value="value.message.max"
-                type="text"
+                :show-button="false"
                 placeholder="最大单词个数"
               />
             </n-space>
           </div>
           <div v-else-if="value.choose === 'paragraph'">
             <n-space>
-              <n-input
+              <n-input-number
                 v-model:value="value.message.min"
-                type="text"
+                :show-button="false"
                 placeholder="最少句子个数"
               />
-              <n-input
+              <n-input-number
                 v-model:value="value.message.max"
-                type="text"
+                :show-button="false"
                 placeholder="最大句子个数"
               />
             </n-space>

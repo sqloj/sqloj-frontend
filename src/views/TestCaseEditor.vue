@@ -8,17 +8,19 @@ import { ReceiptOutline } from '@vicons/ionicons5';
 import SqlEditor from '../components/SqlEditor.vue';
 import { constructor } from '../setting/constructor';
 import GenerateDataCard from '../components/GenerateDataCard.vue';
+import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
+import SmartTable from '../components/SmartTable.vue';
 
 const router = useRouter();
 const message = useMessage();
 const valueChange = ref(false);
 const testcaseid = router.currentRoute.value.params.testcaseId;
-const db_options: Ref<{}[]> = ref([]);
+const db_options: Ref<SelectMixedOption[]> = ref([]);
 let testcase = ref({
   label: '',
   abstract: '',
   content: '',
-  typeID: null
+  judgeTypeID: null
 });
 
 onMounted(() => {
@@ -28,7 +30,7 @@ onMounted(() => {
     .then(data => {
       if (data.code === 0) {
         for (let i of data.data) {
-          db_options.value.push({ value: i.typeID, label: i.typeName });
+          db_options.value.push({ value: i.judgeTypeID, label: i.typeName });
         }
       } else {
         message.error(data.message);
@@ -39,34 +41,34 @@ onMounted(() => {
       message.error('错误');
       console.error(error);
     })
-    .finally(() => {
-      axios
-        .get(`/api/v1/testcase/info/${testcaseid}`)
-        .then(res => res.data)
-        .then(data => {
-          if (data.code === 0) {
-            testcase.value = data.data;
-            valueChange.value = !valueChange.value;
-          } else {
-            message.error(data.message);
-          }
-        })
-        .catch(error => {
-          message.error('错误');
-          console.error(error);
-        });
+    .finally(() => {});
+
+  axios
+    .get(`api/v1/testcase/info/${testcaseid}`)
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        testcase.value = data.data;
+        valueChange.value = !valueChange.value;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.error(error);
     });
 });
 
 const handleSubmit = () => {
   axios
-    .post(`/api/v1/testcase/update`, {
+    .post(`api/v1/testcase/update`, {
       id: testcaseid,
       label: testcase.value.label,
       content: testcase.value.content,
       abstract: testcase.value.abstract,
-      typeID: testcase.value.typeID,
-      typeName: testcase.value.typeID
+      judgeTypeID: testcase.value.judgeTypeID,
+      typeName: testcase.value.judgeTypeID
     })
     .then(res => res.data)
     .then(data => {
@@ -82,10 +84,37 @@ const handleSubmit = () => {
       console.error(error);
     });
 };
+const showResult = ref(false);
+const dataRef: Ref<{}[][]> = ref([[]]);
+const handleTest = () => {
+  if (testcase.value.judgeTypeID === null) {
+    return message.error('请选择数据库');
+  }
+  axios
+    .post(`api/v1/submit/testcase`, {
+      abstract: testcase.value.abstract,
+      content: testcase.value.content,
+      judgeTypeID: testcase.value.judgeTypeID
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.success('运行成功');
+        showResult.value = true;
+        dataRef.value = data.data;
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
+      message.error('错误');
+      console.error(error);
+    });
+};
 
 const handleDelete = () => {
   axios
-    .post(`/api/v1/testcase/delete`, null, { params: { id: testcaseid } })
+    .post(`api/v1/testcase/delete`, null, { params: { id: testcaseid } })
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -108,11 +137,8 @@ const GenButton = () => {
 
 const getData = (body: any) => {
   let res = constructor(body);
-  console.log(res);
-  testcase.value.content =
-    testcase.value.content + '\r\n-- 数据生成器 \r\n' + res;
+  testcase.value.content = testcase.value.content + '\r\n' + res;
   valueChange.value = !valueChange.value;
-  console.log(testcase.value.content);
 };
 </script>
 
@@ -131,13 +157,18 @@ const getData = (body: any) => {
         />
       </n-form-item>
       <n-form-item label="数据库" class="inputtext" path="lang">
-        <n-select v-model:value="testcase.typeID" :options="db_options" />
+        <n-select v-model:value="testcase.judgeTypeID" :options="db_options" />
       </n-form-item>
       <n-form-item label="申明语句" class="inputtext" path="abstract">
-        <sql-editor
-          v-model:value="testcase.abstract"
-          :value-change="valueChange"
-        />
+        <n-popover trigger="hover" :duration="10">
+          <template #trigger>
+            <sql-editor
+              v-model:value="testcase.abstract"
+              :value-change="valueChange"
+            />
+          </template>
+          <span>暂不支持注解</span>
+        </n-popover>
       </n-form-item>
       <n-button
         type="primary"
@@ -162,10 +193,23 @@ const getData = (body: any) => {
       </n-form-item>
     </n-form>
     <n-space>
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-button type="primary" @click="handleTest"> 测试 </n-button>
+        </template>
+        <span
+          >若需要查看表的内容，请在插入语句内写对应的 SELECT
+          语句,否则只会知道是否允许成功</span
+        >
+      </n-popover>
+
       <n-button type="primary" @click="handleSubmit"> 修改 </n-button>
 
       <n-button type="error" @click="handleDelete"> 删除 </n-button>
     </n-space>
+    <div v-if="showResult">
+      <smart-table :data-ref="dataRef" />
+    </div>
   </div>
 </template>
 

@@ -36,6 +36,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/SelfInfo.vue')
       },
       {
+        path: 'self-page/:userID',
+        name: 'self-page',
+        component: () => import('../views/SelfPage.vue')
+      },
+      {
         path: 'admin-accoun-manage',
         name: 'admin-accoun-manage',
         component: () => import('../views/AdminAccountManage.vue')
@@ -79,6 +84,26 @@ const routes: Array<RouteRecordRaw> = [
         path: 'judge-server',
         name: 'judge-server',
         component: () => import('../views/JudgeServer.vue')
+      },
+      {
+        path: 'knowledge-share',
+        name: 'knowledge-share',
+        component: () => import('../views/KnowledgeShare.vue')
+      },
+      {
+        path: 'article-add',
+        name: 'article-add',
+        component: () => import('../views/ArticleAdd.vue')
+      },
+      {
+        path: 'article-editor/:ArticleId',
+        name: 'article-editor',
+        component: () => import('../views/ArticleEditor.vue')
+      },
+      {
+        path: 'article-page/:ArticleId',
+        name: 'article-page',
+        component: () => import('../views/ArticlePage.vue')
       }
     ]
   },

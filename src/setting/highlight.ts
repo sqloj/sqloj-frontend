@@ -5,7 +5,12 @@ import { App } from 'vue';
 export default {
   install: (app: App) => {
     app.directive('highlight', {
-      updated(el) {
+      updated(el: HTMLElement) {
+        el.querySelectorAll('pre code').forEach((e: any) => {
+          hljs.highlightElement(e);
+        });
+      },
+      mounted(el: HTMLElement) {
         el.querySelectorAll('pre code').forEach((e: any) => {
           hljs.highlightElement(e);
         });

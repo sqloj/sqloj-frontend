@@ -28,7 +28,7 @@ const rules = {
 };
 
 /*
-  加载前，读取上次保存的密码
+  读取上次保存的密码
 */
 onMounted(() => {
   if (localStorage.hasOwnProperty('user')) {
@@ -38,8 +38,7 @@ onMounted(() => {
 });
 
 /*
-  发生登录请求， account{id, password, username, department, role}
-  localStorage.user{id, password}
+  登录请求
 */
 const handleSubmit = () => {
   // 是否保存账号密码
@@ -60,7 +59,7 @@ const handleSubmit = () => {
   // 加载
   loadingRef.value = true;
   axios
-    .post('/api/v1/user/login', null, {
+    .post('api/v1/user/login', null, {
       params: {
         id: formInline.value.id,
         password: formInline.value.password
@@ -71,9 +70,11 @@ const handleSubmit = () => {
       if (data.code === 0) {
         // 存储信息
         localStorage.account = JSON.stringify({
-          ...formInline.value,
+          id: formInline.value.id,
+          password: formInline.value.password,
           username: data.data.username,
           department: data.data.department,
+          signature: data.data.signature,
           role: data.data.role
         });
         message.success(`欢迎回来！${data.data.username}`);
@@ -102,7 +103,7 @@ const logon = () => {
 <template>
   <div class="view-account">
     <div class="view-account-container" style="text-align: center">
-      <n-h1>DML 语句评判系统</n-h1>
+      <n-h1>SQL OJ</n-h1>
       <div class="view-account-form">
         <!-- FORM 表单-->
         <n-form

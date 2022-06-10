@@ -21,7 +21,7 @@ function integer(msg: any) {
 }
 
 function float(msg: any) {
-  return Random.float(msg.min, msg.max, msg.dmin, msg.dmin);
+  return Random.float(msg.min, msg.max, msg.dmin, msg.dmax);
 }
 
 function date(msg: any) {
@@ -68,13 +68,23 @@ const constructor = (body: any) => {
   const tablename = body.tablename;
   const num = body.num;
   const need = body.need;
+  const quotation = body.quotation;
   let funList: Array<Function> = [];
-  let res = 'INSERT INTO `' + tablename + '` (';
+  let res = '';
+  if (quotation !== '?') {
+    res = 'INSERT INTO ' + quotation + tablename + quotation + ' (';
+  } else {
+    res = 'INSERT INTO [' + tablename + '] (';
+  }
   const len = need.length;
   for (let i = 0; i < len; i++) {
     console.log(need[i]);
     if (i > 0) res += ',';
-    res += '`' + need[i].colname + '`';
+    if (quotation !== '?') {
+      res += quotation + need[i].colname + quotation;
+    } else {
+      res += '[' + need[i].colname + ']';
+    }
     switch (need[i].choose) {
       case 'auto increment':
         funList.push((msg: any, count: Number) =>
@@ -149,7 +159,6 @@ const constructor = (body: any) => {
     if (i < num - 1) res += '),\r\n';
     else res += ');\r\n';
   }
-  console.log(res);
   return res;
 };
 

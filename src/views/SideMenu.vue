@@ -4,15 +4,17 @@ import { NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
 import {
   PersonOutline as PersonIcon,
-  AddCircleOutline as AddIcon,
+  RibbonOutline as RibbonIcon,
   CallOutline as CallIcon,
   InformationCircleOutline as InfoIcon,
-  BugOutline as BugIcon,
+  CodeSlashOutline as CodeIcon,
   GitCommitOutline as CommitIcon,
   ArrowBackCircleOutline as ArrowBack,
   ServerOutline as DataBase,
   CloudDoneOutline as CloudIcon,
-  SchoolOutline as SchoolIcon
+  SchoolOutline as SchoolIcon,
+  ShareOutline as ShareIcon,
+  BarChartOutline as BarIcon
 } from '@vicons/ionicons5';
 
 function renderIcon(icon: Component) {
@@ -30,6 +32,11 @@ const menuOptions: MenuOption[] = [
     children: [
       {
         label: '个人信息',
+        key: 'self-page',
+        icon: renderIcon(BarIcon)
+      },
+      {
+        label: '修改信息',
         key: 'self-info',
         icon: renderIcon(InfoIcon)
       },
@@ -53,7 +60,7 @@ const menuOptions: MenuOption[] = [
       {
         label: '题目管理',
         key: 'question-manage',
-        icon: renderIcon(AddIcon)
+        icon: renderIcon(CodeIcon)
       },
       {
         label: '测试数据集',
@@ -66,9 +73,14 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(CommitIcon)
       },
       {
+        label: '知识分享',
+        key: 'knowledge-share',
+        icon: renderIcon(SchoolIcon)
+      },
+      {
         label: '权限管理',
         key: 'admin-accoun-manage',
-        icon: renderIcon(SchoolIcon)
+        icon: renderIcon(RibbonIcon)
       },
       {
         label: '测评机管理',
@@ -87,11 +99,16 @@ const menuOptions: MenuOption[] = [
 const menuOptionsForStu: MenuOption[] = [
   {
     type: 'group',
-    label: '个人信息',
+    label: accout.username,
     key: 'info',
     children: [
       {
-        label: accout.username,
+        label: '个人信息',
+        key: 'self-page',
+        icon: renderIcon(BarIcon)
+      },
+      {
+        label: '修改信息',
         key: 'self-info',
         icon: renderIcon(InfoIcon)
       },
@@ -110,12 +127,17 @@ const menuOptionsForStu: MenuOption[] = [
       {
         label: '题目列表',
         key: 'question-manage',
-        icon: renderIcon(AddIcon)
+        icon: renderIcon(CodeIcon)
       },
       {
         label: '提交记录',
         key: 'submit-record',
         icon: renderIcon(CommitIcon)
+      },
+      {
+        label: '知识分享',
+        key: 'knowledge-share',
+        icon: renderIcon(SchoolIcon)
       },
       {
         label: '联系我们',

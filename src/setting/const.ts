@@ -22,3 +22,22 @@ const encrypt = (str: string) => {
 };
 
 export { USER, RESULT, encrypt };
+
+// 记录在 localStorage 中的数据
+/*
+user {
+  id: '',
+  password: ''
+}
+*/
+
+/*
+user {
+  id: '',
+  password: '',
+  username: '',
+  department: '',
+  signature: '',
+  role: ''
+}
+*/

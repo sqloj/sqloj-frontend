@@ -8,10 +8,17 @@ const router = useRouter();
 const message = useMessage();
 const collapsed = ref(false);
 const getRoute = (e: string) => {
-  if (e == 'logout') {
+  if (e === 'logout') {
     localStorage.removeItem('account');
     message.success('退出成功');
     router.replace('/login');
+  } else if (e === 'self-page') {
+    router.push({
+      name: 'self-page',
+      params: {
+        userID: JSON.parse(localStorage.account).id
+      }
+    });
   } else {
     const subRounte = '/main/' + e;
     router.push(subRounte);
@@ -53,7 +60,9 @@ onBeforeMount(() => {
       :native-scrollbar="false"
       style="height: 100vh"
     >
-      <router-view />
+      <n-dialog-provider>
+        <router-view />
+      </n-dialog-provider>
     </n-layout>
   </n-layout>
 </template>

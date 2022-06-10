@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { Pencil, ArrowBack, CloseOutline } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
+import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 
 /*
   读取当前的题目信息，"id", "content", "answer", "testcaseID" ,"label" ,"abstract" ,"lang"
@@ -21,16 +22,17 @@ let question = ref({
   testcaseID: '',
   label: '',
   abstract: '',
+  testcaseLabel: '',
   lang: ''
 });
 
 // 依赖数据库选择
-let optionsRef: Ref<{}[]> = ref([]);
+let optionsRef: Ref<SelectMixedOption[]> = ref([]);
 const questionid = router.currentRoute.value.params.QuestionId;
 
 onMounted(() => {
   axios
-    .get(`/api/v1/testcase/list`)
+    .get(`api/v1/testcase/list`)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
@@ -48,7 +50,7 @@ onMounted(() => {
     .finally(() => {
       if (Number.isFinite(Number(questionid))) {
         axios
-          .get(`/api/v1/question/info/${Number(questionid)}`)
+          .get(`api/v1/question/info/${Number(questionid)}`)
           .then(res => res.data)
           .then(data => {
             if (data.code === 0) {
@@ -79,8 +81,9 @@ onMounted(() => {
 */
 const handleSubmit = () => {
   axios
-    .post(`/api/v1/question/update`, {
+    .post(`api/v1/question/update`, {
       id: question.value.id,
+      label: question.value.label,
       content: question.value.content,
       answer: question.value.answer,
       testcaseID: question.value.testcaseID
@@ -119,7 +122,7 @@ const handleRun = () => {
 
 const handleDelete = () => {
   axios
-    .post(`/api/v1/question/delete`, null, {
+    .post(`api/v1/question/delete`, null, {
       params: { id: Number(questionid) }
     })
     .then(res => res.data)
@@ -142,6 +145,8 @@ const handleDelete = () => {
   <div class="manage-container">
     <n-h1 style="text-align: center">#{{ question.id }}</n-h1>
     <div>
+      <n-h2>题目标签</n-h2>
+      <n-input v-model:value="question.label" placeholder=""> </n-input>
       <n-h2>题目描述</n-h2>
       <n-input
         v-model:value="question.content"
@@ -152,7 +157,16 @@ const handleDelete = () => {
         style="font-family: monospace"
       />
       <n-h2>题目答案</n-h2>
-      <sql-editor v-model:value="question.answer" :value-change="valueChange" />
+      <n-popover trigger="hover" :duration="10">
+        <template #trigger>
+          <sql-editor
+            v-model:value="question.answer"
+            :value-change="valueChange"
+          />
+        </template>
+        <span>注意：答案不能为空表</span>
+      </n-popover>
+
       <n-h2>依赖数据集</n-h2>
       <n-select
         v-model:value="question.testcaseID"

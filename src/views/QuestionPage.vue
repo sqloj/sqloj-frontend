@@ -44,7 +44,7 @@ const role = JSON.parse(localStorage.account).role;
 onMounted(() => {
   if (Number.isFinite(Number(questionid))) {
     axios
-      .get(`/api/v1/question/info/${Number(questionid)}`)
+      .get(`api/v1/question/info/${Number(questionid)}`)
       .then(res => res.data)
       .then(data => {
         if (data.code === 0) {
@@ -79,7 +79,6 @@ onMounted(() => {
 });
 
 const dataRef: Ref<{}[][]> = ref([[]]);
-const showResult = ref(true);
 const run = () => {
   const handleAnswer = useranswer.value;
 
@@ -93,7 +92,6 @@ const run = () => {
       if (data.code === 0) {
         message.success('运行成功');
         dataRef.value = data.data;
-        showResult.value = true;
       } else {
         if (data.message !== null) message.error(data.message);
         else message.error('代码有误');
@@ -140,7 +138,9 @@ const handleEdit = () => {
 
 <template>
   <div class="manage-container">
-    <n-h1 style="text-align: center">#{{ question.id }}</n-h1>
+    <n-h1 style="text-align: center"
+      >#{{ question.id }}. {{ question.label }}</n-h1
+    >
     <n-button
       v-if="role !== USER.STUDENT"
       secondary
@@ -197,7 +197,7 @@ const handleEdit = () => {
         提交
       </n-button>
     </n-space>
-    <div v-if="showResult">
+    <div>
       <smart-table :data-ref="dataRef" />
     </div>
   </div>
