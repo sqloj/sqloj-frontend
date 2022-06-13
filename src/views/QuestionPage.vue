@@ -2,13 +2,7 @@
 import { useMessage } from 'naive-ui';
 import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import {
-  Pencil,
-  BugOutline,
-  Body,
-  TerminalOutline,
-  CodeSlashSharp
-} from '@vicons/ionicons5';
+import { Pencil, TerminalOutline, CodeSlashSharp } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
 import { RESULT, USER } from '../setting/const';
@@ -33,7 +27,7 @@ let question = ref({
   lang: ''
 });
 const useranswer = ref('');
-const showAbstract = ref(false);
+const loadingRef = ref(false);
 let md = new MarkdownIt();
 
 // 从路由中读取 QuestionId 的值
@@ -50,9 +44,10 @@ onMounted(() => {
         if (data.code === 0) {
           question.value = data.data;
           if (question.value.testcaseAbstract.length === 0) {
-            question.value.content += '\n### 测试集信息\n\n```\n[[空]]\n```\n';
+            question.value.testcaseAbstract =
+              '\n### 测试集信息\n\n```\n[[空]]\n```\n';
           } else {
-            question.value.content +=
+            question.value.testcaseAbstract =
               '\n### 测试集信息\n\n```sql\n' +
               question.value.testcaseAbstract +
               '\n```';
@@ -81,7 +76,7 @@ onMounted(() => {
 const dataRef: Ref<{}[][]> = ref([[]]);
 const run = () => {
   const handleAnswer = useranswer.value;
-
+  loadingRef.value = true;
   axios
     .post(`api/v1/submit/test`, {
       testcaseID: Number(question.value.testcaseID),
@@ -91,13 +86,16 @@ const run = () => {
     .then(data => {
       if (data.code === 0) {
         message.success('运行成功');
+        loadingRef.value = false;
         dataRef.value = data.data;
       } else {
+        loadingRef.value = false;
         if (data.message !== null) message.error(data.message);
         else message.error('代码有误');
       }
     })
     .catch(error => {
+      loadingRef.value = false;
       console.error(error);
       message.error('错误！');
     });
@@ -162,6 +160,18 @@ const handleEdit = () => {
       v-highlight
       v-katex
     ></n-p>
+    <n-card class="card">
+      <n-scrollbar style="max-height: 400px">
+        <n-scrollbar x-scrollable>
+          <div
+            v-dompurify-html="md.render(question.testcaseAbstract)"
+            v-highlight
+            v-katex
+          ></div>
+        </n-scrollbar>
+      </n-scrollbar>
+    </n-card>
+
     <n-h2>答题框</n-h2>
     <sql-editor v-model:value="useranswer" :value-change="valueChange" />
 
@@ -172,6 +182,7 @@ const handleEdit = () => {
         type="primary"
         size="large"
         style="margin-top: 1.6rem"
+        :loading="loadingRef"
         @click="run"
       >
         <template #icon>
@@ -213,6 +224,6 @@ const handleEdit = () => {
 }
 
 .card {
-  text-align: left;
+  max-height: 450px;
 }
 </style>
