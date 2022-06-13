@@ -20,7 +20,6 @@ const columns = [
         {
           onClick() {
             const question = row;
-            localStorage.question = JSON.stringify(question);
             // 页面跳转
             if (role === USER.TEACHER) {
               router.push({
