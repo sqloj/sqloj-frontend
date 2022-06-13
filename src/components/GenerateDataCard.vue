@@ -138,10 +138,10 @@ const customValue = ref([
     colname: '',
     message: {
       initnum: 1,
-      min: 0,
-      max: 100,
-      dmin: 0,
-      dmax: 17,
+      min: null,
+      max: null,
+      dmin: null,
+      dmax: null,
       date: 'yyyy-MM-dd',
       time: 'HH:mm:ss',
       model: {
@@ -154,10 +154,10 @@ const customValue = ref([
     colname: '',
     message: {
       initnum: 1,
-      min: 0,
-      max: 100,
-      dmin: 0,
-      dmax: 17,
+      min: null,
+      max: null,
+      dmin: null,
+      dmax: null,
       date: 'yyyy-MM-dd',
       time: 'HH:mm:ss',
       model: {

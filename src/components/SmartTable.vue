@@ -60,6 +60,7 @@ onMounted(() => {
   <div :v-if="isready">
     <div v-for="idx in set" id="manage-container" :key="idx">
       <n-data-table
+        size="small"
         :bordered="false"
         :columns="dataArr[idx]"
         :data="dataRef[idx]"

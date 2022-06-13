@@ -86,10 +86,13 @@ const handleSubmit = () => {
 };
 const showResult = ref(false);
 const dataRef: Ref<{}[][]> = ref([[]]);
+const loadingRef = ref(false);
+
 const handleTest = () => {
   if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
   }
+  loadingRef.value = true;
   axios
     .post(`api/v1/submit/testcase`, {
       abstract: testcase.value.abstract,
@@ -101,12 +104,15 @@ const handleTest = () => {
       if (data.code === 0) {
         message.success('运行成功');
         showResult.value = true;
+        loadingRef.value = false;
         dataRef.value = data.data;
       } else {
+        loadingRef.value = false;
         message.error(data.message);
       }
     })
     .catch(error => {
+      loadingRef.value = false;
       message.error('错误');
       console.error(error);
     });
@@ -195,7 +201,9 @@ const getData = (body: any) => {
     <n-space>
       <n-popover trigger="hover">
         <template #trigger>
-          <n-button type="primary" @click="handleTest"> 测试 </n-button>
+          <n-button type="primary" :loading="loadingRef" @click="handleTest">
+            测试
+          </n-button>
         </template>
         <span
           >若需要查看表的内容，请在插入语句内写对应的 SELECT

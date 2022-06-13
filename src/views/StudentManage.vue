@@ -149,7 +149,8 @@ const findSubmit = () => {
       params: {
         id: formValue.value.id,
         username: formValue.value.username,
-        department: formValue.value.department
+        department: formValue.value.department,
+        role: USER.STUDENT
       }
     })
     .then(res => res.data)

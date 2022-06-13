@@ -78,7 +78,6 @@ const constructor = (body: any) => {
   }
   const len = need.length;
   for (let i = 0; i < len; i++) {
-    console.log(need[i]);
     if (i > 0) res += ',';
     if (quotation !== '?') {
       res += quotation + need[i].colname + quotation;
