@@ -116,7 +116,11 @@ const queryUser = () => {
           router.back();
           return;
         }
-        total.value = data.data[0];
+        total.value.id = data.data[0].id;
+        total.value.username = data.data[0].username;
+        total.value.signature = data.data[0].signature;
+        total.value.department = data.data[0].department;
+        total.value.role = data.data[0].role;
       } else {
         message.error('请求失败');
         message.error(data.message);
