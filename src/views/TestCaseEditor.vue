@@ -10,6 +10,7 @@ import { constructor } from '../setting/constructor';
 import GenerateDataCard from '../components/GenerateDataCard.vue';
 import { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 import SmartTable from '../components/SmartTable.vue';
+import { DATABASE } from '../setting/const';
 
 const router = useRouter();
 const message = useMessage();
@@ -20,9 +21,16 @@ let testcase = ref({
   label: '',
   abstract: '',
   content: '',
-  judgeTypeID: null
+  judgeTypeID: 0
 });
+class Redisform {
+  redis: string;
+  constructor(t: string) {
+    this.redis = t;
+  }
+}
 
+// init
 onMounted(() => {
   axios
     .get(`api/v1/judge/allSupport`)
@@ -60,34 +68,10 @@ onMounted(() => {
     });
 });
 
-const handleSubmit = () => {
-  axios
-    .post(`api/v1/testcase/update`, {
-      id: testcaseid,
-      label: testcase.value.label,
-      content: testcase.value.content,
-      abstract: testcase.value.abstract,
-      judgeTypeID: testcase.value.judgeTypeID,
-      typeName: testcase.value.judgeTypeID
-    })
-    .then(res => res.data)
-    .then(data => {
-      if (data.code === 0) {
-        message.success('更新成功');
-        router.replace('/main/test-case');
-      } else {
-        message.error(data.message);
-      }
-    })
-    .catch(error => {
-      message.error('错误');
-      console.error(error);
-    });
-};
+// test
 const showResult = ref(false);
 const dataRef: Ref<{}[][]> = ref([[]]);
 const loadingRef = ref(false);
-
 const handleTest = () => {
   if (testcase.value.judgeTypeID === null) {
     return message.error('请选择数据库');
@@ -103,9 +87,17 @@ const handleTest = () => {
     .then(data => {
       if (data.code === 0) {
         message.success('运行成功');
+        if (testcase.value.judgeTypeID === DATABASE.REDIS) {
+          let dataArr: Array<Array<Redisform>> = new Array<Array<Redisform>>();
+          let now: Array<Redisform> = new Array<Redisform>();
+          for (let i in data.data) now.push(new Redisform(data.data[i]));
+          dataArr.push(now);
+          dataRef.value = dataArr;
+        } else {
+          dataRef.value = data.data;
+        }
         showResult.value = true;
         loadingRef.value = false;
-        dataRef.value = data.data;
       } else {
         loadingRef.value = false;
         message.error(data.message);
@@ -113,6 +105,32 @@ const handleTest = () => {
     })
     .catch(error => {
       loadingRef.value = false;
+      message.error('错误');
+      console.error(error);
+    });
+};
+
+// 提交
+const handleSubmit = () => {
+  axios
+    .post(`api/v1/testcase/update`, {
+      id: testcaseid,
+      label: testcase.value.label,
+      content: testcase.value.content,
+      abstract: testcase.value.abstract,
+      judgeTypeID: testcase.value.judgeTypeID,
+      typeName: DATABASE[testcase.value.judgeTypeID]
+    })
+    .then(res => res.data)
+    .then(data => {
+      if (data.code === 0) {
+        message.success('更新成功');
+        router.replace('/main/test-case');
+      } else {
+        message.error(data.message);
+      }
+    })
+    .catch(error => {
       message.error('错误');
       console.error(error);
     });
@@ -165,18 +183,33 @@ const getData = (body: any) => {
       <n-form-item label="数据库" class="inputtext" path="lang">
         <n-select v-model:value="testcase.judgeTypeID" :options="db_options" />
       </n-form-item>
-      <n-form-item label="申明语句" class="inputtext" path="abstract">
+      <n-form-item
+        v-if="testcase.judgeTypeID !== DATABASE.REDIS"
+        label="建表语句"
+        class="inputtext"
+        path="abstract"
+      >
+        <sql-editor
+          v-model:value="testcase.abstract"
+          :value-change="valueChange"
+          language="sql"
+        />
+      </n-form-item>
+      <n-form-item
+        v-if="testcase.judgeTypeID === DATABASE.REDIS"
+        label="建表语句 （lua 脚本）"
+        class="inputtext"
+        path="abstract"
+      >
         <n-popover trigger="hover" :duration="10">
           <template #trigger>
-            <sql-editor
-              v-model:value="testcase.abstract"
-              :value-change="valueChange"
-            />
+            <sql-editor v-model:value="testcase.abstract" language="lua" />
           </template>
-          <span>暂不支持注解</span>
+          <span>注意！在测试完后删除最后的 return 语句</span>
         </n-popover>
       </n-form-item>
       <n-button
+        v-if="testcase.judgeTypeID !== DATABASE.REDIS"
         type="primary"
         size="small"
         strong
@@ -191,9 +224,15 @@ const getData = (body: any) => {
         </template>
         数据生成器
       </n-button>
-      <n-form-item label="插入语句" class="inputtext" path="content">
+      <n-form-item
+        v-if="testcase.judgeTypeID !== DATABASE.REDIS"
+        label="插入语句"
+        class="inputtext"
+        path="content"
+      >
         <sql-editor
           v-model:value="testcase.content"
+          language="sql"
           :value-change="valueChange"
         />
       </n-form-item>
