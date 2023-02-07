@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import axios from 'axios';
 import { PersonOutline, LockClosedOutline } from '@vicons/ionicons5';
-import { encrypt } from '../setting/const';
 
 const formRef = ref();
 const loadingRef = ref(false);
@@ -12,7 +11,7 @@ const autoLogin = ref(true);
 const router = useRouter();
 const message = useMessage();
 
-/*    
+/*
   输入框内容 {id, password}
 */
 const formInline = ref({

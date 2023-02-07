@@ -28,6 +28,7 @@ let question = ref({
 });
 const useranswer = ref('');
 const loadingRef = ref(false);
+const loadingSubmitRef = ref(false);
 let md = new MarkdownIt();
 
 // 从路由中读取 QuestionId 的值
@@ -103,6 +104,7 @@ const run = () => {
 
 const submit = () => {
   const handleAnswer = useranswer.value;
+  loadingSubmitRef.value = true;
   axios
     .post(`api/v1/submit/submit`, {
       questionID: question.value.id,
@@ -111,6 +113,7 @@ const submit = () => {
     })
     .then(res => res.data)
     .then(data => {
+      loadingSubmitRef.value = false;
       if (data.code === 0) {
         message.info(RESULT[data.data.result]);
       } else {
@@ -119,8 +122,9 @@ const submit = () => {
       }
     })
     .catch(error => {
+      loadingSubmitRef.value = false;
       console.error(error);
-      message.error('错误！');
+      message.error('错误或超时');
     });
 };
 
@@ -198,6 +202,7 @@ const handleEdit = () => {
         type="primary"
         size="large"
         style="margin-top: 1.6rem"
+        :loading="loadingSubmitRef"
         @click="submit"
       >
         <template #icon>
