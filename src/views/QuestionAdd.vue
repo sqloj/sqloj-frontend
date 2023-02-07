@@ -80,6 +80,14 @@ const handleAdd = () => {
     <div>
       <n-h2>题目标签</n-h2>
       <n-input v-model:value="question.label" placeholder=""> </n-input>
+      <n-h2>依赖数据集</n-h2>
+      <n-select
+        v-model:value="question.testcaseID"
+        :options="optionsRef"
+        style="max-width: 100%"
+        default-value="default_choose"
+        :loading="loadingRef"
+      />
       <n-h2>题目描述</n-h2>
       <n-input
         v-model:value="question.content"
@@ -93,19 +101,10 @@ const handleAdd = () => {
       <n-h2>题目答案</n-h2>
       <n-popover trigger="hover" :duration="10">
         <template #trigger>
-          <sql-editor v-model:value="question.answer" />
+          <sql-editor v-model:value="question.answer" language="sql" />
         </template>
         <span>注意：答案不能为空表</span>
       </n-popover>
-
-      <n-h2>依赖数据集</n-h2>
-      <n-select
-        v-model:value="question.testcaseID"
-        :options="optionsRef"
-        style="max-width: 500px"
-        default-value="default_choose"
-        :loading="loadingRef"
-      />
     </div>
 
     <n-space style="margin-top: 1.6rem">

@@ -48,7 +48,7 @@ const columns = [
     title: '题目标题',
     key: 'label',
     ellipsis: true,
-    width: '50%',
+    width: '30%',
     render(row: any) {
       return h(
         NA,
@@ -84,7 +84,7 @@ const columns = [
     title: '题目描述',
     key: 'content',
     ellipsis: true,
-    width: '30%'
+    width: '40%'
   },
   {
     title: '依赖数据集',

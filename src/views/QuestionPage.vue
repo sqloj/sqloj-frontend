@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 import { Pencil, TerminalOutline, CodeSlashSharp } from '@vicons/ionicons5';
 import axios from 'axios';
 import SqlEditor from '../components/SqlEditor.vue';
-import { RESULT, USER } from '../setting/const';
+import { DATABASE, RESULT, USER } from '../setting/const';
 import SmartTable from '../components/SmartTable.vue';
 import MarkdownIt from 'markdown-it';
 
@@ -24,8 +24,17 @@ let question = ref({
   testcaseID: '',
   label: '',
   testcaseAbstract: '',
-  lang: ''
+  testcaseContent: '',
+  testcaseLabel: '',
+  judgeTypeID: 1,
+  typeName: ''
 });
+class Redisform {
+  redis: string;
+  constructor(t: string) {
+    this.redis = t;
+  }
+}
 const useranswer = ref('');
 const loadingRef = ref(false);
 const loadingSubmitRef = ref(false);
@@ -87,8 +96,16 @@ const run = () => {
     .then(data => {
       if (data.code === 0) {
         message.success('运行成功');
+        if (question.value.judgeTypeID === DATABASE.REDIS) {
+          let dataArr: Array<Array<Redisform>> = new Array<Array<Redisform>>();
+          let now: Array<Redisform> = new Array<Redisform>();
+          for (let i in data.data) now.push(new Redisform(data.data[i]));
+          dataArr.push(now);
+          dataRef.value = dataArr;
+        } else {
+          dataRef.value = data.data;
+        }
         loadingRef.value = false;
-        dataRef.value = data.data;
       } else {
         loadingRef.value = false;
         if (data.message !== null) message.error(data.message);
@@ -177,8 +194,20 @@ const handleEdit = () => {
     </n-card>
 
     <n-h2>答题框</n-h2>
-    <sql-editor v-model:value="useranswer" :value-change="valueChange" />
-
+    <div v-if="question.judgeTypeID === DATABASE.REDIS">
+      <sql-editor
+        v-model:value="useranswer"
+        language="lua"
+        :value-change="valueChange"
+      />
+    </div>
+    <div v-if="question.judgeTypeID !== DATABASE.REDIS">
+      <sql-editor
+        v-model:value="useranswer"
+        language="sql"
+        :value-change="valueChange"
+      />
+    </div>
     <n-space justify="space-between">
       <n-button
         secondary
