@@ -1,5 +1,3 @@
-import { Md5 } from 'ts-md5';
-
 const enum USER {
   STUDENT = 1,
   TEACHER = 2,
@@ -15,13 +13,15 @@ enum RESULT {
   'SERVER ERROR' = 5
 }
 
-const encrypt = (str: string) => {
-  let md5 = new Md5();
-  md5.appendStr(str);
-  return md5.end();
-};
+enum DATABASE {
+  'MariaDB' = 1,
+  'SQL Server' = 2,
+  'MySQL' = 3,
+  'H2 Database' = 4,
+  'REDIS' = 5
+}
 
-export { USER, RESULT, encrypt };
+export { USER, RESULT, DATABASE };
 
 // 记录在 localStorage 中的数据
 /*
