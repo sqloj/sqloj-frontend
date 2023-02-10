@@ -4,6 +4,7 @@ import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   value: string;
+  language: string;
   valueChange?: boolean;
 }>();
 
@@ -20,7 +21,7 @@ watch(
 onMounted(() => {
   instance = monaco.editor.create(editContainer.value, {
     value: props.value,
-    language: 'sql'
+    language: props.language
     // readOnly: props.readonly
   });
   instance.onDidChangeModelContent(() => {

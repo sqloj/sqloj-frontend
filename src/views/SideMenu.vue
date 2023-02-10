@@ -13,7 +13,6 @@ import {
   ServerOutline as DataBase,
   CloudDoneOutline as CloudIcon,
   SchoolOutline as SchoolIcon,
-  ShareOutline as ShareIcon,
   BarChartOutline as BarIcon
 } from '@vicons/ionicons5';
 

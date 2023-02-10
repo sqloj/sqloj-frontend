@@ -1,6 +1,5 @@
 // 引入mockjs
 import Mock from 'mockjs';
-import { encrypt } from '../setting/const';
 import {
   userGen,
   questionGen,
@@ -44,7 +43,6 @@ function parseQueryString(url: String, key: String) {
 mock(/\/api\/v1\/user\/login/, 'post', (option: any) => {
   let id = parseQueryString(option.url, 'id');
   let password = parseQueryString(option.url, 'password');
-  console.log(id, password);
   for (let u of user) {
     if (u.id === id && u.password === password) {
       return {

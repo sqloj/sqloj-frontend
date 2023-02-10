@@ -108,14 +108,12 @@ const query = () => {
 onMounted(query);
 
 const findSubmit = () => {
-  console.log(formValue.value);
   loadingRef.value = true;
   axios
     .post(`api/v1/submit/filter`, formValue.value)
     .then(res => res.data)
     .then(data => {
       if (data.code === 0) {
-        console.log(data.data);
         for (let i of data.data) {
           i.result = RESULT[i.result];
         }

@@ -147,6 +147,14 @@ const handleDelete = () => {
     <div>
       <n-h2>题目标签</n-h2>
       <n-input v-model:value="question.label" placeholder=""> </n-input>
+      <n-h2>依赖数据集</n-h2>
+      <n-select
+        v-model:value="question.testcaseID"
+        :options="optionsRef"
+        style="max-width: 100%"
+        :default-value="question.label"
+        :loading="loadingRef"
+      />
       <n-h2>题目描述</n-h2>
       <n-input
         v-model:value="question.content"
@@ -161,20 +169,13 @@ const handleDelete = () => {
         <template #trigger>
           <sql-editor
             v-model:value="question.answer"
+            language="sql"
             :value-change="valueChange"
           />
         </template>
         <span>注意：答案不能为空表</span>
       </n-popover>
 
-      <n-h2>依赖数据集</n-h2>
-      <n-select
-        v-model:value="question.testcaseID"
-        :options="optionsRef"
-        style="max-width: 500px"
-        :default-value="question.label"
-        :loading="loadingRef"
-      />
     </div>
 
     <n-space style="margin-top: 1.6rem">
